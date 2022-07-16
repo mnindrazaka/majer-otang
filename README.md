@@ -1,2 +1,2 @@
-# Billing
-Billing app
+# Majer Otang
+Majer Otang app
