@@ -9,6 +9,8 @@ const MenuMember = () => {
       bottom={"0"}
       backgroundColor={"white"}
       py={"4"}
+      display={"flex"}
+      justifyContent={"center"}
     >
       <HStack
         justifyContent={"space-between"}
@@ -19,6 +21,7 @@ const MenuMember = () => {
         backgroundColor={"gray.700"}
         position={"relative"}
         maxW={"440px"}
+        w={"full"}
         py={"1"}
       >
         <Box
