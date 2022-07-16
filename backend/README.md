@@ -9,3 +9,4 @@ https://github.com/julienschmidt/httprouter
 ## database credentials
 - username : milhamsuryapratama
 - password : ilhammongodb
+- example : mongodb+srv://<username>:<password>@cluster0.8z2z3jv.mongodb.net/?retryWrites=true&w=majority
