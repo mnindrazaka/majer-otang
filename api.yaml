@@ -1,0 +1,282 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: MAJER OTANG API
+  description: see api_link
+paths:
+  /members:
+    get:
+      description: GET all members
+      tags: ['Members']
+      operationId: 'getAllMembers'
+      summary: GET all member
+      responses:
+        '200':
+          description: Success GET all members
+          content:
+            'application/json':
+              schema:
+                type: object
+                'required':
+                  - 'data'
+                  - 'status'
+                  - 'message'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                  status:
+                    type: string
+                  message:
+                    type: string
+  /members/{memberId}:
+    get:
+      description: GET member by memberId
+      tags: ['Members']
+      operationId: 'getMemberById'
+      summary: GET member by memberId
+      parameters:
+        - name: memberId
+          in: path
+          required: true
+          description: Member Id
+      responses:
+        '200':
+          description: Success GET member by memberId
+          content:
+            'application/json':
+              schema:
+                type: object
+                'required':
+                  - 'data'
+                  - 'status'
+                  - 'message'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                  status:
+                    type: string
+                  message:
+                    type: string
+        '404':
+          description: Member not found
+
+  /payments:
+    put:
+      description: UPDATE payment
+      tags: ['Payments']
+      operationId: 'updatePayment'
+      summary: UPDATE payment
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                targetMemberId:
+                  type: string
+                chargedMemberId:
+                  type: string
+      responses:
+        '200':
+          description: Success UPDATE payment
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UpdatePaymentCreateBillingUpdateBillingById'
+
+  /payments/{memberId}:
+    get:
+      description: GET payment by memberId
+      tags: ['Payments']
+      operationId: 'getPaymentByMemberId'
+      summary: GET payment by memberId
+      parameters:
+        - name: memberId
+          in: path
+          required: true
+          description: Member Id
+      responses:
+        '200':
+          description: Success GET all payment
+          content:
+            'application/json':
+              schema:
+                type: object
+                'required':
+                  - 'data'
+                  - 'status'
+                  - 'message'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                  status:
+                    type: string
+                  message:
+                    type: string
+
+  /billings:
+    get:
+      description: GET all billings
+      tags: ['Billings']
+      operationId: 'getAllBillings'
+      summary: GET all billings
+      responses:
+        '200':
+          description: Success GET all billings
+          content:
+            'application/json':
+              schema:
+                type: object
+                'required':
+                  - 'data'
+                  - 'status'
+                  - 'message'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        title:
+                          type: string
+                        amount:
+                          type: number
+                  status:
+                    type: string
+                  message:
+                    type: string
+    post:
+      description: CREATE billing
+      tags: ['Billings']
+      operationId: 'createBilling'
+      summary: CREATE billing
+      requestBody:
+        content:
+          'application/json':
+          schema:
+            $ref: '#/components/schemas/CreateBillingUpdateBillingRequest'
+        responses:
+          '200':
+            description: Success CREATE billing
+            content:
+              'application/json':
+                schema:
+                  $ref: '#/components/schemas/UpdatePaymentCreateBillingUpdateBillingById'
+
+  /billings/{billingId}:
+    get:
+      description: GET billing by billingId
+      tags: ['Billings']
+      operationId: 'getBillingByBillingId'
+      summary: GET billing by billingId
+      responses:
+        '200':
+          description: Success GET billing by billingId
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+                    billAmount:
+                      type: number
+                    chargedMemberId:
+                      type: string
+                    isBillEqually:
+                      type: boolean
+                    members:
+                      type: array
+                      items:
+                      id:
+                        type: string
+                      amount:
+                        type: number
+                  status:
+                    type: string
+                  message:
+                    type: string
+
+      put:
+        description: UPDATE billing by billingId
+        tags: ['Billings']
+        operationId: 'updateBilling'
+        summary: UPDATE billing
+        requestBody:
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CreateBillingUpdateBillingRequest'
+          responses:
+            '200':
+              description: Success UPDATE billing
+              content:
+                'application/json':
+                  schema:
+                    $ref: '#/components/schemas/UpdatePaymentCreateBillingUpdateBillingById'
+
+components:
+  schemas:
+    CreateBillingUpdateBillingRequest:
+      type: object
+      'required':
+        - 'title'
+        - 'billAmount'
+        - 'chargedMemberId'
+        - 'isBillEqually'
+        - 'members'
+      properties:
+        title:
+          type: string
+        billAmount:
+          type: number
+        chargedMemberId:
+          type: string
+        isBillEqually:
+          type: boolean
+        members:
+          type: array
+          items:
+            id:
+              type: string
+            amount:
+              type: number
+    UpdatePaymentCreateBillingUpdateBillingById:
+      type: object
+      'required':
+        - 'data'
+        - 'status'
+        - 'message'
+      properties:
+        data:
+          type: null
+        status:
+          type: string
+        message:
+          type: string
