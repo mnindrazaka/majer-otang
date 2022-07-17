@@ -2,18 +2,25 @@ import { Box, HStack } from "@chakra-ui/react";
 import Link from "next/link";
 
 const menus = {
-  members: "members",
-  billings: "billings"
+  members: {
+    title: "Members",
+    path: "/"
+  },
+  billings: {
+    title: "Billings",
+    path: "/billings"
+  }
 };
 
 interface MenuItemProps {
   title: string;
+  href: string;
   isActive: boolean;
 }
 
 const MenuItem = (props: MenuItemProps) => {
   return (
-    <Link href={props.title === Object.keys(menus)[0] ? "/" : props.title}>
+    <Link href={props.href}>
       <Box
         w={"50%"}
         textAlign={"center"}
@@ -58,8 +65,13 @@ const BottomMenu = (props: BottomMenuProps) => {
         w={"full"}
         py={"1"}
       >
-        {Object.entries(menus).map(([id, title]) => (
-          <MenuItem key={id} title={title} isActive={props.activeMenu === id} />
+        {Object.entries(menus).map(([id, menu]) => (
+          <MenuItem
+            key={id}
+            title={menu.title}
+            href={menu.path}
+            isActive={props.activeMenu === id}
+          />
         ))}
       </HStack>
     </Box>
