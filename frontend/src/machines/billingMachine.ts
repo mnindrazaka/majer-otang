@@ -54,7 +54,7 @@ const billingMachine = createMachine<Context>({
       always: [
         {
           cond: "creatingForm",
-          target: "#firstStep",
+          target: "billingFormReady",
         },
         {
           target: "loadingBillingDetail",
@@ -64,7 +64,7 @@ const billingMachine = createMachine<Context>({
     loadingBillingDetail: {
       on: {
         FETCHING_BILLING_DETAIL_SUCCES: {
-          target: "#firstStep",
+          target: "billingFormReady",
         },
         FETCHING_BILLING_DETAIL_ERROR: {
           target: "getBillingDetailError",
