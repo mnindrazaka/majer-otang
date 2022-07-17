@@ -8,8 +8,7 @@ type Billing = {
 
 interface Context {
   billings: Billing[];
-  isEditingForm: boolean;
-  isCreatingForm: boolean;
+  formMode: "CREATE" | "EDIT";
 }
 
 const billingMachine = createMachine<Context>({
@@ -17,38 +16,37 @@ const billingMachine = createMachine<Context>({
   initial: "idle",
   context: {
     billings: [],
-    isCreatingForm: false,
-    isEditingForm: false,
+    formMode: "CREATE",
   },
   states: {
     idle: {
       on: {
-        FETCHINGBILLINGS: {
-          target: "gettingBilling",
+        FETCH_BILLING: {
+          target: "loadingBilling",
         },
       },
     },
-    gettingBilling: {
+    loadingBilling: {
       on: {
-        FETCHINGBILLINGSSUCCES: {
-          target: "gettingBillingOK",
+        FETCH_BILLING_SUCCES: {
+          target: "getBillingOK",
         },
-        FETCHINGBILLINGSERROR: {
-          target: "gettingBillingError",
+        FETCH_BILLING_ERROR: {
+          target: "getBillingError",
         },
       },
     },
-    gettingBillingOK: {
+    getBillingOK: {
       on: {
-        ACTIVATEBILLINGFORM: {
+        ACTIVATE_BILLING_FORM: {
           target: "billingFormIdle",
         },
       },
     },
-    gettingBillingError: {
+    getBillingError: {
       on: {
-        REFETCHINGBILLINGS: {
-          target: "gettingBilling",
+        REFETCH_BILLING: {
+          target: "loadingBilling",
         },
       },
     },
@@ -59,24 +57,24 @@ const billingMachine = createMachine<Context>({
           target: "#firstStep",
         },
         {
-          target: "gettingBillingDetail",
+          target: "loadingBillingDetail",
         },
       ],
     },
-    gettingBillingDetail: {
+    loadingBillingDetail: {
       on: {
-        FETCHINGBILLINGDETAILSUCCES: {
+        FETCHING_BILLING_DETAIL_SUCCES: {
           target: "#firstStep",
         },
-        FETCHINGBILLINGDETAILERROR: {
-          target: "gettingBillingDetailError",
+        FETCHING_BILLING_DETAIL_ERROR: {
+          target: "getBillingDetailError",
         },
       },
     },
-    gettingBillingDetailError: {
+    getBillingDetailError: {
       on: {
-        REFTECHBILLINGDETAIL: {
-          target: "gettingBillingDetail",
+        REFTECH_BILLING_DETAIL: {
+          target: "loadingBillingDetail",
         },
       },
     },
@@ -86,7 +84,7 @@ const billingMachine = createMachine<Context>({
         firstStep: {
           id: "firstStep",
           on: {
-            NEXTSTEP: {
+            NEXT_STEP: {
               target: "secondStep",
             },
           },
@@ -94,41 +92,40 @@ const billingMachine = createMachine<Context>({
         secondStep: {
           id: "secondStep",
           on: {
-            PREVSTEP: {
+            PREV_STEP: {
               target: "firstStep",
             },
-            SUBMITBILLING: {
-              target: "#submittingBilling",
+            SUBMIT_BILLING: {
+              target: "#submitBilling",
             },
           },
         },
       },
     },
-    submittingBilling: {
-      id: "submittingBilling",
+    submitBilling: {
+      id: "submitBilling",
       on: {
-        SUBMITBILLINGSUCCES: {
-          target: "submittingBillingOK",
+        SUBMIT_BILLING_SUCCES: {
+          target: "submitBillingOK",
         },
-        SUBMITBILLINGERROR: {
-          target: "submittingBillingError",
+        SUBMIT_BILLING_ERROR: {
+          target: "submitBillingError",
         },
       },
     },
-    submittingBillingOK: {
-      type: "final",
+    submitBillingOK: {
       on: {
-        BACKTOBILLINGSSCREEN: {
-          target: "gettingBillingOK",
+        BACK_TO_BILLING_SCREEN: {
+          target: "getBillingOK",
         },
       },
     },
-    submittingBillingError: {
+    submitBillingError: {
       on: {
-        RETRYSUBMITBILLING: {
-          target: "submittingBilling",
+        RETRY_SUBMIT_BILLING: {
+          target: "submitBilling",
         },
-        BACKTOSECONDSTEPFORM: {
+        BACK_TO_SECOND_STEP_FORM: {
           target: "#secondStep",
         },
       },
