@@ -8,7 +8,7 @@ paths:
     get:
       description: GET all members
       tags: ['Members']
-      operationId: 'getAllMembers'
+      operationId: 'getMemberList'
       summary: GET all member
       responses:
         '200':
@@ -16,13 +16,13 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#components/schemas/Member'
+                $ref: '#/components/schemas/GetMemberListResponse'
 
   /members/{memberId}:
     get:
       description: GET member by memberId
       tags: ['Members']
-      operationId: 'getMemberById'
+      operationId: 'getMemberDetail'
       summary: GET member by memberId
       parameters:
         - name: memberId
@@ -37,12 +37,44 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#components/schemas/Member'
+                $ref: '#/components/schemas/GetMemberDetailResponse'
         '404':
           description: Member not found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
+    GetMemberListResponse:
+      type: object
+      'required':
+        - 'data'
+        - 'status'
+        - 'message'
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/Member'
+        status:
+          type: string
+        message:
+          type: string
+    GetMemberDetailResponse:
+      type: object
+      'required':
+        - 'data'
+        - 'status'
+        - 'message'
+      properties:
+        data:
+          $ref: '#/components/Member'
+        status:
+          type: string
+        message:
+          type: string
     Member:
       type: object
       'required':
@@ -55,8 +87,12 @@ components:
         name:
           type: string
           x-go-custom-tag: bson:"name"
-    Response:
+    ErrorResponse:
       type: object
+      'required':
+        - 'data'
+        - 'status'
+        - 'message'
       properties:
         data:
           type: null
