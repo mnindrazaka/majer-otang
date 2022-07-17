@@ -1,0 +1,4 @@
+.idea
+.env
+
+backend/go.sum
