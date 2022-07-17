@@ -1,0 +1,66 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: MAJER OTANG API
+  description: see api_link
+paths:
+  /members:
+    get:
+      description: GET all members
+      tags: ['Members']
+      operationId: 'getAllMembers'
+      summary: GET all member
+      responses:
+        '200':
+          description: Success GET all members
+          content:
+            'application/json':
+              schema:
+                $ref: '#components/schemas/Member'
+
+  /members/{memberId}:
+    get:
+      description: GET member by memberId
+      tags: ['Members']
+      operationId: 'getMemberById'
+      summary: GET member by memberId
+      parameters:
+        - name: memberId
+          in: path
+          schema:
+            type: string
+          required: true
+          description: Member Id
+      responses:
+        '200':
+          description: Success GET member by memberId
+          content:
+            'application/json':
+              schema:
+                $ref: '#components/schemas/Member'
+        '404':
+          description: Member not found
+
+components:
+  schemas:
+    Member:
+      type: object
+      'required':
+        - 'id'
+        - 'name'
+      properties:
+        id:
+          type: string
+          x-go-custom-tag: bson:"_id"
+        name:
+          type: string
+          x-go-custom-tag: bson:"name"
+    Response:
+      type: object
+      properties:
+        data:
+          type: null
+        status:
+          type: string
+        message:
+          type: string
