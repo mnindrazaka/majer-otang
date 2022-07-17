@@ -1,2 +1,5 @@
-gen
 .idea
+.env
+
+backend/go.sum
+backend/core/entity
