@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/mnindrazaka/billing/core/entity"
 	"github.com/mnindrazaka/billing/core/repository"
+	"github.com/mnindrazaka/billing/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -20,7 +21,7 @@ func NewMemberRepository(cfg *mongo.Client) repository.MemberRepository {
 func (m *memberRepository) GetMemberByID(ctx context.Context, id string) (*entity.Member, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return nil, entity.ErrorInvalidPrimitiveID
+		return nil, utils.ErrorInvalidPrimitiveID
 	}
 
 	var member *entity.Member
@@ -31,7 +32,7 @@ func (m *memberRepository) GetMemberByID(ctx context.Context, id string) (*entit
 
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			return nil, entity.ErrorNoDocument
+			return nil, utils.ErrNoDocument
 		}
 		return nil, err
 	}

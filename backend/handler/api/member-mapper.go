@@ -1,13 +1,13 @@
 package api
 
 import (
-	"github.com/mnindrazaka/billing/core/entity"
+	"github.com/mnindrazaka/billing/utils"
 	"net/http"
 )
 
 func buildGetMemberByIDError(w http.ResponseWriter, err error) {
 	switch err {
-	case entity.ErrorNoDocument, entity.ErrorInvalidPrimitiveID:
+	case utils.ErrNoDocument, utils.ErrorInvalidPrimitiveID:
 		buildBadRequestResponse(w, err)
 	default:
 		buildInternalServerResponse(w, err)
