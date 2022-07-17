@@ -1,4 +1,5 @@
 import { Box, Text, VStack } from "@chakra-ui/react";
+import Link from "next/link";
 
 const MemberList = () => {
   return (
@@ -10,10 +11,13 @@ const MemberList = () => {
           p={"6"}
           w={"full"}
           backgroundColor={"gray.700"}
+          cursor={"pointer"}
         >
-          <Text fontSize={"2xl"} fontWeight={"semibold"}>
-            John Doe
-          </Text>
+          <Link href={"/payments"}>
+            <Text fontSize={"2xl"} fontWeight={"semibold"}>
+              John Doe
+            </Text>
+          </Link>
         </Box>
         <Box
           border={"1px"}
@@ -21,10 +25,13 @@ const MemberList = () => {
           p={"6"}
           w={"full"}
           backgroundColor={"gray.700"}
+          cursor={"pointer"}
         >
-          <Text fontSize={"2xl"} fontWeight={"semibold"}>
-            John Doe
-          </Text>
+          <Link href={"/payments"}>
+            <Text fontSize={"2xl"} fontWeight={"semibold"}>
+              John Doe
+            </Text>
+          </Link>
         </Box>
         <Box
           border={"1px"}
@@ -32,10 +39,13 @@ const MemberList = () => {
           p={"6"}
           w={"full"}
           backgroundColor={"gray.700"}
+          cursor={"pointer"}
         >
-          <Text fontSize={"2xl"} fontWeight={"semibold"}>
-            John Doe
-          </Text>
+          <Link href={"/payments"}>
+            <Text fontSize={"2xl"} fontWeight={"semibold"}>
+              John Doe
+            </Text>
+          </Link>
         </Box>
         <Box
           border={"1px"}
@@ -43,10 +53,13 @@ const MemberList = () => {
           p={"6"}
           w={"full"}
           backgroundColor={"gray.700"}
+          cursor={"pointer"}
         >
-          <Text fontSize={"2xl"} fontWeight={"semibold"}>
-            John Doe
-          </Text>
+          <Link href={"/payments"}>
+            <Text fontSize={"2xl"} fontWeight={"semibold"}>
+              John Doe
+            </Text>
+          </Link>
         </Box>
         <Box
           border={"1px"}
@@ -54,10 +67,13 @@ const MemberList = () => {
           p={"6"}
           w={"full"}
           backgroundColor={"gray.700"}
+          cursor={"pointer"}
         >
-          <Text fontSize={"2xl"} fontWeight={"semibold"}>
-            John Doe
-          </Text>
+          <Link href={"/payments"}>
+            <Text fontSize={"2xl"} fontWeight={"semibold"}>
+              John Doe
+            </Text>
+          </Link>
         </Box>
         <Box
           border={"1px"}
@@ -65,10 +81,13 @@ const MemberList = () => {
           p={"6"}
           w={"full"}
           backgroundColor={"gray.700"}
+          cursor={"pointer"}
         >
-          <Text fontSize={"2xl"} fontWeight={"semibold"}>
-            John Doe
-          </Text>
+          <Link href={"/payments"}>
+            <Text fontSize={"2xl"} fontWeight={"semibold"}>
+              John Doe
+            </Text>
+          </Link>
         </Box>
         <Box
           border={"1px"}
@@ -76,10 +95,13 @@ const MemberList = () => {
           p={"6"}
           w={"full"}
           backgroundColor={"gray.700"}
+          cursor={"pointer"}
         >
-          <Text fontSize={"2xl"} fontWeight={"semibold"}>
-            John Doe
-          </Text>
+          <Link href={"/payments"}>
+            <Text fontSize={"2xl"} fontWeight={"semibold"}>
+              John Doe
+            </Text>
+          </Link>
         </Box>
         <Box
           border={"1px"}
@@ -87,10 +109,13 @@ const MemberList = () => {
           p={"6"}
           w={"full"}
           backgroundColor={"gray.700"}
+          cursor={"pointer"}
         >
-          <Text fontSize={"2xl"} fontWeight={"semibold"}>
-            John Doe
-          </Text>
+          <Link href={"/payments"}>
+            <Text fontSize={"2xl"} fontWeight={"semibold"}>
+              John Doe
+            </Text>
+          </Link>
         </Box>
         <Box
           border={"1px"}
@@ -98,10 +123,13 @@ const MemberList = () => {
           p={"6"}
           w={"full"}
           backgroundColor={"gray.700"}
+          cursor={"pointer"}
         >
-          <Text fontSize={"2xl"} fontWeight={"semibold"}>
-            John Doe
-          </Text>
+          <Link href={"/payments"}>
+            <Text fontSize={"2xl"} fontWeight={"semibold"}>
+              John Doe
+            </Text>
+          </Link>
         </Box>
       </VStack>
     </Box>
