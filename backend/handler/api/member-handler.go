@@ -19,7 +19,7 @@ func NewUserHandler(userUsecase module.MemberUsecase) UserHandler {
 }
 
 func (m *memberHandler) GetMemberByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	member, err := m.userUsecase.GetMemberByID(ps.ByName("memberID"))
+	member, err := m.userUsecase.GetMemberByID(r.Context(), ps.ByName("memberID"))
 	if err != nil {
 		buildGetMemberByIDError(w, err)
 		return

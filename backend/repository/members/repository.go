@@ -17,7 +17,7 @@ func NewMemberRepository(cfg *mongo.Client) repository.MemberRepository {
 	return &memberRepository{cfg}
 }
 
-func (m *memberRepository) GetMemberByID(id string) (*entity.Member, error) {
+func (m *memberRepository) GetMemberByID(ctx context.Context, id string) (*entity.Member, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, entity.ErrorInvalidPrimitiveID

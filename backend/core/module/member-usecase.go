@@ -1,6 +1,7 @@
 package module
 
 import (
+	"context"
 	"github.com/mnindrazaka/billing/core/entity"
 	"github.com/mnindrazaka/billing/core/repository"
 )
@@ -10,13 +11,13 @@ type memberUsecase struct {
 }
 
 type MemberUsecase interface {
-	GetMemberByID(id string) (*entity.Member, error)
+	GetMemberByID(ctx context.Context, id string) (*entity.Member, error)
 }
 
 func NewMemberUsecase(userRepository repository.MemberRepository) MemberUsecase {
 	return &memberUsecase{userRepository}
 }
 
-func (m *memberUsecase) GetMemberByID(id string) (*entity.Member, error) {
-	return m.memberRepository.GetMemberByID(id)
+func (m *memberUsecase) GetMemberByID(ctx context.Context, id string) (*entity.Member, error) {
+	return m.memberRepository.GetMemberByID(ctx, id)
 }
