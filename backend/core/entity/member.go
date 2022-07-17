@@ -11,6 +11,6 @@ var (
 )
 
 type Member struct {
-	ID   primitive.ObjectID `bson:"_id"`
-	Name string             `bson:"name"`
+	ID   primitive.ObjectID `bson:"_id" json:"id"`
+	Name string             `bson:"name" json:"name"`
 }
