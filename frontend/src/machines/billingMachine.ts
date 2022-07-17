@@ -82,7 +82,6 @@ const billingMachine = createMachine<Context>({
       initial: "firstStep",
       states: {
         firstStep: {
-          id: "firstStep",
           on: {
             NEXT_STEP: {
               target: "secondStep",
@@ -90,20 +89,18 @@ const billingMachine = createMachine<Context>({
           },
         },
         secondStep: {
-          id: "secondStep",
           on: {
             PREV_STEP: {
               target: "firstStep",
             },
             SUBMIT_BILLING: {
-              target: "#submitBilling",
+              target: "#billing.submitBilling",
             },
           },
         },
       },
     },
     submitBilling: {
-      id: "submitBilling",
       on: {
         SUBMIT_BILLING_SUCCES: {
           target: "submitBillingOK",
@@ -126,7 +123,7 @@ const billingMachine = createMachine<Context>({
           target: "submitBilling",
         },
         BACK_TO_SECOND_STEP_FORM: {
-          target: "#secondStep",
+          target: "billingFormReady.secondStep",
         },
       },
     },
