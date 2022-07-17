@@ -65,7 +65,7 @@ paths:
             schema:
               $ref: '#components/schemas/CreateBilling'
       responses:
-        201:
+        200:
           description: Success CREATE Billing Data
           content:
             'application/json':
