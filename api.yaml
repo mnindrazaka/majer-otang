@@ -174,9 +174,9 @@ paths:
       requestBody:
         content:
           'application/json':
-          schema:
-            $ref: '#/components/schemas/CreateBillingUpdateBillingRequest'
-        responses:
+            schema:
+              $ref: '#/components/schemas/CreateBillingUpdateBillingRequest'
+      responses:
           '200':
             description: Success CREATE billing
             content:
@@ -190,6 +190,11 @@ paths:
       tags: ['Billings']
       operationId: 'getBillingByBillingId'
       summary: GET billing by billingId
+      parameters:
+        - name: billingId
+          in: path
+          required: true
+          description: billingId
       responses:
         '200':
           description: Success GET billing by billingId
@@ -199,47 +204,54 @@ paths:
                 type: object
                 properties:
                   data:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    title:
-                      type: string
-                    billAmount:
-                      type: number
-                    chargedMemberId:
-                      type: string
-                    isBillEqually:
-                      type: boolean
-                    members:
-                      type: array
-                      items:
+                    type: object
+                    properties:
                       id:
                         type: string
-                      amount:
+                      title:
+                        type: string
+                      billAmount:
                         type: number
-                  status:
-                    type: string
-                  message:
-                    type: string
+                      chargedMemberId:
+                        type: string
+                      isBillEqually:
+                        type: boolean
+                      members:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            amount:
+                              type: number
+                            status:
+                              type: string
+                            message:
+                              type: string
 
-      put:
-        description: UPDATE billing by billingId
-        tags: ['Billings']
-        operationId: 'updateBilling'
-        summary: UPDATE billing
-        requestBody:
+    put:
+      description: UPDATE billing by billingId
+      tags: ['Billings']
+      operationId: 'updateBilling'
+      summary: UPDATE billing
+      parameters:
+        - name: billingId
+          in: path
+          required: true
+          description: billingId
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/CreateBillingUpdateBillingRequest'
+      responses:
+        '200':
+          description: Success UPDATE billing
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/CreateBillingUpdateBillingRequest'
-          responses:
-            '200':
-              description: Success UPDATE billing
-              content:
-                'application/json':
-                  schema:
-                    $ref: '#/components/schemas/UpdatePaymentCreateBillingUpdateBillingById'
+                $ref: '#/components/schemas/UpdatePaymentCreateBillingUpdateBillingById'
 
 components:
   schemas:
@@ -263,19 +275,22 @@ components:
         members:
           type: array
           items:
-            id:
-              type: string
-            amount:
-              type: number
+            type: object
+            properties:
+              id:
+                type: string
+              amount:
+                type: number
+
     UpdatePaymentCreateBillingUpdateBillingById:
       type: object
       'required':
-        - 'data'
         - 'status'
         - 'message'
+        - $ref
       properties:
         data:
-          type: null
+          type: 'null'
         status:
           type: string
         message:
