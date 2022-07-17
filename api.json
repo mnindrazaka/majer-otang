@@ -114,6 +114,26 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "$ref": "#/components/schemas/NoDataResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ERROR CREATE Billing Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERROR CREATE Billing Data",
+            "content": {
+              "application/json": {
+                "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
@@ -138,8 +158,28 @@
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Success CREATE Billing Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoDataResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ERROR CREATE Billing Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERROR CREATE Billing Data",
             "content": {
               "application/json": {
                 "schema": {
@@ -351,7 +391,7 @@
           }
         }
       },
-      "ErrorResponse": {
+      "NoDataResponse": {
         "type": "object",
         "required": [
           "data",
@@ -372,6 +412,9 @@
             "x-go-custom-tag": "bson:\"message\""
           }
         }
+      },
+      "ErrorResponse": {
+        "$ref": "#/components/NoDataResponse"
       }
     }
   }
