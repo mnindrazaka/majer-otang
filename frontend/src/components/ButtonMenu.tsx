@@ -26,11 +26,11 @@ const menus = {
   billings: "Billings"
 };
 
-type MenuButtonProps = {
+type ButtonMenuProps = {
   activeMenu: keyof typeof menus;
 };
 
-const MenuButton = (props: MenuButtonProps) => {
+const ButtonMenu = (props: ButtonMenuProps) => {
   return (
     <Box
       position={"fixed"}
@@ -62,4 +62,4 @@ const MenuButton = (props: MenuButtonProps) => {
   );
 };
 
-export default MenuButton;
+export default ButtonMenu;

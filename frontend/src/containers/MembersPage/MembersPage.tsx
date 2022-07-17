@@ -1,6 +1,6 @@
 import { Box, Heading } from "@chakra-ui/react";
 import CardMember from "./CardMember";
-import MenuButton from "./MenuButton";
+import ButtonMenu from "../../components/ButtonMenu";
 
 const MembersPage = () => {
   return (
@@ -9,7 +9,7 @@ const MembersPage = () => {
         Members
       </Heading>
       <CardMember />
-      <MenuButton activeMenu="members" />
+      <ButtonMenu activeMenu="members" />
     </Box>
   );
 };
