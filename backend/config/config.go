@@ -9,7 +9,7 @@ const (
 	Port        = "PORT"
 	Username    = "USERNAME"
 	Password    = "PASSWORD"
-	DatabaseURL = "MONGODATABASEURL"
+	DatabaseURL = "MONGO_DATABASE_URL"
 )
 
 type Config struct {
