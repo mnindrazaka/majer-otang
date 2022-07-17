@@ -7,22 +7,22 @@ paths:
   /members:
     get:
       description: GET all members
-      tags: ['Members']
-      operationId: 'getAllMembers'
+      tags: ["Members"]
+      operationId: "getMemberList"
       summary: GET all member
       responses:
-        '200':
+        "200":
           description: Success GET all members
           content:
-            'application/json':
+            "application/json":
               schema:
-                $ref: '#components/schemas/Member'
+                $ref: "#/components/schemas/GetMemberListResponse"
 
   /members/{memberId}:
     get:
       description: GET member by memberId
-      tags: ['Members']
-      operationId: 'getMemberById'
+      tags: ["Members"]
+      operationId: "getMemberDetail"
       summary: GET member by memberId
       parameters:
         - name: memberId
@@ -32,22 +32,50 @@ paths:
           required: true
           description: Member Id
       responses:
-        '200':
+        "200":
           description: Success GET member by memberId
           content:
-            'application/json':
+            "application/json":
               schema:
-                $ref: '#components/schemas/Member'
-        '404':
+                $ref: "#/components/schemas/GetMemberDetailResponse"
+        "404":
           description: Member not found
 
 components:
   schemas:
+    GetMemberListResponse:
+      type: object
+      "required":
+        - "data"
+        - "status"
+        - "message"
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/Member"
+        status:
+          type: string
+        message:
+          type: string
+    GetMemberDetailResponse:
+      type: object
+      "required":
+        - "data"
+        - "status"
+        - "message"
+      properties:
+        data:
+          $ref: "#/components/Member"
+        status:
+          type: string
+        message:
+          type: string
     Member:
       type: object
-      'required':
-        - 'id'
-        - 'name'
+      "required":
+        - "id"
+        - "name"
       properties:
         id:
           type: string
@@ -55,12 +83,3 @@ components:
         name:
           type: string
           x-go-custom-tag: bson:"name"
-    Response:
-      type: object
-      properties:
-        data:
-          type: null
-        status:
-          type: string
-        message:
-          type: string
