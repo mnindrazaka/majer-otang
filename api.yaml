@@ -44,6 +44,8 @@ paths:
       parameters:
         - name: memberId
           in: path
+          schema:
+            type: string
           required: true
           description: Member Id
       responses:
@@ -105,6 +107,8 @@ paths:
       parameters:
         - name: memberId
           in: path
+          schema:
+            type: string
           required: true
           description: Member Id
       responses:
@@ -177,12 +181,12 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateBillingUpdateBillingRequest'
       responses:
-          '200':
-            description: Success CREATE billing
-            content:
-              'application/json':
-                schema:
-                  $ref: '#/components/schemas/UpdatePaymentCreateBillingUpdateBillingById'
+        '200':
+          description: Success CREATE billing
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UpdatePaymentCreateBillingUpdateBillingById'
 
   /billings/{billingId}:
     get:
@@ -193,6 +197,8 @@ paths:
       parameters:
         - name: billingId
           in: path
+          schema:
+            type: string
           required: true
           description: billingId
       responses:
@@ -239,6 +245,8 @@ paths:
         - name: billingId
           in: path
           required: true
+          schema:
+            type: string
           description: billingId
       requestBody:
         content:
@@ -289,8 +297,6 @@ components:
         - 'message'
         - $ref
       properties:
-        data:
-          type: 'null'
         status:
           type: string
         message:
