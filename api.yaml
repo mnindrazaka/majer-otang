@@ -40,6 +40,10 @@ paths:
                 $ref: '#/components/schemas/GetMemberDetailResponse'
         '404':
           description: Member not found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
@@ -83,3 +87,16 @@ components:
         name:
           type: string
           x-go-custom-tag: bson:"name"
+    ErrorResponse:
+      type: object
+      'required':
+        - 'data'
+        - 'status'
+        - 'message'
+      properties:
+        data:
+          type: null
+        status:
+          type: string
+        message:
+          type: string
