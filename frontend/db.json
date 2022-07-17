@@ -15,5 +15,19 @@
       "title": "Iuran belanja mingguan",
       "amount": 200.000
     }
+  ],
+  "members": [
+    {
+      "id": "1",
+      "name": "M. Nindra Zaka"
+    },
+    {
+      "id": "2",
+      "name": "Ilham Surya P."
+    },
+    {
+      "id": "3",
+      "name": "Danny Dwi C"
+    }
   ]
 }

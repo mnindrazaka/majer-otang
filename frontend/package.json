@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "gen:type": "rm -rf src/__generated__/api; openapi-generator-cli generate -i ../api.yaml -o src/__generated__/api -g typescript-fetch --additional-properties=supportsES6=true,modelPropertyNaming=snake_case,npmVersion=6.9.0,typescriptThreePlus=true",
+    "dev": "yarn gen:type && next dev",
+    "build": "yarn gen:type && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "start-json-server": "json-server --watch db.json ---port 5000"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.2.4",
@@ -22,6 +24,7 @@
     "xstate": "^4.32.1"
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.5.1",
     "@types/node": "18.0.4",
     "@types/react": "18.0.15",
     "@types/react-dom": "18.0.6",
