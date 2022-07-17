@@ -1,6 +1,6 @@
 import { Box, Text, VStack } from "@chakra-ui/react";
 
-const CardMember = () => {
+const MemberList = () => {
   return (
     <Box m={"4"} color={"gray.200"} mb={"36"}>
       <VStack spacing={"4"}>
@@ -108,4 +108,4 @@ const CardMember = () => {
   );
 };
 
-export default CardMember;
+export default MemberList;
