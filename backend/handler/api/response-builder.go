@@ -6,9 +6,9 @@ import (
 )
 
 type response struct {
-	Data    interface{}
-	Status  string
-	Message string
+	Data    interface{} `json:"data"`
+	Status  string      `json:"status"`
+	Message string      `json:"message"`
 }
 
 func buildResponse(data interface{}, status string, err error) response {
