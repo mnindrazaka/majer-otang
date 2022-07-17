@@ -14,8 +14,8 @@ type MemberUsecase interface {
 	GetMemberByID(ctx context.Context, id string) (*entity.Member, error)
 }
 
-func NewMemberUsecase(userRepository repository.MemberRepository) MemberUsecase {
-	return &memberUsecase{userRepository}
+func NewMemberUsecase(memberRepository repository.MemberRepository) MemberUsecase {
+	return &memberUsecase{memberRepository}
 }
 
 func (m *memberUsecase) GetMemberByID(ctx context.Context, id string) (*entity.Member, error) {
