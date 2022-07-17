@@ -1,4 +1,10 @@
 import { Box, HStack } from "@chakra-ui/react";
+import Link from "next/link";
+
+const menus = {
+  members: "members",
+  billings: "billings"
+};
 
 interface MenuItemProps {
   title: string;
@@ -7,30 +13,28 @@ interface MenuItemProps {
 
 const MenuItem = (props: MenuItemProps) => {
   return (
-    <Box
-      w={"50%"}
-      textAlign={"center"}
-      borderRadius={"12px"}
-      py={"4"}
-      cursor={"pointer"}
-      backgroundColor={props.isActive ? "gray.100" : "gray.700"}
-      color={props.isActive ? "gray.700" : "gray.100"}
-    >
-      {props.title}
-    </Box>
+    <Link href={props.title === Object.keys(menus)[0] ? "/" : props.title}>
+      <Box
+        w={"50%"}
+        textAlign={"center"}
+        borderRadius={"12px"}
+        py={"4"}
+        cursor={"pointer"}
+        backgroundColor={props.isActive ? "gray.100" : "gray.700"}
+        color={props.isActive ? "gray.700" : "gray.100"}
+        textTransform={"capitalize"}
+      >
+        {props.title}
+      </Box>
+    </Link>
   );
 };
 
-const menus = {
-  members: "Members",
-  billings: "Billings"
-};
-
-type ButtonMenuProps = {
+type BottomMenuProps = {
   activeMenu: keyof typeof menus;
 };
 
-const ButtonMenu = (props: ButtonMenuProps) => {
+const BottomMenu = (props: BottomMenuProps) => {
   return (
     <Box
       position={"fixed"}
@@ -62,4 +66,4 @@ const ButtonMenu = (props: ButtonMenuProps) => {
   );
 };
 
-export default ButtonMenu;
+export default BottomMenu;
