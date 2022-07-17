@@ -1,6 +1,8 @@
 import { Box, HStack } from "@chakra-ui/react";
 
 const MenuMember = () => {
+  const billing = "billings";
+
   return (
     <Box
       position={"fixed"}
