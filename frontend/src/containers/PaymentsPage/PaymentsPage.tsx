@@ -1,16 +1,19 @@
 import { Box, Heading, Text, VStack } from "@chakra-ui/react";
-import ButtonMenu from "../../components/ButtonMenu";
-import CardPayment from "./CardPayment";
+import ButtomMenu from "../../components/BottomMenu";
+import Layout from "../../components/Layout";
+import PaymentList from "./PaymentList";
 
 const PaymentsPage = () => {
   return (
-    <Box width={"full"}>
-      <Heading as={"h3"} textAlign={"center"} my={"6"}>
-        Payments
-      </Heading>
-      <CardPayment />
-      <ButtonMenu activeMenu="members" />
-    </Box>
+    <Layout>
+      <Box width={"full"}>
+        <Heading as={"h3"} textAlign={"center"} my={"6"}>
+          Payments
+        </Heading>
+        <PaymentList />
+        <ButtomMenu activeMenu="members" />
+      </Box>
+    </Layout>
   );
 };
 
