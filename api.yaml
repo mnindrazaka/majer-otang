@@ -41,6 +41,73 @@ paths:
         '404':
           description: Member not found
 
+  /billings:
+    get:
+      description: GET Billing Data
+      tags: ['Billings']
+      operationId: 'getBilling'
+      summary: GET Billing Data
+      responses:
+        200:
+          description: Success GET Billing Data
+          content:
+            'application/json':
+              schema:
+                $ref: '#components/schemas/Billing'
+    post:
+      description: CREATE Billing Data
+      tags: [ 'Billings' ]
+      operationId: 'createBilling'
+      summary: CREATE Billing Data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/CreateBilling'
+      responses:
+        201:
+          description: Success CREATE Billing Data
+          content:
+            'application/json':
+              schema:
+                $ref: '#components/schemas/Response'
+    put:
+      description: CREATE Billing Data
+      tags: [ 'Billings' ]
+      operationId: 'updateBilling'
+      summary: UPDATE Billing Data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/CreateBilling'
+      responses:
+        201:
+          description: Success CREATE Billing Data
+          content:
+            'application/json':
+              schema:
+                $ref: '#components/schemas/Response'
+
+  /billing/{billingId}:
+    get:
+      description: GET Billing by ID
+      tags: ['Billings']
+      operationId: 'getBillingByID'
+      parameters:
+        - name: billingId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Success GET Billing by ID
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/BillingData'
+
 components:
   schemas:
     Member:
@@ -55,6 +122,67 @@ components:
         name:
           type: string
           x-go-custom-tag: bson:"name"
+    Billing:
+      type: object
+      required:
+        - 'id'
+        - 'title'
+        - 'amount'
+      properties:
+        id:
+          type: string
+          x-go-custom-tag: bson:"_id"
+        title:
+          type: string
+          x-go-custom-tag: bson:"title"
+        amount:
+          type: integer
+          x-go-custom-tag: bson:"amount"
+    BillingData:
+      type: object
+      required:
+        - 'title'
+        - 'billAmount'
+        - 'chargedMemberID'
+        - 'isBillEqually'
+        - 'members'
+      properties:
+        id:
+          type: string
+          x-go-custom-tag: bson:"_id"
+        title:
+          type: string
+          x-go-custom-tag: bson:"title"
+        billAmount:
+          type: integer
+          x-go-custom-tag: bson:"billAmount"
+        chargedMemberID:
+          type: string
+          x-go-custom-tag: bson:"chargedmemberID"
+        isBillEqually:
+          type: boolean
+          x-go-custom-tag: bson:"isBillEqually"
+        members:
+          type: array
+          x-go-custom-tag: bson:"members"
+          items:
+            type: object
+            required:
+              - 'id'
+              - 'name'
+              - 'amount'
+            properties:
+              id:
+                type: string
+                x-go-custom-tag: bson:"_id"
+              name:
+                type: string
+                x-go-custom-tag: bson:"name"
+              amount:
+                type: integer
+                x-go-custom-tag: bson:"amount"
+    CreateAndUpdateBilling:
+      $ref: '#components/schemas/BillingData'
     Response:
       type: object
       properties:

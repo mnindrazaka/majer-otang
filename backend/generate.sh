@@ -1,0 +1,1 @@
+openapi-generator generate -i ../api.yaml -g go -o backend/core/entity --global-property models --package-name entity
