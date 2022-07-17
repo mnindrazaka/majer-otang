@@ -1,0 +1,19 @@
+{
+  "billings": [
+    {
+      "id": "1",
+      "title": "Iuran Minyak Goreng",
+      "amount": 25.000
+    },
+    {
+      "id": "2",
+      "title": "Iuran Beras 50Kg",
+      "amount": 50.000
+    },
+    {
+      "id": "2",
+      "title": "Iuran belanja mingguan",
+      "amount": 200.000
+    }
+  ]
+}
