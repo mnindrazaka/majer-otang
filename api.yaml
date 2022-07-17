@@ -7,22 +7,22 @@ paths:
   /members:
     get:
       description: GET all members
-      tags: ["Members"]
-      operationId: "getMemberList"
+      tags: ['Members']
+      operationId: 'getMemberList'
       summary: GET all member
       responses:
-        "200":
+        '200':
           description: Success GET all members
           content:
-            "application/json":
+            'application/json':
               schema:
-                $ref: "#/components/schemas/GetMemberListResponse"
+                $ref: '#/components/schemas/GetMemberListResponse'
 
   /members/{memberId}:
     get:
       description: GET member by memberId
-      tags: ["Members"]
-      operationId: "getMemberDetail"
+      tags: ['Members']
+      operationId: 'getMemberDetail'
       summary: GET member by memberId
       parameters:
         - name: memberId
@@ -32,50 +32,50 @@ paths:
           required: true
           description: Member Id
       responses:
-        "200":
+        '200':
           description: Success GET member by memberId
           content:
-            "application/json":
+            'application/json':
               schema:
-                $ref: "#/components/schemas/GetMemberDetailResponse"
-        "404":
+                $ref: '#/components/schemas/GetMemberDetailResponse'
+        '404':
           description: Member not found
 
 components:
   schemas:
     GetMemberListResponse:
       type: object
-      "required":
-        - "data"
-        - "status"
-        - "message"
+      'required':
+        - 'data'
+        - 'status'
+        - 'message'
       properties:
         data:
           type: array
           items:
-            $ref: "#/components/Member"
+            $ref: '#/components/Member'
         status:
           type: string
         message:
           type: string
     GetMemberDetailResponse:
       type: object
-      "required":
-        - "data"
-        - "status"
-        - "message"
+      'required':
+        - 'data'
+        - 'status'
+        - 'message'
       properties:
         data:
-          $ref: "#/components/Member"
+          $ref: '#/components/Member'
         status:
           type: string
         message:
           type: string
     Member:
       type: object
-      "required":
-        - "id"
-        - "name"
+      'required':
+        - 'id'
+        - 'name'
       properties:
         id:
           type: string
