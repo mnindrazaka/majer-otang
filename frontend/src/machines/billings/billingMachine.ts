@@ -23,11 +23,11 @@ type BillingDetail = {
 };
 
 type BillingForm = {
-  title: string;
-  total: number;
-  chargedMember: string;
+  title?: string;
+  total?: number;
+  chargedMember?: string;
   isBillEqual: boolean;
-  members: BillingDetailMember[];
+  members?: GetMemberListResponse["data"];
 };
 
 type FORMMODE = "CREATE" | "EDIT";
@@ -213,6 +213,8 @@ type MachineState =
           title: string;
           total: number;
           chargedMember: string;
+          isBillEqual: undefined;
+          members: undefined;
         };
         submitBillingError: undefined;
       };
@@ -298,16 +300,45 @@ type MachineState =
       };
     };
 
-// Todo => Will be handle on the next PR
 type MachineEvents =
   | { type: "FETCH_BILLING" }
-  | { type: "FETCH_BILLING" }
-  | { type: "FETCH_BILLING" }
-  | { type: "FETCH_BILLING" }
-  | { type: "FETCH_BILLING" }
-  | { type: "FETCH_BILLING" };
+  | { type: "FETCH_BILLING_SUCCES"; billingsData: Billing[] }
+  | { type: "FETCH_BILLING_ERROR"; billingsErrorMessage: string }
+  | { type: "ACTIVATE_BILLING_FORM" }
+  | { type: "REFETCH_BILLING" }
+  | { type: "FETCH_MEMBER_SUCCESS"; membersData: GetMemberListResponse["data"] }
+  | { type: "FETCH_MEMBER_ERROR"; membersErrorMessage: string }
+  | { type: "REFTECH_MEMBERS" }
+  | { type: "FETCH_BILLING_DETAIL_SUCCES"; billingDetailData: BillingDetail }
+  | { type: "FETCH_BILLING_DETAIL_ERROR"; billingDetailErrorMessage: string }
+  | { type: "REFTECH_BILLING_DETAIL" }
+  | {
+      type: "NEXT_STEP";
+      billingName: string;
+      total: number;
+      chargedMember: string;
+    }
+  | { type: "PREV_STEP" }
+  | {
+      type: "SUBMIT_BILLING";
+      isBillEqual: boolean;
+      members: GetMemberListResponse["data"];
+    }
+  | { type: "SUBMIT_BILLING_SUCCES" }
+  | { type: "SUBMIT_BILLING_ERROR"; submitBillingErrorMessage: string }
+  | { type: "BACK_TO_BILLING_SCREEN" }
+  | { type: "BACK_TO_SECOND_STEP_FORM" }
+  | { type: "REFETCH_SUBMIT_BILLING" };
 
-export const billingMachine = createMachine<Context>({
+export const billingMachine = createMachine<
+  Context,
+  MachineEvents,
+  MachineState
+>({
+  schema: {
+    context: {} as Context,
+    events: {} as MachineEvents,
+  },
   id: "billing",
   initial: "idle",
   context: {
@@ -405,16 +436,18 @@ export const billingMachine = createMachine<Context>({
       states: {
         firstStep: {
           on: {
-            NEXT_STEP: "secondStep",
+            NEXT_STEP: {
+              actions: "fillTheFirstForm",
+              target: "secondStep",
+            },
           },
         },
         secondStep: {
           on: {
-            PREV_STEP: {
-              target: "firstStep",
-            },
+            PREV_STEP: "firstStep",
             SUBMIT_BILLING: {
               target: "#billing.submitBilling",
+              actions: "fillTheSecondForm",
             },
           },
         },
@@ -448,25 +481,70 @@ export const billingMachine = createMachine<Context>({
 }).withConfig({
   actions: {
     assignBillingsData: assign({
-      billings: (ctx, event) => event.billingsData,
+      billings: (ctx, event) =>
+        event.type === "FETCH_BILLING_SUCCES"
+          ? event.billingsData
+          : ctx.billings,
     }),
     assignBillingsErrorMessage: assign({
-      billingError: (ctx, event) => event.billingsErrorMessage,
+      billingError: (ctx, event) =>
+        event.type === "FETCH_BILLING_ERROR"
+          ? event.billingsErrorMessage
+          : ctx.billingError,
     }),
     assignBillingDetail: assign({
-      billingDetail: (ctx, event) => event.billingDetailData,
+      billingDetail: (ctx, event) =>
+        event.type === "FETCH_BILLING_DETAIL_SUCCES"
+          ? event.billingDetailData
+          : ctx.billingDetail,
     }),
     assignBillingDetailErrorMessage: assign({
-      billingDetailError: (ctx, event) => event.billingDetailErrorMessage,
+      billingDetailError: (ctx, event) =>
+        event.type === "FETCH_BILLING_DETAIL_ERROR"
+          ? event.billingDetailErrorMessage
+          : ctx.billingDetailError,
     }),
     assignMembersData: assign({
-      members: (ctx, event) => event.membersData,
+      members: (ctx, event) =>
+        event.type === "FETCH_MEMBER_SUCCESS" ? event.membersData : ctx.members,
     }),
     assigMembersError: assign({
-      membersError: (ctx, event) => event.membersErrorMessage,
+      membersError: (ctx, event) =>
+        event.type === "FETCH_MEMBER_ERROR"
+          ? event.membersErrorMessage
+          : ctx.membersError,
+    }),
+    fillTheFirstForm: assign({
+      billingForm: (ctx, event) => {
+        if (event.type === "NEXT_STEP") {
+          return {
+            title: event.billingName,
+            total: event.total,
+            chargedMember: event.chargedMember,
+            isBillEqual: true,
+            members: ctx.billingForm?.members,
+          };
+        }
+      },
+    }),
+    fillTheSecondForm: assign({
+      billingForm: (ctx, event) => {
+        if (event.type === "SUBMIT_BILLING") {
+          return {
+            title: ctx.billingForm?.title,
+            total: ctx.billingForm?.total,
+            chargedMember: ctx.billingForm?.chargedMember,
+            isBillEqual: event.isBillEqual,
+            members: event.members,
+          };
+        }
+      },
     }),
     assignSubmitBillingError: assign({
-      submitBillingError: (ctx, event) => event.submitBillingErrorMessage,
+      submitBillingError: (ctx, event) =>
+        event.type === "SUBMIT_BILLING_ERROR"
+          ? event.submitBillingErrorMessage
+          : ctx.submitBillingError,
     }),
   },
   guards: {
