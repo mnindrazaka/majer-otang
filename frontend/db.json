@@ -1,33 +1,41 @@
 {
-  "billings": [
-    {
-      "id": "1",
-      "title": "Iuran Minyak Goreng",
-      "amount": 25.000
-    },
-    {
-      "id": "2",
-      "title": "Iuran Beras 50Kg",
-      "amount": 50.000
-    },
-    {
-      "id": "2",
-      "title": "Iuran belanja mingguan",
-      "amount": 200.000
-    }
-  ],
-  "members": [
-    {
-      "id": "1",
-      "name": "M. Nindra Zaka"
-    },
-    {
-      "id": "2",
-      "name": "Ilham Surya P."
-    },
-    {
-      "id": "3",
-      "name": "Danny Dwi C"
-    }
-  ]
+  "billings": {
+    "data": [
+      {
+        "id": "1",
+        "title": "Iuran Minyak Goreng",
+        "amount": 25.0
+      },
+      {
+        "id": "2",
+        "title": "Iuran Beras 50Kg",
+        "amount": 50.0
+      },
+      {
+        "id": "2",
+        "title": "Iuran belanja mingguan",
+        "amount": 200.0
+      }
+    ],
+    "status": "success",
+    "message": "success"
+  },
+  "members": {
+    "data": [
+      {
+        "id": "1",
+        "name": "M. Nindra Zaka"
+      },
+      {
+        "id": "2",
+        "name": "Ilham Surya P."
+      },
+      {
+        "id": "3",
+        "name": "Danny Dwi C"
+      }
+    ],
+    "status": "success",
+    "message": "success"
+  }
 }
