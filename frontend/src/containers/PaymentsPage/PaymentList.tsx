@@ -1,6 +1,6 @@
 import { Box, Heading, Text, VStack } from "@chakra-ui/react";
 
-const CardPayment = () => {
+const PaymentList = () => {
   return (
     <Box m={"4"} color={"gray.200"} mb={"36"}>
       <Heading as={"h5"} color={"gray.700"} fontSize={"xl"} my={"4"}>
@@ -156,4 +156,4 @@ const CardPayment = () => {
   );
 };
 
-export default CardPayment;
+export default PaymentList;
