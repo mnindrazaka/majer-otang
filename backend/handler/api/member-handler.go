@@ -38,6 +38,5 @@ func (m *memberHandler) GetMemberList(w http.ResponseWriter, r *http.Request, ps
 		return
 	}
 
-	// buildGetMemberListSuccess(w, memberResponse)
 	buildSuccessResponse(w, memberResponse)
 }

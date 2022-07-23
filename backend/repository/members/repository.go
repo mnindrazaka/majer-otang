@@ -2,7 +2,6 @@ package members
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/mnindrazaka/billing/core/entity"
 	"github.com/mnindrazaka/billing/core/repository"
@@ -53,7 +52,7 @@ func (m *memberRepository) GetMemberList(ctx context.Context) ([]entity.Member, 
 			}
 			return nil, err
 		}
-	fmt.Print(cursor)
+	// fmt.Print(cursor)
 
 	defer cursor.Close(context.Background())
 
