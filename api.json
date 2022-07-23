@@ -1,0 +1,522 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "MAJER OTANG API",
+    "description": "see api_link"
+  },
+  "paths": {
+    "/members": {
+      "get": {
+        "description": "GET all members",
+        "tags": [
+          "Members"
+        ],
+        "operationId": "getMemberList",
+        "summary": "GET all member",
+        "responses": {
+          "200": {
+            "description": "Success GET all members",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMemberListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/members/{memberId}": {
+      "get": {
+        "description": "GET member by memberId",
+        "tags": [
+          "Members"
+        ],
+        "operationId": "getMemberDetail",
+        "summary": "GET member by memberId",
+        "parameters": [
+          {
+            "name": "memberId",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Member Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success GET member by memberId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMemberDetailResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billings": {
+      "get": {
+        "description": "GET Billing Data",
+        "tags": [
+          "Billings"
+        ],
+        "operationId": "getBilling",
+        "summary": "GET Billing Data",
+        "responses": {
+          "200": {
+            "description": "Success GET Billing Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBillingListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "CREATE Billing Data",
+        "tags": [
+          "Billings"
+        ],
+        "operationId": "createBilling",
+        "summary": "CREATE Billing Data",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success CREATE Billing Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoDataResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ERROR CREATE Billing Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERROR CREATE Billing Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "UPDATE Billing Data",
+        "tags": [
+          "Billings"
+        ],
+        "operationId": "updateBilling",
+        "summary": "UPDATE Billing Data",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success CREATE Billing Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoDataResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ERROR CREATE Billing Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERROR CREATE Billing Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billing/{billingId}": {
+      "get": {
+        "description": "GET Billing by ID",
+        "tags": [
+          "Billings"
+        ],
+        "operationId": "getBillingByID",
+        "parameters": [
+          {
+            "name": "billingId",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success GET Billing by ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBillingDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ERROR GET Billing By ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERROR GET Billing By ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GetBillingDetailResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "status",
+          "message"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "x-go-custom-tag": "bson:\"data\"",
+            "items": {
+              "$ref": "#/components/BillingDetail"
+            }
+          },
+          "status": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"status\""
+          },
+          "message": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"message\""
+          }
+        }
+      },
+      "BillingDetail": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "billAmount",
+          "chargedMemberId",
+          "isBillEqually",
+          "members"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"id\""
+          },
+          "title": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"title\""
+          },
+          "billAmount": {
+            "type": "integer",
+            "x-go-custom-tag": "bson:\"billAmount\""
+          },
+          "chargedMemberId": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"chargedMemberId\""
+          },
+          "isBillEqually": {
+            "type": "boolean",
+            "x-go-custom-tag": "bson:\"isBillEqually\""
+          },
+          "members": {
+            "type": "array",
+            "x-go-custom-tag": "bson:\"member\"",
+            "items": {
+              "$ref": "#/components/BillingMember"
+            }
+          }
+        }
+      },
+      "GetBillingListResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "status",
+          "message"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "x-go-custom-tag": "bson:\"data\"",
+            "items": {
+              "$ref": "#/components/Billing"
+            }
+          },
+          "status": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"status\""
+          },
+          "message": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"message\""
+          }
+        }
+      },
+      "Billing": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "amount"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"_id\""
+          },
+          "title": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"title\""
+          },
+          "amount": {
+            "type": "integer",
+            "x-go-custom-tag": "bson:\"amount\""
+          }
+        }
+      },
+      "BillingRequest": {
+        "type": "object",
+        "required": [
+          "title",
+          "billAmount",
+          "chargedMemberId",
+          "isBillEqually",
+          "members"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"title\""
+          },
+          "billAmount": {
+            "type": "integer",
+            "x-go-custom-tag": "bson:\"billAmount\""
+          },
+          "chargedMemberId": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"chargedMemberId\""
+          },
+          "isBillEqually": {
+            "type": "boolean",
+            "x-go-custom-tag": "bson:\"isBillEqually\""
+          },
+          "members": {
+            "type": "array",
+            "x-go-custom-tag": "bson:\"member\"",
+            "items": {
+              "$ref": "#/components/BillingMember"
+            }
+          }
+        }
+      },
+      "BillingMember": {
+        "type": "object",
+        "required": [
+          "id",
+          "amount"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"_id\""
+          },
+          "amount": {
+            "type": "integer",
+            "x-go-custom-tag": "bson:\"amount\""
+          }
+        }
+      },
+      "GetMemberListResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "status",
+          "message"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "x-go-custom-tag": "bson:\"data\"",
+            "items": {
+              "$ref": "#/components/Member"
+            }
+          },
+          "status": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"status\""
+          },
+          "message": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"message\""
+          }
+        }
+      },
+      "GetMemberDetailResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "status",
+          "message"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/Member"
+          },
+          "status": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"status\""
+          },
+          "message": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"message\""
+          }
+        }
+      },
+      "Member": {
+        "type": "object",
+        "x-go-custom-tag": "bson:\"member\"",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"_id\""
+          },
+          "name": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"name\""
+          }
+        }
+      },
+      "NoDataResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "status",
+          "message"
+        ],
+        "properties": {
+          "data": {
+            "type": null,
+            "x-go-custom-tag": "bson:\"data\""
+          },
+          "status": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"status\""
+          },
+          "message": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"message\""
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "status",
+          "message"
+        ],
+        "properties": {
+          "data": {
+            "type": null,
+            "x-go-custom-tag": "bson:\"data\""
+          },
+          "status": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"status\""
+          },
+          "message": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"message\""
+          }
+        }
+      }
+    }
+  }
+}
