@@ -37,6 +37,7 @@ func main() {
 
 	router := httprouter.New()
 	router.GET("/member/:memberID", memberHalder.GetMemberByID)
+	router.GET("/members", memberHalder.GetMemberList)
 
 	err = http.ListenAndServe(fmt.Sprintf(":%v", cfg.Port), router)
 	if err != nil {
