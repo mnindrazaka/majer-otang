@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
 	"github.com/mnindrazaka/billing/config"
@@ -9,8 +12,6 @@ import (
 	"github.com/mnindrazaka/billing/core/module"
 	"github.com/mnindrazaka/billing/handler/api"
 	"github.com/mnindrazaka/billing/repository/members"
-	"log"
-	"net/http"
 )
 
 func main() {
