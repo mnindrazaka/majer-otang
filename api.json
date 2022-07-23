@@ -214,7 +214,27 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BillingData"
+                  "$ref": "#/components/schemas/GetBillingDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ERROR GET Billing By ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERROR GET Billing By ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -225,6 +245,69 @@
   },
   "components": {
     "schemas": {
+      "GetBillingDetailResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "status",
+          "message"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "x-go-custom-tag": "bson:\"data\"",
+            "$ref": "#/components/BillingDetail"
+          },
+          "status": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"status\""
+          },
+          "message": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"message\""
+          }
+        }
+      },
+      "BillingDetail": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "billAmount",
+          "chargedMemberId",
+          "isBillEqually",
+          "members"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"id\""
+          },
+          "title": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"title\""
+          },
+          "billAmount": {
+            "type": "integer",
+            "x-go-custom-tag": "bson:\"billAmount\""
+          },
+          "chargedMemberId": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"chargedMemberId\""
+          },
+          "isBillEqually": {
+            "type": "boolean",
+            "x-go-custom-tag": "bson:\"isBillEqually\""
+          },
+          "members": {
+            "type": "array",
+            "x-go-custom-tag": "bson:\"member\"",
+            "items": {
+              "$ref": "#/components/BillingMember"
+            }
+          }
+        }
+      },
       "GetBillingListResponse": {
         "type": "object",
         "required": [
@@ -271,9 +354,6 @@
             "x-go-custom-tag": "bson:\"amount\""
           }
         }
-      },
-      "BillingData": {
-        "$ref": "#/components/BillingRequest"
       },
       "BillingRequest": {
         "type": "object",
@@ -414,7 +494,26 @@
         }
       },
       "ErrorResponse": {
-        "$ref": "#/components/NoDataResponse"
+        "type": "object",
+        "required": [
+          "data",
+          "status",
+          "message"
+        ],
+        "properties": {
+          "data": {
+            "type": null,
+            "x-go-custom-tag": "bson:\"data\""
+          },
+          "status": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"status\""
+          },
+          "message": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"message\""
+          }
+        }
       }
     }
   }
