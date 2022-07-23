@@ -1,9 +1,10 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/mnindrazaka/billing/core/module"
-	"net/http"
 )
 
 type memberHandler struct {
@@ -12,6 +13,7 @@ type memberHandler struct {
 
 type UserHandler interface {
 	GetMemberByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
+	GetMemberList(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 }
 
 func NewUserHandler(userUsecase module.MemberUsecase) UserHandler {
@@ -26,4 +28,15 @@ func (m *memberHandler) GetMemberByID(w http.ResponseWriter, r *http.Request, ps
 	}
 
 	buildSuccessResponse(w, member)
+}
+
+func (m *memberHandler) GetMemberList(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	memberResponse, err := m.userUsecase.GetMemberList(r.Context())
+
+	if err != nil {
+		buildGetMemberListError(w, err)
+		return
+	}
+
+	buildSuccessResponse(w, memberResponse)
 }
