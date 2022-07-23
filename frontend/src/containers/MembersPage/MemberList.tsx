@@ -13,7 +13,7 @@ const MemberList = () => {
           backgroundColor={"gray.700"}
           cursor={"pointer"}
         >
-          <Link href={"/payments"}>
+          <Link href={"/payments/1"}>
             <Text fontSize={"2xl"} fontWeight={"semibold"}>
               John Doe
             </Text>
@@ -27,7 +27,7 @@ const MemberList = () => {
           backgroundColor={"gray.700"}
           cursor={"pointer"}
         >
-          <Link href={"/payments"}>
+          <Link href={"/payments/1"}>
             <Text fontSize={"2xl"} fontWeight={"semibold"}>
               John Doe
             </Text>
@@ -41,7 +41,7 @@ const MemberList = () => {
           backgroundColor={"gray.700"}
           cursor={"pointer"}
         >
-          <Link href={"/payments"}>
+          <Link href={"/payments/1"}>
             <Text fontSize={"2xl"} fontWeight={"semibold"}>
               John Doe
             </Text>
@@ -55,7 +55,7 @@ const MemberList = () => {
           backgroundColor={"gray.700"}
           cursor={"pointer"}
         >
-          <Link href={"/payments"}>
+          <Link href={"/payments/1"}>
             <Text fontSize={"2xl"} fontWeight={"semibold"}>
               John Doe
             </Text>
@@ -69,7 +69,7 @@ const MemberList = () => {
           backgroundColor={"gray.700"}
           cursor={"pointer"}
         >
-          <Link href={"/payments"}>
+          <Link href={"/payments/1"}>
             <Text fontSize={"2xl"} fontWeight={"semibold"}>
               John Doe
             </Text>
@@ -83,7 +83,7 @@ const MemberList = () => {
           backgroundColor={"gray.700"}
           cursor={"pointer"}
         >
-          <Link href={"/payments"}>
+          <Link href={"/payments/1"}>
             <Text fontSize={"2xl"} fontWeight={"semibold"}>
               John Doe
             </Text>
@@ -97,7 +97,7 @@ const MemberList = () => {
           backgroundColor={"gray.700"}
           cursor={"pointer"}
         >
-          <Link href={"/payments"}>
+          <Link href={"/payments/1"}>
             <Text fontSize={"2xl"} fontWeight={"semibold"}>
               John Doe
             </Text>
@@ -111,7 +111,7 @@ const MemberList = () => {
           backgroundColor={"gray.700"}
           cursor={"pointer"}
         >
-          <Link href={"/payments"}>
+          <Link href={"/payments/1"}>
             <Text fontSize={"2xl"} fontWeight={"semibold"}>
               John Doe
             </Text>
@@ -125,7 +125,7 @@ const MemberList = () => {
           backgroundColor={"gray.700"}
           cursor={"pointer"}
         >
-          <Link href={"/payments"}>
+          <Link href={"/payments/1"}>
             <Text fontSize={"2xl"} fontWeight={"semibold"}>
               John Doe
             </Text>
