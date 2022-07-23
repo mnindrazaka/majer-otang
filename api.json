@@ -103,7 +103,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateUpdateBilling"
+                "$ref": "#/components/schemas/BillingRequest"
               }
             }
           }
@@ -152,7 +152,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateUpdateBilling"
+                "$ref": "#/components/schemas/BillingRequest"
               }
             }
           }
@@ -273,9 +273,9 @@
         }
       },
       "BillingData": {
-        "$ref": "#/components/CreateUpdateBilling"
+        "$ref": "#/components/BillingRequest"
       },
-      "CreateUpdateBilling": {
+      "BillingRequest": {
         "type": "object",
         "required": [
           "title",
