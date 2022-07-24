@@ -7,8 +7,6 @@ import { match } from "ts-pattern";
 const MemberList = () => {
   const query = useQuery("Members", () => membersApi.getMemberList());
 
-  console.log(query);
-
   return (
     <Box m={"4"} color={"gray.200"} mb={"36"}>
       <VStack spacing={"4"}>
