@@ -1,5 +1,5 @@
 import { createMachine, assign } from "xstate";
-import { GetMemberListResponse } from "../../utils/fetcher";
+import { Member } from "../../utils/fetcher";
 
 type Billing = {
   id: string;
@@ -27,64 +27,64 @@ type BillingForm = {
   total?: number;
   chargedMember?: string;
   isBillEqual: boolean;
-  members?: GetMemberListResponse["data"];
+  members?: Member[];
 };
 
-type FORMMODE = "CREATE" | "EDIT";
+type FormMode = "CREATE" | "EDIT";
 
 interface Context {
-  billings?: Billing[];
-  billingError?: string;
-  formMode?: FORMMODE;
-  members?: GetMemberListResponse["data"];
-  membersError?: string;
+  billings: Billing[];
+  billingError: string | null;
+  formMode: FormMode;
+  members: Member[];
+  membersError: string | null;
   billingDetail?: BillingDetail;
-  billingDetailError?: string;
+  billingDetailError: string | null;
   billingForm?: BillingForm;
-  submitBillingError?: string;
+  submitBillingError: string | null;
 }
 
 type MachineState =
   | {
       value: "idle";
       context: Context & {
-        billings: undefined;
-        billingError: undefined;
-        formMode: undefined;
-        members: undefined;
-        membersError: undefined;
+        billings: [];
+        billingError: null;
+        formMode: "CREATE";
+        members: [];
+        membersError: null;
         billingDetail: undefined;
-        billingDetailError: undefined;
+        billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: undefined;
+        submitBillingError: null;
       };
     }
   | {
       value: "loadingBilling";
       context: Context & {
-        billings: undefined;
-        billingError: undefined;
-        formMode: undefined;
-        members: undefined;
-        membersError: undefined;
+        billings: [];
+        billingError: null;
+        formMode: "CREATE";
+        members: [];
+        membersError: null;
         billingDetail: undefined;
-        billingDetailError: undefined;
+        billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: undefined;
+        submitBillingError: null;
       };
     }
   | {
       value: "getBillingOK";
       context: Context & {
         billings: Billing[];
-        billingError: undefined;
-        formMode: undefined;
-        members: undefined;
-        membersError: undefined;
+        billingError: null;
+        formMode: "CREATE";
+        members: [];
+        membersError: null;
         billingDetail: undefined;
-        billingDetailError: undefined;
+        billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: undefined;
+        submitBillingError: null;
       };
     }
   | {
@@ -92,143 +92,143 @@ type MachineState =
       context: Context & {
         billings: Billing[];
         billingError: string;
-        formMode: undefined;
-        members: undefined;
-        membersError: undefined;
+        formMode: "CREATE";
+        members: [];
+        membersError: null;
         billingDetail: undefined;
-        billingDetailError: undefined;
+        billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: undefined;
+        submitBillingError: null;
       };
     }
   | {
       value: "billingFormIdle";
       context: Context & {
         billings: Billing[];
-        billingError: undefined;
-        formMode: undefined;
-        members: undefined;
-        membersError: undefined;
+        billingError: null;
+        formMode: "CREATE";
+        members: [];
+        membersError: null;
         billingDetail: undefined;
-        billingDetailError: undefined;
+        billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: undefined;
+        submitBillingError: null;
       };
     }
   | {
       value: { billingFormIdle: "loadingMembers" };
       context: Context & {
         billings: Billing[];
-        billingError: undefined;
-        formMode: undefined;
-        members: undefined;
-        membersError: undefined;
+        billingError: null;
+        formMode: "CREATE";
+        members: [];
+        membersError: null;
         billingDetail: undefined;
-        billingDetailError: undefined;
+        billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: undefined;
+        submitBillingError: null;
       };
     }
   | {
       value: { billingFormIdle: "getMembersError" };
       context: Context & {
         billings: Billing[];
-        billingError: undefined;
-        formMode: undefined;
-        members: undefined;
+        billingError: null;
+        formMode: "CREATE";
+        members: [];
         membersError: string;
         billingDetail: undefined;
-        billingDetailError: undefined;
+        billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: undefined;
+        submitBillingError: null;
       };
     }
   | {
       value: { billingFormIdle: "getBillingDetailCondition" };
       context: Context & {
         billings: Billing[];
-        billingError: undefined;
-        formMode: undefined;
-        members: GetMemberListResponse["data"];
-        membersError: undefined;
+        billingError: null;
+        formMode: "CREATE";
+        members: Member[];
+        membersError: null;
         billingDetail: undefined;
-        billingDetailError: undefined;
+        billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: undefined;
+        submitBillingError: null;
       };
     }
   | {
       value: { billingFormIdle: "getBillingDetailData" };
       context: Context & {
         billings: Billing[];
-        billingError: undefined;
-        formMode: undefined;
-        members: GetMemberListResponse["data"];
-        membersError: undefined;
+        billingError: null;
+        formMode: "EDIT";
+        members: Member[];
+        membersError: null;
         billingDetail: undefined;
-        billingDetailError: undefined;
+        billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: undefined;
+        submitBillingError: null;
       };
     }
   | {
       value: { billingFormIdle: "getBillingDetailDataError" };
       context: Context & {
         billings: Billing[];
-        billingError: undefined;
-        formMode: undefined;
-        members: GetMemberListResponse["data"];
-        membersError: undefined;
+        billingError: null;
+        formMode: "EDIT";
+        members: Member[];
+        membersError: null;
         billingDetail: undefined;
         billingDetailError: string;
         billingForm: undefined;
-        submitBillingError: undefined;
+        submitBillingError: null;
       };
     }
   | {
       value: "billingFormReady";
       context: Context & {
         billings: Billing[];
-        billingError: undefined;
-        formMode: undefined;
-        members: GetMemberListResponse["data"];
-        membersError: undefined;
+        billingError: null;
+        formMode: "CREATE" | "EDIT";
+        members: Member[];
+        membersError: null;
         billingDetail: BillingDetail;
-        billingDetailError: undefined;
+        billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: undefined;
+        submitBillingError: null;
       };
     }
   | {
       value: { billingFormReady: "firstStep" };
       context: Context & {
         billings: Billing[];
-        billingError: undefined;
-        formMode: undefined;
-        members: GetMemberListResponse["data"];
-        membersError: undefined;
+        billingError: null;
+        formMode: "CREATE" | "EDIT";
+        members: Member[];
+        membersError: null;
         billingDetail: BillingDetail;
-        billingDetailError: undefined;
+        billingDetailError: null;
         billingForm: BillingForm & {
           title: string;
           total: number;
           chargedMember: string;
-          isBillEqual: undefined;
-          members: undefined;
+          isBillEqual: boolean;
+          members: [];
         };
-        submitBillingError: undefined;
+        submitBillingError: null;
       };
     }
   | {
       value: { billingFormReady: "secondStep" };
       context: Context & {
         billings: Billing[];
-        billingError: undefined;
-        formMode: undefined;
-        members: GetMemberListResponse["data"];
-        membersError: undefined;
+        billingError: null;
+        formMode: "CREATE" | "EDIT";
+        members: Member[];
+        membersError: null;
         billingDetail: BillingDetail;
-        billingDetailError: undefined;
+        billingDetailError: null;
         billingForm: BillingForm & {
           title: string;
           total: number;
@@ -236,19 +236,19 @@ type MachineState =
           isBillEqual: boolean;
           members: BillingDetailMember[];
         };
-        submitBillingError: undefined;
+        submitBillingError: null;
       };
     }
   | {
       value: "submitBilling";
       context: Context & {
         billings: Billing[];
-        billingError: undefined;
-        formMode: undefined;
-        members: GetMemberListResponse["data"];
-        membersError: undefined;
+        billingError: null;
+        formMode: "CREATE" | "EDIT";
+        members: Member[];
+        membersError: null;
         billingDetail: BillingDetail;
-        billingDetailError: undefined;
+        billingDetailError: null;
         billingForm: BillingForm & {
           title: string;
           total: number;
@@ -256,19 +256,19 @@ type MachineState =
           isBillEqual: boolean;
           members: BillingDetailMember[];
         };
-        submitBillingError: undefined;
+        submitBillingError: null;
       };
     }
   | {
       value: "submitBillingOK";
       context: Context & {
         billings: Billing[];
-        billingError: undefined;
-        formMode: undefined;
-        members: GetMemberListResponse["data"];
-        membersError: undefined;
+        billingError: null;
+        formMode: "CREATE" | "EDIT";
+        members: Member[];
+        membersError: null;
         billingDetail: BillingDetail;
-        billingDetailError: undefined;
+        billingDetailError: null;
         billingForm: BillingForm & {
           title: string;
           total: number;
@@ -276,19 +276,19 @@ type MachineState =
           isBillEqual: boolean;
           members: BillingDetailMember[];
         };
-        submitBillingError: undefined;
+        submitBillingError: null;
       };
     }
   | {
       value: "submitBillingError";
       context: Context & {
         billings: Billing[];
-        billingError: undefined;
-        formMode: undefined;
-        members: GetMemberListResponse["data"];
-        membersError: undefined;
+        billingError: null;
+        formMode: "CREATE" | "EDIT";
+        members: Member[];
+        membersError: null;
         billingDetail: BillingDetail;
-        billingDetailError: undefined;
+        billingDetailError: null;
         billingForm: BillingForm & {
           title: string;
           total: number;
@@ -306,7 +306,7 @@ type MachineEvents =
   | { type: "FETCH_BILLING_ERROR"; billingsErrorMessage: string }
   | { type: "ACTIVATE_BILLING_FORM" }
   | { type: "REFETCH_BILLING" }
-  | { type: "FETCH_MEMBER_SUCCESS"; membersData: GetMemberListResponse["data"] }
+  | { type: "FETCH_MEMBER_SUCCESS"; membersData: Member[] }
   | { type: "FETCH_MEMBER_ERROR"; membersErrorMessage: string }
   | { type: "REFTECH_MEMBERS" }
   | { type: "FETCH_BILLING_DETAIL_SUCCES"; billingDetailData: BillingDetail }
@@ -322,7 +322,7 @@ type MachineEvents =
   | {
       type: "SUBMIT_BILLING";
       isBillEqual: boolean;
-      members: GetMemberListResponse["data"];
+      members: Member[];
     }
   | { type: "SUBMIT_BILLING_SUCCES" }
   | { type: "SUBMIT_BILLING_ERROR"; submitBillingErrorMessage: string }
@@ -342,15 +342,15 @@ export const billingMachine = createMachine<
   id: "billing",
   initial: "idle",
   context: {
-    billings: undefined,
-    billingError: "",
-    formMode: undefined,
-    members: undefined,
-    membersError: undefined,
+    billings: [],
+    billingError: null,
+    formMode: "CREATE",
+    members: [],
+    membersError: null,
     billingDetail: undefined,
-    billingDetailError: "",
+    billingDetailError: null,
     billingForm: undefined,
-    submitBillingError: undefined,
+    submitBillingError: null,
   },
   states: {
     idle: {
@@ -522,7 +522,7 @@ export const billingMachine = createMachine<
             total: event.total,
             chargedMember: event.chargedMember,
             isBillEqual: true,
-            members: ctx.billingForm?.members,
+            members: [],
           };
         }
       },
