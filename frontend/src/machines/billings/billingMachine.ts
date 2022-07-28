@@ -1,33 +1,18 @@
 import { createMachine, assign } from "xstate";
-import { Member } from "../../utils/fetcher";
-
-type Billing = {
-  id: string;
-  title: string;
-  amount: number;
-};
-
-type BillingDetailMember = {
-  id: string;
-  name: string;
-  amount: number;
-};
-
-type BillingDetail = {
-  id: string;
-  name: string;
-  billAmount: number;
-  chargedMemberId: string;
-  isBillEqually: boolean;
-  members: BillingDetailMember[];
-};
+import { match } from "ts-pattern";
+import {
+  Member,
+  Billing,
+  BillingDetail,
+  BillingMember,
+} from "../../utils/fetcher";
 
 type BillingForm = {
   title?: string;
   total?: number;
   chargedMember?: string;
   isBillEqual: boolean;
-  members?: Member[];
+  members?: BillingMember[];
 };
 
 type FormMode = "CREATE" | "EDIT";
@@ -234,7 +219,7 @@ type MachineState =
           total: number;
           chargedMember: string;
           isBillEqual: boolean;
-          members: BillingDetailMember[];
+          members: BillingMember[];
         };
         submitBillingError: null;
       };
@@ -254,7 +239,7 @@ type MachineState =
           total: number;
           chargedMember: string;
           isBillEqual: boolean;
-          members: BillingDetailMember[];
+          members: BillingMember[];
         };
         submitBillingError: null;
       };
@@ -274,7 +259,7 @@ type MachineState =
           total: number;
           chargedMember: string;
           isBillEqual: boolean;
-          members: BillingDetailMember[];
+          members: BillingMember[];
         };
         submitBillingError: null;
       };
@@ -294,7 +279,7 @@ type MachineState =
           total: number;
           chargedMember: string;
           isBillEqual: boolean;
-          members: BillingDetailMember[];
+          members: BillingMember[];
         };
         submitBillingError: string;
       };
@@ -312,17 +297,13 @@ type MachineEvents =
   | { type: "FETCH_BILLING_DETAIL_SUCCES"; billingDetailData: BillingDetail }
   | { type: "FETCH_BILLING_DETAIL_ERROR"; billingDetailErrorMessage: string }
   | { type: "REFTECH_BILLING_DETAIL" }
+  | { type: "UPDATE_FORM"; billingDetail: BillingForm }
   | {
       type: "NEXT_STEP";
-      billingName: string;
-      total: number;
-      chargedMember: string;
     }
   | { type: "PREV_STEP" }
   | {
       type: "SUBMIT_BILLING";
-      isBillEqual: boolean;
-      members: Member[];
     }
   | { type: "SUBMIT_BILLING_SUCCES" }
   | { type: "SUBMIT_BILLING_ERROR"; submitBillingErrorMessage: string }
@@ -362,11 +343,11 @@ export const billingMachine = createMachine<
       on: {
         FETCH_BILLING_SUCCES: {
           target: "getBillingOK",
-          actions: "assignBillingsData",
+          actions: "updateContext",
         },
         FETCH_BILLING_ERROR: {
           target: "getBillingError",
-          actions: "assignBillingsErrorMessage",
+          actions: "updateContext",
         },
       },
     },
@@ -388,11 +369,11 @@ export const billingMachine = createMachine<
           on: {
             FETCH_MEMBER_SUCCESS: {
               target: "getBillingDetailCondition",
-              actions: "assignMembersData",
+              actions: "updateContext",
             },
             FETCH_MEMBER_ERROR: {
               target: "getMembersError",
-              actions: "assigMembersError",
+              actions: "updateContext",
             },
           },
         },
@@ -416,11 +397,11 @@ export const billingMachine = createMachine<
           on: {
             FETCH_BILLING_DETAIL_SUCCES: {
               target: "#billing.billingFormReady",
-              actions: "assignBillingDetail",
+              actions: "updateContext",
             },
             FETCH_BILLING_DETAIL_ERROR: {
               target: "getBillingDetailDataError",
-              actions: "assignBillingDetailErrorMessage",
+              actions: "updateContext",
             },
           },
         },
@@ -437,18 +418,20 @@ export const billingMachine = createMachine<
         firstStep: {
           on: {
             NEXT_STEP: {
-              actions: "fillTheFirstForm",
               target: "secondStep",
+            },
+            UPDATE_FORM: {
+              actions: "updateContext",
             },
           },
         },
         secondStep: {
           on: {
             PREV_STEP: "firstStep",
-            SUBMIT_BILLING: {
-              target: "#billing.submitBilling",
-              actions: "fillTheSecondForm",
+            UPDATE_FORM: {
+              actions: "updateContext",
             },
+            SUBMIT_BILLING: "#billing.submitBilling",
           },
         },
       },
@@ -460,7 +443,7 @@ export const billingMachine = createMachine<
         },
         SUBMIT_BILLING_ERROR: {
           target: "submitBillingError",
-          actions: "assignSubmitBillingError",
+          actions: "updateContext",
         },
       },
     },
@@ -480,72 +463,46 @@ export const billingMachine = createMachine<
   },
 }).withConfig({
   actions: {
-    assignBillingsData: assign({
-      billings: (ctx, event) =>
-        event.type === "FETCH_BILLING_SUCCES"
-          ? event.billingsData
-          : ctx.billings,
-    }),
-    assignBillingsErrorMessage: assign({
-      billingError: (ctx, event) =>
-        event.type === "FETCH_BILLING_ERROR"
-          ? event.billingsErrorMessage
-          : ctx.billingError,
-    }),
-    assignBillingDetail: assign({
-      billingDetail: (ctx, event) =>
-        event.type === "FETCH_BILLING_DETAIL_SUCCES"
-          ? event.billingDetailData
-          : ctx.billingDetail,
-    }),
-    assignBillingDetailErrorMessage: assign({
-      billingDetailError: (ctx, event) =>
-        event.type === "FETCH_BILLING_DETAIL_ERROR"
-          ? event.billingDetailErrorMessage
-          : ctx.billingDetailError,
-    }),
-    assignMembersData: assign({
-      members: (ctx, event) =>
-        event.type === "FETCH_MEMBER_SUCCESS" ? event.membersData : ctx.members,
-    }),
-    assigMembersError: assign({
-      membersError: (ctx, event) =>
-        event.type === "FETCH_MEMBER_ERROR"
-          ? event.membersErrorMessage
-          : ctx.membersError,
-    }),
-    fillTheFirstForm: assign({
-      billingForm: (ctx, event) => {
-        if (event.type === "NEXT_STEP") {
-          return {
-            title: event.billingName,
-            total: event.total,
-            chargedMember: event.chargedMember,
-            isBillEqual: true,
-            members: [],
-          };
-        }
-      },
-    }),
-    fillTheSecondForm: assign({
-      billingForm: (ctx, event) => {
-        if (event.type === "SUBMIT_BILLING") {
-          return {
-            title: ctx.billingForm?.title,
-            total: ctx.billingForm?.total,
-            chargedMember: ctx.billingForm?.chargedMember,
-            isBillEqual: event.isBillEqual,
-            members: event.members,
-          };
-        }
-      },
-    }),
-    assignSubmitBillingError: assign({
-      submitBillingError: (ctx, event) =>
-        event.type === "SUBMIT_BILLING_ERROR"
-          ? event.submitBillingErrorMessage
-          : ctx.submitBillingError,
-    }),
+    updateContext: assign((ctx, event) =>
+      match(event)
+        .with({ type: "FETCH_BILLING" }, () => ctx)
+        .with({ type: "ACTIVATE_BILLING_FORM" }, () => ctx)
+        .with({ type: "REFETCH_BILLING" }, () => ctx)
+        .with({ type: "REFTECH_MEMBERS" }, () => ctx)
+        .with({ type: "REFTECH_BILLING_DETAIL" }, () => ctx)
+        .with({ type: "REFETCH_SUBMIT_BILLING" }, () => ctx)
+        .with({ type: "NEXT_STEP" }, () => ctx)
+        .with({ type: "PREV_STEP" }, () => ctx)
+        .with({ type: "SUBMIT_BILLING" }, () => ctx)
+        .with({ type: "SUBMIT_BILLING_SUCCES" }, () => ctx)
+        .with({ type: "BACK_TO_BILLING_SCREEN" }, () => ctx)
+        .with({ type: "BACK_TO_SECOND_STEP_FORM" }, () => ctx)
+        .with({ type: "FETCH_BILLING_SUCCES" }, (event) => ({
+          billings: event.billingsData,
+        }))
+        .with({ type: "FETCH_BILLING_ERROR" }, (event) => ({
+          billingError: event.billingsErrorMessage,
+        }))
+        .with({ type: "FETCH_BILLING_DETAIL_SUCCES" }, (event) => ({
+          billingDetail: event.billingDetailData,
+        }))
+        .with({ type: "FETCH_BILLING_DETAIL_ERROR" }, (event) => ({
+          billingDetailError: event.billingDetailErrorMessage,
+        }))
+        .with({ type: "FETCH_MEMBER_SUCCESS" }, (event) => ({
+          members: event.membersData,
+        }))
+        .with({ type: "FETCH_MEMBER_ERROR" }, (event) => ({
+          membersError: event.membersErrorMessage,
+        }))
+        .with({ type: "UPDATE_FORM" }, (event) => ({
+          billingForm: event.billingDetail,
+        }))
+        .with({ type: "SUBMIT_BILLING_ERROR" }, (event) => ({
+          submitBillingError: event.submitBillingErrorMessage,
+        }))
+        .exhaustive()
+    ),
   },
   guards: {
     isCreatingForm: (ctx) => ctx.formMode === "CREATE",
