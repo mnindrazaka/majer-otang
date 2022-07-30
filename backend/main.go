@@ -2,15 +2,17 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
 	"github.com/mnindrazaka/billing/config"
 	"github.com/mnindrazaka/billing/config/database"
 	"github.com/mnindrazaka/billing/core/module"
 	"github.com/mnindrazaka/billing/handler/api"
+	"github.com/mnindrazaka/billing/repository/billings"
 	"github.com/mnindrazaka/billing/repository/members"
-	"log"
-	"net/http"
 )
 
 func main() {
@@ -34,9 +36,15 @@ func main() {
 	memberUsecase := module.NewMemberUsecase(memberRepo)
 	memberHalder := api.NewUserHandler(memberUsecase)
 
+	billingRepo := billings.NewBillingRepository(db)
+	billingUsecase := module.NewBillingUsecase(billingRepo)
+	billingHalder := api.NewBillingHandler(billingUsecase)
+
 	router := httprouter.New()
 	router.GET("/member/:memberID", memberHalder.GetMemberByID)
 	router.GET("/members", memberHalder.GetMemberList)
+
+	router.GET("/billing/:billingID", billingHalder.GetBillingByID)
 
 	err = http.ListenAndServe(fmt.Sprintf(":%v", cfg.Port), router)
 	if err != nil {
