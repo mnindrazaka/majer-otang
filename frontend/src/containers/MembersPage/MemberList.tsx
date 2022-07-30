@@ -35,9 +35,7 @@ const MemberList = () => {
           .with({ status: "loading" }, () => (
             <Spinner color="blue.500" size="xl" thickness="4px" />
           ))
-          .with({ status: "error" }, (query) => (
-            <Text>{query.data?.message}</Text>
-          ))
+          .with({ status: "error" }, () => <Text>Something went wrong</Text>)
           .with({ status: "idle" }, () => (
             <Spinner color="blue.500" size="xl" thickness="4px" />
           ))
