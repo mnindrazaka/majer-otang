@@ -1,136 +1,45 @@
-import { Box, Text, VStack } from "@chakra-ui/react";
+import { Box, Spinner, Text, VStack } from "@chakra-ui/react";
 import Link from "next/link";
+import { useQuery } from "react-query";
+import { membersApi } from "../../utils/fetcher";
+import { match } from "ts-pattern";
 
 const MemberList = () => {
+  const query = useQuery("Members", () => membersApi.getMemberList());
+
   return (
     <Box m={"4"} color={"gray.200"} mb={"36"}>
       <VStack spacing={"4"}>
-        <Box
-          border={"1px"}
-          borderRadius={"16px"}
-          p={"6"}
-          w={"full"}
-          backgroundColor={"gray.700"}
-          cursor={"pointer"}
-        >
-          <Link href={"/payments/1"}>
-            <Text fontSize={"2xl"} fontWeight={"semibold"}>
-              John Doe
-            </Text>
-          </Link>
-        </Box>
-        <Box
-          border={"1px"}
-          borderRadius={"16px"}
-          p={"6"}
-          w={"full"}
-          backgroundColor={"gray.700"}
-          cursor={"pointer"}
-        >
-          <Link href={"/payments/1"}>
-            <Text fontSize={"2xl"} fontWeight={"semibold"}>
-              John Doe
-            </Text>
-          </Link>
-        </Box>
-        <Box
-          border={"1px"}
-          borderRadius={"16px"}
-          p={"6"}
-          w={"full"}
-          backgroundColor={"gray.700"}
-          cursor={"pointer"}
-        >
-          <Link href={"/payments/1"}>
-            <Text fontSize={"2xl"} fontWeight={"semibold"}>
-              John Doe
-            </Text>
-          </Link>
-        </Box>
-        <Box
-          border={"1px"}
-          borderRadius={"16px"}
-          p={"6"}
-          w={"full"}
-          backgroundColor={"gray.700"}
-          cursor={"pointer"}
-        >
-          <Link href={"/payments/1"}>
-            <Text fontSize={"2xl"} fontWeight={"semibold"}>
-              John Doe
-            </Text>
-          </Link>
-        </Box>
-        <Box
-          border={"1px"}
-          borderRadius={"16px"}
-          p={"6"}
-          w={"full"}
-          backgroundColor={"gray.700"}
-          cursor={"pointer"}
-        >
-          <Link href={"/payments/1"}>
-            <Text fontSize={"2xl"} fontWeight={"semibold"}>
-              John Doe
-            </Text>
-          </Link>
-        </Box>
-        <Box
-          border={"1px"}
-          borderRadius={"16px"}
-          p={"6"}
-          w={"full"}
-          backgroundColor={"gray.700"}
-          cursor={"pointer"}
-        >
-          <Link href={"/payments/1"}>
-            <Text fontSize={"2xl"} fontWeight={"semibold"}>
-              John Doe
-            </Text>
-          </Link>
-        </Box>
-        <Box
-          border={"1px"}
-          borderRadius={"16px"}
-          p={"6"}
-          w={"full"}
-          backgroundColor={"gray.700"}
-          cursor={"pointer"}
-        >
-          <Link href={"/payments/1"}>
-            <Text fontSize={"2xl"} fontWeight={"semibold"}>
-              John Doe
-            </Text>
-          </Link>
-        </Box>
-        <Box
-          border={"1px"}
-          borderRadius={"16px"}
-          p={"6"}
-          w={"full"}
-          backgroundColor={"gray.700"}
-          cursor={"pointer"}
-        >
-          <Link href={"/payments/1"}>
-            <Text fontSize={"2xl"} fontWeight={"semibold"}>
-              John Doe
-            </Text>
-          </Link>
-        </Box>
-        <Box
-          border={"1px"}
-          borderRadius={"16px"}
-          p={"6"}
-          w={"full"}
-          backgroundColor={"gray.700"}
-          cursor={"pointer"}
-        >
-          <Link href={"/payments/1"}>
-            <Text fontSize={"2xl"} fontWeight={"semibold"}>
-              John Doe
-            </Text>
-          </Link>
-        </Box>
+        {match(query)
+          .with({ status: "success" }, (query) =>
+            query.data.data.map((member) => {
+              return (
+                <Box
+                  key={member.id}
+                  border={"1px"}
+                  borderRadius={"16px"}
+                  p={"6"}
+                  w={"full"}
+                  backgroundColor={"gray.700"}
+                  cursor={"pointer"}
+                >
+                  <Link href={`/payments/${member.id}`}>
+                    <Text fontSize={"2xl"} fontWeight={"semibold"}>
+                      {member.name}
+                    </Text>
+                  </Link>
+                </Box>
+              );
+            })
+          )
+          .with({ status: "loading" }, () => (
+            <Spinner color="blue.500" size="xl" thickness="4px" />
+          ))
+          .with({ status: "error" }, () => <Text>Something went wrong</Text>)
+          .with({ status: "idle" }, () => (
+            <Spinner color="blue.500" size="xl" thickness="4px" />
+          ))
+          .exhaustive()}
       </VStack>
     </Box>
   );
