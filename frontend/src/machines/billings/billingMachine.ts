@@ -299,6 +299,9 @@ type MachineEvents =
   | { type: "REFTECH_BILLING_DETAIL" }
   | { type: "UPDATE_FORM"; billingDetail: BillingForm }
   | {
+      type: "CANCEL_FILL_FORM";
+    }
+  | {
       type: "NEXT_STEP";
     }
   | { type: "PREV_STEP" }
@@ -435,6 +438,9 @@ export const billingMachine = createMachine<
           },
         },
       },
+      on: {
+        CANCEL_FILL_FORM: "getBillingOK",
+      },
     },
     submitBilling: {
       on: {
@@ -450,7 +456,7 @@ export const billingMachine = createMachine<
     submitBillingOK: {
       on: {
         BACK_TO_BILLING_SCREEN: {
-          target: "getBillingOK",
+          target: "loadingBilling",
         },
       },
     },
@@ -477,6 +483,7 @@ export const billingMachine = createMachine<
         .with({ type: "SUBMIT_BILLING_SUCCES" }, () => ctx)
         .with({ type: "BACK_TO_BILLING_SCREEN" }, () => ctx)
         .with({ type: "BACK_TO_SECOND_STEP_FORM" }, () => ctx)
+        .with({ type: "CANCEL_FILL_FORM" }, () => ctx)
         .with({ type: "FETCH_BILLING_SUCCES" }, (event) => ({
           billings: event.billingsData,
         }))
