@@ -8,14 +8,17 @@ import {
 } from "../../utils/fetcher";
 
 type BillingForm = {
-  title?: string;
-  total?: number;
-  chargedMember?: string;
+  title: string;
+  total: number;
+  chargedMember: string;
   isBillEqual: boolean;
-  members?: BillingMember[];
+  members: BillingMember[];
 };
 
-type FormMode = "CREATE" | "EDIT";
+enum FormMode {
+  Create = "CREATE",
+  Edit = "EDIT",
+}
 
 interface Context {
   billings: Billing[];
@@ -33,10 +36,7 @@ type MachineState =
   | {
       value: "idle";
       context: Context & {
-        billings: [];
         billingError: null;
-        formMode: "CREATE";
-        members: [];
         membersError: null;
         billingDetail: undefined;
         billingDetailError: null;
@@ -47,10 +47,7 @@ type MachineState =
   | {
       value: "loadingBilling";
       context: Context & {
-        billings: [];
         billingError: null;
-        formMode: "CREATE";
-        members: [];
         membersError: null;
         billingDetail: undefined;
         billingDetailError: null;
@@ -61,10 +58,7 @@ type MachineState =
   | {
       value: "getBillingOK";
       context: Context & {
-        billings: Billing[];
         billingError: null;
-        formMode: "CREATE";
-        members: [];
         membersError: null;
         billingDetail: undefined;
         billingDetailError: null;
@@ -75,10 +69,7 @@ type MachineState =
   | {
       value: "getBillingError";
       context: Context & {
-        billings: Billing[];
         billingError: string;
-        formMode: "CREATE";
-        members: [];
         membersError: null;
         billingDetail: undefined;
         billingDetailError: null;
@@ -89,10 +80,7 @@ type MachineState =
   | {
       value: "billingFormIdle";
       context: Context & {
-        billings: Billing[];
         billingError: null;
-        formMode: "CREATE";
-        members: [];
         membersError: null;
         billingDetail: undefined;
         billingDetailError: null;
@@ -103,10 +91,7 @@ type MachineState =
   | {
       value: { billingFormIdle: "loadingMembers" };
       context: Context & {
-        billings: Billing[];
         billingError: null;
-        formMode: "CREATE";
-        members: [];
         membersError: null;
         billingDetail: undefined;
         billingDetailError: null;
@@ -117,10 +102,7 @@ type MachineState =
   | {
       value: { billingFormIdle: "getMembersError" };
       context: Context & {
-        billings: Billing[];
         billingError: null;
-        formMode: "CREATE";
-        members: [];
         membersError: string;
         billingDetail: undefined;
         billingDetailError: null;
@@ -131,10 +113,7 @@ type MachineState =
   | {
       value: { billingFormIdle: "getBillingDetailCondition" };
       context: Context & {
-        billings: Billing[];
         billingError: null;
-        formMode: "CREATE";
-        members: Member[];
         membersError: null;
         billingDetail: undefined;
         billingDetailError: null;
@@ -145,10 +124,7 @@ type MachineState =
   | {
       value: { billingFormIdle: "getBillingDetailData" };
       context: Context & {
-        billings: Billing[];
         billingError: null;
-        formMode: "EDIT";
-        members: Member[];
         membersError: null;
         billingDetail: undefined;
         billingDetailError: null;
@@ -159,10 +135,7 @@ type MachineState =
   | {
       value: { billingFormIdle: "getBillingDetailDataError" };
       context: Context & {
-        billings: Billing[];
         billingError: null;
-        formMode: "EDIT";
-        members: Member[];
         membersError: null;
         billingDetail: undefined;
         billingDetailError: string;
@@ -173,114 +146,66 @@ type MachineState =
   | {
       value: "billingFormReady";
       context: Context & {
-        billings: Billing[];
         billingError: null;
-        formMode: "CREATE" | "EDIT";
-        members: Member[];
         membersError: null;
         billingDetail: BillingDetail;
         billingDetailError: null;
-        billingForm: undefined;
+        billingForm: BillingForm;
         submitBillingError: null;
       };
     }
   | {
       value: { billingFormReady: "firstStep" };
       context: Context & {
-        billings: Billing[];
         billingError: null;
-        formMode: "CREATE" | "EDIT";
-        members: Member[];
         membersError: null;
         billingDetail: BillingDetail;
         billingDetailError: null;
-        billingForm: BillingForm & {
-          title: string;
-          total: number;
-          chargedMember: string;
-          isBillEqual: boolean;
-          members: [];
-        };
+        billingForm: BillingForm;
         submitBillingError: null;
       };
     }
   | {
       value: { billingFormReady: "secondStep" };
       context: Context & {
-        billings: Billing[];
         billingError: null;
-        formMode: "CREATE" | "EDIT";
-        members: Member[];
         membersError: null;
         billingDetail: BillingDetail;
         billingDetailError: null;
-        billingForm: BillingForm & {
-          title: string;
-          total: number;
-          chargedMember: string;
-          isBillEqual: boolean;
-          members: BillingMember[];
-        };
+        billingForm: BillingForm;
         submitBillingError: null;
       };
     }
   | {
       value: "submitBilling";
       context: Context & {
-        billings: Billing[];
         billingError: null;
-        formMode: "CREATE" | "EDIT";
-        members: Member[];
         membersError: null;
         billingDetail: BillingDetail;
         billingDetailError: null;
-        billingForm: BillingForm & {
-          title: string;
-          total: number;
-          chargedMember: string;
-          isBillEqual: boolean;
-          members: BillingMember[];
-        };
+        billingForm: BillingForm;
         submitBillingError: null;
       };
     }
   | {
       value: "submitBillingOK";
       context: Context & {
-        billings: Billing[];
         billingError: null;
-        formMode: "CREATE" | "EDIT";
-        members: Member[];
         membersError: null;
         billingDetail: BillingDetail;
         billingDetailError: null;
-        billingForm: BillingForm & {
-          title: string;
-          total: number;
-          chargedMember: string;
-          isBillEqual: boolean;
-          members: BillingMember[];
-        };
+        billingForm: BillingForm;
         submitBillingError: null;
       };
     }
   | {
       value: "submitBillingError";
       context: Context & {
-        billings: Billing[];
         billingError: null;
-        formMode: "CREATE" | "EDIT";
-        members: Member[];
         membersError: null;
         billingDetail: BillingDetail;
         billingDetailError: null;
-        billingForm: BillingForm & {
-          title: string;
-          total: number;
-          chargedMember: string;
-          isBillEqual: boolean;
-          members: BillingMember[];
-        };
+        billingForm: BillingForm;
         submitBillingError: string;
       };
     };
@@ -289,15 +214,15 @@ type MachineEvents =
   | { type: "FETCH_BILLING" }
   | { type: "FETCH_BILLING_SUCCES"; billingsData: Billing[] }
   | { type: "FETCH_BILLING_ERROR"; billingsErrorMessage: string }
-  | { type: "ACTIVATE_BILLING_FORM" }
+  | { type: "ACTIVATE_BILLING_FORM"; formMode: FormMode }
   | { type: "REFETCH_BILLING" }
   | { type: "FETCH_MEMBER_SUCCESS"; membersData: Member[] }
   | { type: "FETCH_MEMBER_ERROR"; membersErrorMessage: string }
-  | { type: "REFTECH_MEMBERS" }
+  | { type: "REFETCH_MEMBERS" }
   | { type: "FETCH_BILLING_DETAIL_SUCCES"; billingDetailData: BillingDetail }
   | { type: "FETCH_BILLING_DETAIL_ERROR"; billingDetailErrorMessage: string }
-  | { type: "REFTECH_BILLING_DETAIL" }
-  | { type: "UPDATE_FORM"; billingDetail: BillingForm }
+  | { type: "REFETCH_BILLING_DETAIL" }
+  | { type: "UPDATE_FORM"; billingForm: BillingForm }
   | {
       type: "CANCEL_FILL_FORM";
     }
@@ -328,7 +253,7 @@ export const billingMachine = createMachine<
   context: {
     billings: [],
     billingError: null,
-    formMode: "CREATE",
+    formMode: FormMode.Create,
     members: [],
     membersError: null,
     billingDetail: undefined,
@@ -357,7 +282,10 @@ export const billingMachine = createMachine<
     getBillingOK: {
       entry: "assignBillingsData",
       on: {
-        ACTIVATE_BILLING_FORM: "billingFormIdle",
+        ACTIVATE_BILLING_FORM: {
+          actions: "updateContext",
+          target: "billingFormIdle",
+        },
       },
     },
     getBillingError: {
@@ -382,7 +310,7 @@ export const billingMachine = createMachine<
         },
         getMembersError: {
           on: {
-            REFTECH_MEMBERS: "loadingMembers",
+            REFETCH_MEMBERS: "loadingMembers",
           },
         },
         getBillingDetailCondition: {
@@ -410,7 +338,7 @@ export const billingMachine = createMachine<
         },
         getBillingDetailDataError: {
           on: {
-            REFTECH_BILLING_DETAIL: "getBillingDetailData",
+            REFETCH_BILLING_DETAIL: "getBillingDetailData",
           },
         },
       },
@@ -472,40 +400,70 @@ export const billingMachine = createMachine<
     updateContext: assign((ctx, event) =>
       match(event)
         .with({ type: "FETCH_BILLING" }, () => ctx)
-        .with({ type: "ACTIVATE_BILLING_FORM" }, () => ctx)
         .with({ type: "REFETCH_BILLING" }, () => ctx)
-        .with({ type: "REFTECH_MEMBERS" }, () => ctx)
-        .with({ type: "REFTECH_BILLING_DETAIL" }, () => ctx)
+        .with({ type: "REFETCH_MEMBERS" }, () => ctx)
+        .with({ type: "REFETCH_BILLING_DETAIL" }, () => ctx)
         .with({ type: "REFETCH_SUBMIT_BILLING" }, () => ctx)
         .with({ type: "NEXT_STEP" }, () => ctx)
         .with({ type: "PREV_STEP" }, () => ctx)
         .with({ type: "SUBMIT_BILLING" }, () => ctx)
         .with({ type: "SUBMIT_BILLING_SUCCES" }, () => ctx)
-        .with({ type: "BACK_TO_BILLING_SCREEN" }, () => ctx)
         .with({ type: "BACK_TO_SECOND_STEP_FORM" }, () => ctx)
         .with({ type: "CANCEL_FILL_FORM" }, () => ctx)
+        .with({ type: "BACK_TO_BILLING_SCREEN" }, () => ({
+          ...ctx,
+          billings: [],
+          billingError: null,
+          formMode: FormMode.Create,
+          members: [],
+          membersError: null,
+          billingDetail: undefined,
+          billingDetailError: null,
+          billingForm: undefined,
+          submitBillingError: null,
+        }))
+        .with({ type: "ACTIVATE_BILLING_FORM" }, (event) => ({
+          ...ctx,
+          formMode: event.formMode,
+        }))
         .with({ type: "FETCH_BILLING_SUCCES" }, (event) => ({
+          ...ctx,
           billings: event.billingsData,
         }))
         .with({ type: "FETCH_BILLING_ERROR" }, (event) => ({
+          ...ctx,
           billingError: event.billingsErrorMessage,
         }))
         .with({ type: "FETCH_BILLING_DETAIL_SUCCES" }, (event) => ({
+          ...ctx,
           billingDetail: event.billingDetailData,
+          billingForm: event.billingDetailData as unknown as BillingForm,
         }))
         .with({ type: "FETCH_BILLING_DETAIL_ERROR" }, (event) => ({
+          ...ctx,
           billingDetailError: event.billingDetailErrorMessage,
         }))
         .with({ type: "FETCH_MEMBER_SUCCESS" }, (event) => ({
+          ...ctx,
           members: event.membersData,
+          billingForm: {
+            title: "",
+            total: 0,
+            chargedMember: "",
+            isBillEqual: true,
+            members: event.membersData as unknown as BillingMember[],
+          },
         }))
         .with({ type: "FETCH_MEMBER_ERROR" }, (event) => ({
+          ...ctx,
           membersError: event.membersErrorMessage,
         }))
         .with({ type: "UPDATE_FORM" }, (event) => ({
-          billingForm: event.billingDetail,
+          ...ctx,
+          billingForm: event.billingForm,
         }))
         .with({ type: "SUBMIT_BILLING_ERROR" }, (event) => ({
+          ...ctx,
           submitBillingError: event.submitBillingErrorMessage,
         }))
         .exhaustive()
