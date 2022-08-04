@@ -280,7 +280,6 @@ export const billingMachine = createMachine<
       },
     },
     getBillingOK: {
-      entry: "assignBillingsData",
       on: {
         ACTIVATE_BILLING_FORM: {
           actions: "updateContext",
@@ -437,7 +436,13 @@ export const billingMachine = createMachine<
         .with({ type: "FETCH_BILLING_DETAIL_SUCCES" }, (event) => ({
           ...ctx,
           billingDetail: event.billingDetailData,
-          billingForm: event.billingDetailData as unknown as BillingForm,
+          billingForm: {
+            title: event.billingDetailData.title,
+            total: event.billingDetailData.bill_amount,
+            chargedMember: event.billingDetailData.charged_member_id,
+            isBillEqual: event.billingDetailData.is_bill_equally,
+            members: event.billingDetailData.members,
+          },
         }))
         .with({ type: "FETCH_BILLING_DETAIL_ERROR" }, (event) => ({
           ...ctx,
@@ -446,13 +451,6 @@ export const billingMachine = createMachine<
         .with({ type: "FETCH_MEMBER_SUCCESS" }, (event) => ({
           ...ctx,
           members: event.membersData,
-          billingForm: {
-            title: "",
-            total: 0,
-            chargedMember: "",
-            isBillEqual: true,
-            members: event.membersData as unknown as BillingMember[],
-          },
         }))
         .with({ type: "FETCH_MEMBER_ERROR" }, (event) => ({
           ...ctx,
