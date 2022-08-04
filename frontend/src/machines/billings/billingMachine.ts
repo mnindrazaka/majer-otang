@@ -399,10 +399,25 @@ export const billingMachine = createMachine<
     updateContext: assign((ctx, event) =>
       match(event)
         .with({ type: "FETCH_BILLING" }, () => ctx)
-        .with({ type: "REFETCH_BILLING" }, () => ctx)
-        .with({ type: "REFETCH_MEMBERS" }, () => ctx)
-        .with({ type: "REFETCH_BILLING_DETAIL" }, () => ctx)
-        .with({ type: "REFETCH_SUBMIT_BILLING" }, () => ctx)
+        .with({ type: "REFETCH_BILLING" }, () => ({
+          ...ctx,
+          billingError: null,
+          billings: [],
+        }))
+        .with({ type: "REFETCH_MEMBERS" }, () => ({
+          ...ctx,
+          membersError: null,
+          members: [],
+        }))
+        .with({ type: "REFETCH_BILLING_DETAIL" }, () => ({
+          ...ctx,
+          billingDetailError: null,
+          billingDetail: undefined,
+        }))
+        .with({ type: "REFETCH_SUBMIT_BILLING" }, () => ({
+          ...ctx,
+          submitBillingError: null,
+        }))
         .with({ type: "NEXT_STEP" }, () => ctx)
         .with({ type: "PREV_STEP" }, () => ctx)
         .with({ type: "SUBMIT_BILLING" }, () => ctx)
@@ -424,6 +439,13 @@ export const billingMachine = createMachine<
         .with({ type: "ACTIVATE_BILLING_FORM" }, (event) => ({
           ...ctx,
           formMode: event.formMode,
+          billingForm: {
+            title: "",
+            total: 0,
+            chargedMember: "",
+            isBillEqual: true,
+            members: [],
+          },
         }))
         .with({ type: "FETCH_BILLING_SUCCES" }, (event) => ({
           ...ctx,
