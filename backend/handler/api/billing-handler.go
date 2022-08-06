@@ -21,6 +21,7 @@ func NewBillingHandler(billingUsecase module.BillingUsecase) BillingHandler {
 
 func (b *billingHandler) GetBillingByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	billing, err := b.billingUsecase.GetBillingByID(r.Context(), ps.ByName("billingID"))
+	
 	if err != nil {
 		buildGetBillingByIDError(w, err)
 		return

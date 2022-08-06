@@ -38,13 +38,13 @@ func main() {
 
 	billingRepo := billings.NewBillingRepository(db)
 	billingUsecase := module.NewBillingUsecase(billingRepo)
-	billingHalder := api.NewBillingHandler(billingUsecase)
+	billingHandler := api.NewBillingHandler(billingUsecase)
 
 	router := httprouter.New()
 	router.GET("/member/:memberID", memberHalder.GetMemberByID)
 	router.GET("/members", memberHalder.GetMemberList)
 
-	router.GET("/billing/:billingID", billingHalder.GetBillingByID)
+	router.GET("/billing/:billingID", billingHandler.GetBillingByID)
 
 	err = http.ListenAndServe(fmt.Sprintf(":%v", cfg.Port), router)
 	if err != nil {

@@ -7,5 +7,5 @@ import (
 )
 
 type BillingRepository interface {
-	GetBillingByID(ctx context.Context, id string) (*entity.Billing, error)
+	GetBillingByID(ctx context.Context, id string) (*entity.BillingDetail, error)
 }

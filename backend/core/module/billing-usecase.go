@@ -12,13 +12,13 @@ type billingUsecase struct {
 }
 
 type BillingUsecase interface {
-	GetBillingByID(ctx context.Context, id string) (*entity.Billing, error)
+	GetBillingByID(ctx context.Context, id string) (*entity.BillingDetail, error)
 }
 
 func NewBillingUsecase(billingRepository repository.BillingRepository) BillingUsecase {
 	return &billingUsecase{billingRepository}
 }
 
-func (b *billingUsecase) GetBillingByID(ctx context.Context, id string) (*entity.Billing, error) {
+func (b *billingUsecase) GetBillingByID(ctx context.Context, id string) (*entity.BillingDetail, error) {
 	return b.billingRepository.GetBillingByID(ctx, id)
 }
