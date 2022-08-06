@@ -6,6 +6,10 @@ import {
   BillingDetail,
   BillingMember,
 } from "../../utils/fetcher";
+import { QueryClient } from "react-query";
+import { getBillings, getMembers } from "./mockFetcher";
+
+const queryClient = new QueryClient();
 
 type BillingForm = {
   title: string;
@@ -15,7 +19,7 @@ type BillingForm = {
   members: BillingMember[];
 };
 
-enum FormMode {
+export enum FormMode {
   Create = "CREATE",
   Edit = "EDIT",
 }
@@ -32,7 +36,7 @@ interface Context {
   submitBillingError: string | null;
 }
 
-type MachineState =
+export type MachineState =
   | {
       value: "idle";
       context: Context & {
@@ -45,7 +49,7 @@ type MachineState =
       };
     }
   | {
-      value: "loadingBilling";
+      value: "loadingBillings";
       context: Context & {
         billingError: null;
         membersError: null;
@@ -56,7 +60,7 @@ type MachineState =
       };
     }
   | {
-      value: "getBillingOK";
+      value: "getBillingsOK";
       context: Context & {
         billingError: null;
         membersError: null;
@@ -67,7 +71,7 @@ type MachineState =
       };
     }
   | {
-      value: "getBillingError";
+      value: "getBillingsError";
       context: Context & {
         billingError: string;
         membersError: null;
@@ -210,10 +214,10 @@ type MachineState =
       };
     };
 
-type MachineEvents =
-  | { type: "FETCH_BILLING" }
-  | { type: "FETCH_BILLING_SUCCES"; billingsData: Billing[] }
-  | { type: "FETCH_BILLING_ERROR"; billingsErrorMessage: string }
+export type MachineEvents =
+  | { type: "FETCH_BILLINGS" }
+  | { type: "FETCH_BILLINGS_SUCCES"; billingsData: Billing[] }
+  | { type: "FETCH_BILLINGS_ERROR"; billingsErrorMessage: string }
   | { type: "ACTIVATE_BILLING_FORM"; formMode: FormMode }
   | { type: "REFETCH_BILLING" }
   | { type: "FETCH_MEMBER_SUCCESS"; membersData: Member[] }
@@ -239,6 +243,15 @@ type MachineEvents =
   | { type: "BACK_TO_SECOND_STEP_FORM" }
   | { type: "REFETCH_SUBMIT_BILLING" };
 
+type MachineService = {
+  getBillingsData: {
+    data: Billing[];
+  };
+  getMembersData: {
+    data: Member[];
+  };
+};
+
 export const billingMachine = createMachine<
   Context,
   MachineEvents,
@@ -247,6 +260,7 @@ export const billingMachine = createMachine<
   schema: {
     context: {} as Context,
     events: {} as MachineEvents,
+    services: {} as MachineService,
   },
   id: "billing",
   initial: "idle",
@@ -263,23 +277,29 @@ export const billingMachine = createMachine<
   },
   states: {
     idle: {
+      invoke: {
+        src: "initMachineTransitition",
+      },
       on: {
-        FETCH_BILLING: "loadingBilling",
+        FETCH_BILLINGS: "loadingBillings",
       },
     },
-    loadingBilling: {
+    loadingBillings: {
+      invoke: {
+        src: "getBillingsData",
+      },
       on: {
-        FETCH_BILLING_SUCCES: {
-          target: "getBillingOK",
+        FETCH_BILLINGS_SUCCES: {
+          target: "getBillingsOK",
           actions: "updateContext",
         },
-        FETCH_BILLING_ERROR: {
-          target: "getBillingError",
+        FETCH_BILLINGS_ERROR: {
+          target: "getBillingsError",
           actions: "updateContext",
         },
       },
     },
-    getBillingOK: {
+    getBillingsOK: {
       on: {
         ACTIVATE_BILLING_FORM: {
           actions: "updateContext",
@@ -287,15 +307,18 @@ export const billingMachine = createMachine<
         },
       },
     },
-    getBillingError: {
+    getBillingsError: {
       on: {
-        REFETCH_BILLING: "loadingBilling",
+        REFETCH_BILLING: "loadingBillings",
       },
     },
     billingFormIdle: {
       initial: "loadingMembers",
       states: {
         loadingMembers: {
+          invoke: {
+            src: "getMembersData",
+          },
           on: {
             FETCH_MEMBER_SUCCESS: {
               target: "getBillingDetailCondition",
@@ -366,7 +389,7 @@ export const billingMachine = createMachine<
         },
       },
       on: {
-        CANCEL_FILL_FORM: "getBillingOK",
+        CANCEL_FILL_FORM: "getBillingsOK",
       },
     },
     submitBilling: {
@@ -383,7 +406,7 @@ export const billingMachine = createMachine<
     submitBillingOK: {
       on: {
         BACK_TO_BILLING_SCREEN: {
-          target: "loadingBilling",
+          target: "loadingBillings",
         },
       },
     },
@@ -395,10 +418,35 @@ export const billingMachine = createMachine<
     },
   },
 }).withConfig({
+  services: {
+    initMachineTransitition: () => (send) => {
+      send({ type: "FETCH_BILLINGS" });
+    },
+    getBillingsData: () => (send) => {
+      queryClient
+        .fetchQuery("billings", getBillings)
+        .then((response) =>
+          send({ type: "FETCH_BILLINGS_SUCCES", billingsData: response.data })
+        )
+        .catch((error) =>
+          send({ type: "FETCH_BILLINGS_ERROR", billingsErrorMessage: error })
+        );
+    },
+    getMembersData: () => (send) => {
+      queryClient
+        .fetchQuery("members", getMembers)
+        .then((response) =>
+          send({ type: "FETCH_MEMBER_SUCCESS", membersData: response.data })
+        )
+        .catch((error) =>
+          send({ type: "FETCH_MEMBER_ERROR", membersErrorMessage: error })
+        );
+    },
+  },
   actions: {
     updateContext: assign((ctx, event) =>
       match(event)
-        .with({ type: "FETCH_BILLING" }, () => ctx)
+        .with({ type: "FETCH_BILLINGS" }, () => ctx)
         .with({ type: "REFETCH_BILLING" }, () => ({
           ...ctx,
           billingError: null,
@@ -447,11 +495,11 @@ export const billingMachine = createMachine<
             members: [],
           },
         }))
-        .with({ type: "FETCH_BILLING_SUCCES" }, (event) => ({
+        .with({ type: "FETCH_BILLINGS_SUCCES" }, (event) => ({
           ...ctx,
           billings: event.billingsData,
         }))
-        .with({ type: "FETCH_BILLING_ERROR" }, (event) => ({
+        .with({ type: "FETCH_BILLINGS_ERROR" }, (event) => ({
           ...ctx,
           billingError: event.billingsErrorMessage,
         }))
