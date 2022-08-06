@@ -8,7 +8,7 @@
     "build": "yarn gen:type && next build",
     "start": "next start",
     "lint": "next lint",
-    "start-json-server": "json-server --watch db.json ---port 5000"
+    "start-json-server": "node server.js"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.2.4",
