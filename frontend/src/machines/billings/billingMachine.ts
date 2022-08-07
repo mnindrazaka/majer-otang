@@ -220,8 +220,8 @@ export type MachineEvents =
   | { type: "FETCH_BILLINGS_ERROR"; billingsErrorMessage: string }
   | { type: "ACTIVATE_BILLING_FORM"; formMode: FormMode }
   | { type: "REFETCH_BILLING" }
-  | { type: "FETCH_MEMBER_SUCCESS"; membersData: Member[] }
-  | { type: "FETCH_MEMBER_ERROR"; membersErrorMessage: string }
+  | { type: "FETCH_MEMBERS_SUCCESS"; membersData: Member[] }
+  | { type: "FETCH_MEMBERS_ERROR"; membersErrorMessage: string }
   | { type: "REFETCH_MEMBERS" }
   | { type: "FETCH_BILLING_DETAIL_SUCCES"; billingDetailData: BillingDetail }
   | { type: "FETCH_BILLING_DETAIL_ERROR"; billingDetailErrorMessage: string }
@@ -320,11 +320,11 @@ export const billingMachine = createMachine<
             src: "getMembersData",
           },
           on: {
-            FETCH_MEMBER_SUCCESS: {
+            FETCH_MEMBERS_SUCCESS: {
               target: "getBillingDetailCondition",
               actions: "updateContext",
             },
-            FETCH_MEMBER_ERROR: {
+            FETCH_MEMBERS_ERROR: {
               target: "getMembersError",
               actions: "updateContext",
             },
@@ -436,10 +436,10 @@ export const billingMachine = createMachine<
       queryClient
         .fetchQuery("members", getMembers)
         .then((response) =>
-          send({ type: "FETCH_MEMBER_SUCCESS", membersData: response.data })
+          send({ type: "FETCH_MEMBERS_SUCCESS", membersData: response.data })
         )
         .catch((error) =>
-          send({ type: "FETCH_MEMBER_ERROR", membersErrorMessage: error })
+          send({ type: "FETCH_MEMBERS_ERROR", membersErrorMessage: error })
         );
     },
   },
@@ -518,11 +518,11 @@ export const billingMachine = createMachine<
           ...ctx,
           billingDetailError: event.billingDetailErrorMessage,
         }))
-        .with({ type: "FETCH_MEMBER_SUCCESS" }, (event) => ({
+        .with({ type: "FETCH_MEMBERS_SUCCESS" }, (event) => ({
           ...ctx,
           members: event.membersData,
         }))
-        .with({ type: "FETCH_MEMBER_ERROR" }, (event) => ({
+        .with({ type: "FETCH_MEMBERS_ERROR" }, (event) => ({
           ...ctx,
           membersError: event.membersErrorMessage,
         }))
