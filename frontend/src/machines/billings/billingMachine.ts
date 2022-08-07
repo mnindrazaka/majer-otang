@@ -33,7 +33,7 @@ interface Context {
 }
 
 export namespace State {
-  export namespace getBillingOK {
+  export namespace GetBillingOK {
     export type t = {
       value: "getBillingOK";
       context: Context & {
@@ -84,7 +84,7 @@ export namespace State {
           submitBillingError: null;
         };
       }
-    | getBillingOK.t
+    | GetBillingOK.t
     | {
         value: "getBillingError";
         context: Context & {
@@ -289,7 +289,7 @@ export const billingMachine = createMachine<Context, Event, State.t>({
           target: "getBillingOK",
           actions: assign(
             (context, event) =>
-              State["getBillingOK"].make(context, event.billingsData).context
+              State.GetBillingOK.make(context, event.billingsData).context
           ),
         },
         FETCH_BILLING_ERROR: {
