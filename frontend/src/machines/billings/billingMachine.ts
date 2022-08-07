@@ -415,7 +415,7 @@ export const billingMachine = createMachine<Context, Event, State.t>({
   },
 }).withConfig({
   actions: {
-    updateContext: assign((ctx, event, meta) =>
+    updateContext: assign((ctx, event) =>
       match(event)
         .with({ type: "FETCH_BILLING" }, () => ctx)
         .with({ type: "REFETCH_BILLING" }, () => ({
