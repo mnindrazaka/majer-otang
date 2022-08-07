@@ -6,10 +6,8 @@ import {
   BillingDetail,
   BillingMember,
 } from "../../utils/fetcher";
-import { QueryClient } from "react-query";
+import { queryClient } from "../../pages/_app";
 import { getBillings, getMembers } from "./mockFetcher";
-
-const queryClient = new QueryClient();
 
 type BillingForm = {
   title: string;
