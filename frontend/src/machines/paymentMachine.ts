@@ -3,11 +3,10 @@ import { Member } from "../__generated__/api";
 import { match } from "ts-pattern";
 
 interface Context {
-  memberDetail: Member[];
-  memberDetailError: string | null;
+  member: Member[];
+  memberError: string | null;
   payments: [];
   paymentsError: string | null;
-  submitPayment: [];
   submitPaymetError: string | null;
 }
 
@@ -92,8 +91,8 @@ type MachineState =
 
 type MachineEvents =
   | { type: "FETCH_MEMBER_DETAIL" }
-  | { type: "FETCH_MEMBER_DETAIL_SUCCESS"; memberDetailData: Member[] }
-  | { type: "FETCH_MEMBER_DETAIL_ERROR"; memberDetailErrorMessage: string }
+  | { type: "FETCH_MEMBER_DETAIL_SUCCESS"; memberData: Member[] }
+  | { type: "FETCH_MEMBER_DETAIL_ERROR"; memberErrorMessage: string }
   | { type: "REFETCH_MEMBER_DETAIL" }
   | { type: "FETCH_PAYMENT" }
   | { type: "FETCH_PAYMENT_SUCCESS"; paymentsData: [] }
@@ -118,11 +117,10 @@ export const paymentMachine = createMachine<
     events: {} as MachineEvents
   },
   context: {
-    memberDetail: [],
-    memberDetailError: null,
+    member: [],
+    memberError: null,
     payments: [],
     paymentsError: null,
-    submitPayment: [],
     submitPaymetError: null
   },
   states: {
@@ -225,12 +223,12 @@ export const paymentMachine = createMachine<
         .with({ type: "FETCH_MEMBER_DETAIL" }, () => ctx)
         .with({ type: "FETCH_MEMBER_DETAIL_ERROR" }, (event) => ({
           ...ctx,
-          memberDetailError: event.memberDetailErrorMessage
+          memberError: event.memberErrorMessage
         }))
         .with({ type: "REFETCH_MEMBER_DETAIL" }, () => ctx)
         .with({ type: "FETCH_MEMBER_DETAIL_SUCCESS" }, (event) => ({
           ...ctx,
-          memberDetail: event.memberDetailData
+          member: event.memberData
         }))
         .with({ type: "FETCH_PAYMENT" }, () => ctx)
         .with({ type: "FETCH_PAYMENT_ERROR" }, (event) => ({
