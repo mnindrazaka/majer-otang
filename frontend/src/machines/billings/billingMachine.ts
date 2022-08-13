@@ -5,9 +5,10 @@ import {
   Billing,
   BillingDetail,
   BillingMember,
+  membersApi,
+  billingsApi,
 } from "../../utils/fetcher";
 import { queryClient } from "../../pages/_app";
-import { getBillings, getMembers } from "./mockFetcher";
 
 type BillingForm = {
   title: string;
@@ -22,7 +23,7 @@ export enum FormMode {
   Edit = "EDIT",
 }
 
-interface Context {
+export interface Context {
   billings: Billing[];
   billingError: string | null;
   formMode: FormMode;
@@ -31,7 +32,7 @@ interface Context {
   billingDetail?: BillingDetail;
   billingDetailError: string | null;
   billingForm?: BillingForm;
-  submitBillingError: string | null;
+  submitBillingDetailError: string | null;
 }
 
 export type MachineState =
@@ -43,7 +44,7 @@ export type MachineState =
         billingDetail: undefined;
         billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: null;
+        submitBillingDetailError: null;
       };
     }
   | {
@@ -54,7 +55,7 @@ export type MachineState =
         billingDetail: undefined;
         billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: null;
+        submitBillingDetailError: null;
       };
     }
   | {
@@ -65,7 +66,7 @@ export type MachineState =
         billingDetail: undefined;
         billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: null;
+        submitBillingDetailError: null;
       };
     }
   | {
@@ -76,7 +77,7 @@ export type MachineState =
         billingDetail: undefined;
         billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: null;
+        submitBillingDetailError: null;
       };
     }
   | {
@@ -87,7 +88,7 @@ export type MachineState =
         billingDetail: undefined;
         billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: null;
+        submitBillingDetailError: null;
       };
     }
   | {
@@ -98,7 +99,7 @@ export type MachineState =
         billingDetail: undefined;
         billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: null;
+        submitBillingDetailError: null;
       };
     }
   | {
@@ -109,7 +110,7 @@ export type MachineState =
         billingDetail: undefined;
         billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: null;
+        submitBillingDetailError: null;
       };
     }
   | {
@@ -120,7 +121,7 @@ export type MachineState =
         billingDetail: undefined;
         billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: null;
+        submitBillingDetailError: null;
       };
     }
   | {
@@ -131,7 +132,7 @@ export type MachineState =
         billingDetail: undefined;
         billingDetailError: null;
         billingForm: undefined;
-        submitBillingError: null;
+        submitBillingDetailError: null;
       };
     }
   | {
@@ -142,7 +143,7 @@ export type MachineState =
         billingDetail: undefined;
         billingDetailError: string;
         billingForm: undefined;
-        submitBillingError: null;
+        submitBillingDetailError: null;
       };
     }
   | {
@@ -153,7 +154,7 @@ export type MachineState =
         billingDetail: BillingDetail;
         billingDetailError: null;
         billingForm: BillingForm;
-        submitBillingError: null;
+        submitBillingDetailError: null;
       };
     }
   | {
@@ -164,7 +165,7 @@ export type MachineState =
         billingDetail: BillingDetail;
         billingDetailError: null;
         billingForm: BillingForm;
-        submitBillingError: null;
+        submitBillingDetailError: null;
       };
     }
   | {
@@ -175,7 +176,7 @@ export type MachineState =
         billingDetail: BillingDetail;
         billingDetailError: null;
         billingForm: BillingForm;
-        submitBillingError: null;
+        submitBillingDetailError: null;
       };
     }
   | {
@@ -186,7 +187,7 @@ export type MachineState =
         billingDetail: BillingDetail;
         billingDetailError: null;
         billingForm: BillingForm;
-        submitBillingError: null;
+        submitBillingDetailError: null;
       };
     }
   | {
@@ -197,7 +198,7 @@ export type MachineState =
         billingDetail: BillingDetail;
         billingDetailError: null;
         billingForm: BillingForm;
-        submitBillingError: null;
+        submitBillingDetailError: null;
       };
     }
   | {
@@ -208,7 +209,7 @@ export type MachineState =
         billingDetail: BillingDetail;
         billingDetailError: null;
         billingForm: BillingForm;
-        submitBillingError: string;
+        submitBillingDetailError: string;
       };
     };
 
@@ -217,7 +218,7 @@ export type MachineEvents =
   | { type: "FETCH_BILLINGS_SUCCES"; billingsData: Billing[] }
   | { type: "FETCH_BILLINGS_ERROR"; billingsErrorMessage: string }
   | { type: "ACTIVATE_BILLING_FORM"; formMode: FormMode }
-  | { type: "REFETCH_BILLING" }
+  | { type: "REFETCH_BILLINGS" }
   | { type: "FETCH_MEMBERS_SUCCESS"; membersData: Member[] }
   | { type: "FETCH_MEMBERS_ERROR"; membersErrorMessage: string }
   | { type: "REFETCH_MEMBERS" }
@@ -241,15 +242,6 @@ export type MachineEvents =
   | { type: "BACK_TO_SECOND_STEP_FORM" }
   | { type: "REFETCH_SUBMIT_BILLING" };
 
-type MachineService = {
-  getBillingsData: {
-    data: Billing[];
-  };
-  getMembersData: {
-    data: Member[];
-  };
-};
-
 export const billingMachine = createMachine<
   Context,
   MachineEvents,
@@ -258,7 +250,6 @@ export const billingMachine = createMachine<
   schema: {
     context: {} as Context,
     events: {} as MachineEvents,
-    services: {} as MachineService,
   },
   id: "billing",
   initial: "idle",
@@ -271,7 +262,7 @@ export const billingMachine = createMachine<
     billingDetail: undefined,
     billingDetailError: null,
     billingForm: undefined,
-    submitBillingError: null,
+    submitBillingDetailError: null,
   },
   states: {
     idle: {
@@ -307,7 +298,7 @@ export const billingMachine = createMachine<
     },
     getBillingsError: {
       on: {
-        REFETCH_BILLING: "loadingBillings",
+        REFETCH_BILLINGS: "loadingBillings",
       },
     },
     billingFormIdle: {
@@ -422,7 +413,7 @@ export const billingMachine = createMachine<
     },
     getBillingsData: () => (send) => {
       queryClient
-        .fetchQuery("billings", getBillings)
+        .fetchQuery("billings", () => billingsApi.getBillingList())
         .then((response) =>
           send({ type: "FETCH_BILLINGS_SUCCES", billingsData: response.data })
         )
@@ -432,7 +423,7 @@ export const billingMachine = createMachine<
     },
     getMembersData: () => (send) => {
       queryClient
-        .fetchQuery("members", getMembers)
+        .fetchQuery("members", () => membersApi.getMemberList())
         .then((response) =>
           send({ type: "FETCH_MEMBERS_SUCCESS", membersData: response.data })
         )
@@ -445,7 +436,7 @@ export const billingMachine = createMachine<
     updateContext: assign((ctx, event) =>
       match(event)
         .with({ type: "FETCH_BILLINGS" }, () => ctx)
-        .with({ type: "REFETCH_BILLING" }, () => ({
+        .with({ type: "REFETCH_BILLINGS" }, () => ({
           ...ctx,
           billingError: null,
           billings: [],
@@ -462,7 +453,7 @@ export const billingMachine = createMachine<
         }))
         .with({ type: "REFETCH_SUBMIT_BILLING" }, () => ({
           ...ctx,
-          submitBillingError: null,
+          submitBillingDetailError: null,
         }))
         .with({ type: "NEXT_STEP" }, () => ctx)
         .with({ type: "PREV_STEP" }, () => ctx)
@@ -480,7 +471,7 @@ export const billingMachine = createMachine<
           billingDetail: undefined,
           billingDetailError: null,
           billingForm: undefined,
-          submitBillingError: null,
+          submitBillingDetailError: null,
         }))
         .with({ type: "ACTIVATE_BILLING_FORM" }, (event) => ({
           ...ctx,
@@ -530,7 +521,7 @@ export const billingMachine = createMachine<
         }))
         .with({ type: "SUBMIT_BILLING_ERROR" }, (event) => ({
           ...ctx,
-          submitBillingError: event.submitBillingErrorMessage,
+          submitBillingDetailError: event.submitBillingErrorMessage,
         }))
         .exhaustive()
     ),
