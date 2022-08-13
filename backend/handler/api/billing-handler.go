@@ -25,5 +25,5 @@ func (b *billingHandler) GetBillings(w http.ResponseWriter, r *http.Request, ps 
 		return
 	}
 
-	builGetBillingsSuccessResponse(w, billings)
+	buildSuccessResponse(w, billings)
 }
