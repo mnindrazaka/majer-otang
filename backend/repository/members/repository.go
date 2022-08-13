@@ -14,8 +14,8 @@ type memberRepository struct {
 	db *mongo.Client
 }
 
-func NewMemberRepository(cfg *mongo.Client) repository.MemberRepository {
-	return &memberRepository{cfg}
+func NewMemberRepository(db *mongo.Client) repository.MemberRepository {
+	return &memberRepository{db}
 }
 
 func (m *memberRepository) GetMemberByID(ctx context.Context, id string) (*entity.Member, error) {
