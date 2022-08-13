@@ -10,7 +10,7 @@ import { useMachine } from "@xstate/react";
 import {
   billingMachine,
   FormMode,
-  MachineState,
+  State,
 } from "../../machines/billings/billingMachine";
 import { match } from "ts-pattern";
 
@@ -30,7 +30,7 @@ const BillingsPage = () => {
   return (
     <Layout>
       <Box width="full">
-        {match<MachineState>(state as MachineState)
+        {match<State.t>(state as State.t)
           .with({ value: "idle" }, () => <GeneralLoading />)
           .with({ value: "loadingBillings" }, () => <GeneralLoading />)
           .with({ value: "getBillingsOK" }, () => (
@@ -55,7 +55,7 @@ const BillingsPage = () => {
           .with({ value: "billingFormIdle" }, () => null)
           .with({ value: "billingFormReady" }, () => null)
           .with({ value: "submitBilling" }, () => null)
-          .with({ value: "submitBillingError" }, () => null)
+          .with({ value: "submitBillingDetailError" }, () => null)
           .with({ value: "submitBillingOK" }, () => null)
           .with(
             { value: { billingFormIdle: "getBillingDetailData" } },
