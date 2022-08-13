@@ -42,6 +42,7 @@ func main() {
 
 	router := httprouter.New()
 	router.GET("/member/:memberID", memberHalder.GetMemberByID)
+	router.GET("/members", memberHalder.GetMemberList)
 
 	// billings
 	router.GET("/billings", billingHandler.GetBillings)

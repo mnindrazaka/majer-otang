@@ -3,17 +3,17 @@
     {
       "id": "1",
       "title": "Iuran Minyak Goreng",
-      "amount": 25.000
+      "amount": 25.0
     },
     {
       "id": "2",
       "title": "Iuran Beras 50Kg",
-      "amount": 50.000
+      "amount": 50.0
     },
     {
       "id": "2",
       "title": "Iuran belanja mingguan",
-      "amount": 200.000
+      "amount": 200.0
     }
   ],
   "members": [
