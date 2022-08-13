@@ -11,6 +11,7 @@ import (
 	"github.com/mnindrazaka/billing/config/database"
 	"github.com/mnindrazaka/billing/core/module"
 	"github.com/mnindrazaka/billing/handler/api"
+	"github.com/mnindrazaka/billing/repository/billingMembers"
 	"github.com/mnindrazaka/billing/repository/billings"
 	"github.com/mnindrazaka/billing/repository/members"
 )
@@ -37,7 +38,8 @@ func main() {
 	memberHalder := api.NewUserHandler(memberUsecase)
 
 	billingRepo := billings.NewBillingRepository(db)
-	billingUsecase := module.NewBillingUsecase(billingRepo)
+	billingMemberRepo := billingMembers.NewBillingMemberRepository(db)
+	billingUsecase := module.NewBillingUsecase(billingRepo, billingMemberRepo)
 	billingHandler := api.NewBillingHandler(billingUsecase)
 
 	router := httprouter.New()
