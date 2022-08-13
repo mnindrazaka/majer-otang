@@ -6,5 +6,5 @@ import (
 )
 
 type BillingRepository interface {
-	GetBillingList(ctx context.Context) ([]entity.Billing, error)
+	GetBillingList(ctx context.Context) ([]*entity.Billing, error)
 }

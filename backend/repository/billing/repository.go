@@ -16,7 +16,7 @@ func NewBillingRepository(db *mongo.Client) repository.BillingRepository {
 	return &billingRepository{db}
 }
 
-func (b *billingRepository) GetBillingList(ctx context.Context) ([]entity.Billing, error) {
+func (b *billingRepository) GetBillingList(ctx context.Context) ([]*entity.Billing, error) {
 	cursor, err := b.db.Database("billing").
 		Collection("billings").
 		Find(ctx, bson.M{})
@@ -25,11 +25,11 @@ func (b *billingRepository) GetBillingList(ctx context.Context) ([]entity.Billin
 		return nil, err
 	}
 
-	var billings []entity.Billing
+	var billings []*entity.Billing
 	for cursor.Next(ctx) {
 		var billing entity.Billing
 		cursor.Decode(&billing)
-		billings = append(billings, billing)
+		billings = append(billings, &billing)
 	}
 
 	return billings, nil
