@@ -353,7 +353,7 @@
           },
           "amount": {
             "type": "integer",
-            "x-go-custom-tag": "bson:\"amount\""
+            "x-go-custom-tag": "bson:\"bill_amount\",json:\"amount\""
           }
         }
       },
