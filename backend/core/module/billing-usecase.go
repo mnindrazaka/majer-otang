@@ -23,7 +23,7 @@ func NewBillingUsecase(billingRepository repository.BillingRepository, billingMe
 
 func (b *billingUsecase) GetBillingByID(ctx context.Context, id string) (*entity.BillingDetail, error) {
 	billing, err := b.billingRepository.GetBillingByID(ctx, id)
-	billingMembers, _ := b.billingMemberRepository.GetBillingMemberByBillingID(ctx, id)
+	billingMembers, err := b.billingMemberRepository.GetBillingMemberByBillingID(ctx, id)
 
 	billing.SetMembers(billingMembers)
 
