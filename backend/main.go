@@ -47,6 +47,8 @@ func main() {
 	router.GET("/members", memberHalder.GetMemberList)
 
 	router.GET("/billing/:billingID", billingHandler.GetBillingByID)
+	// billings
+	router.GET("/billings", billingHandler.GetBillings)
 
 	err = http.ListenAndServe(fmt.Sprintf(":%v", cfg.Port), router)
 	if err != nil {

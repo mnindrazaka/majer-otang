@@ -13,6 +13,7 @@ type billingUsecase struct {
 }
 
 type BillingUsecase interface {
+	GetBillingsList(ctx context.Context) ([]*entity.Billing, error)
 	GetBillingByID(ctx context.Context, id string) (*entity.BillingDetail, error)
 }
 
@@ -28,4 +29,8 @@ func (b *billingUsecase) GetBillingByID(ctx context.Context, id string) (*entity
 	// fmt.Println(billingMembers)
 
 	return billing, err
+}
+
+func (b *billingUsecase) GetBillingsList(ctx context.Context) ([]*entity.Billing, error) {
+	return b.billingRepository.GetBillingList(ctx)
 }

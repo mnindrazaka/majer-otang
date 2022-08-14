@@ -15,8 +15,27 @@ type billingRepository struct {
 	db *mongo.Client
 }
 
-func NewBillingRepository(cfg *mongo.Client) repository.BillingRepository {
-	return &billingRepository{cfg}
+func NewBillingRepository(db *mongo.Client) repository.BillingRepository {
+	return &billingRepository{db}
+}
+
+func (b *billingRepository) GetBillingList(ctx context.Context) ([]*entity.Billing, error) {
+	cursor, err := b.db.Database("billing").
+		Collection("billings").
+		Find(ctx, bson.M{})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var billings []*entity.Billing
+	for cursor.Next(ctx) {
+		var billing entity.Billing
+		cursor.Decode(&billing)
+		billings = append(billings, &billing)
+	}
+
+	return billings, nil
 }
 
 func (b *billingRepository) GetBillingByID(ctx context.Context, id string) (*entity.BillingDetail, error) {

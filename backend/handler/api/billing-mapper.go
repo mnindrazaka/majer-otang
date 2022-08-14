@@ -7,9 +7,16 @@ import (
 )
 
 func buildGetBillingByIDError(w http.ResponseWriter, err error) {
-	switch err{
+	switch err {
 	case utils.ErrNoDocument, utils.ErrorInvalidPrimitiveID:
 		buildBadRequestResponse(w, err)
+	default:
+		buildInternalServerResponse(w, err)
+	}
+}
+
+func buildGetBililngsError(w http.ResponseWriter, err error) {
+	switch err {
 	default:
 		buildInternalServerResponse(w, err)
 	}

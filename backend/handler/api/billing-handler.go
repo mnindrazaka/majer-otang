@@ -10,9 +10,9 @@ import (
 type billingHandler struct {
 	billingUsecase module.BillingUsecase
 }
-
 type BillingHandler interface{
 	GetBillingByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
+	GetBillings(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 }
 
 func NewBillingHandler(billingUsecase module.BillingUsecase) BillingHandler {
@@ -23,8 +23,17 @@ func (b *billingHandler) GetBillingByID(w http.ResponseWriter, r *http.Request, 
 	billing, err := b.billingUsecase.GetBillingByID(r.Context(), ps.ByName("billingID"))
 	
 	if err != nil {
-		buildGetBillingByIDError(w, err)
+		buildGetBillingByIDError (w, err)
 		return
 	}
 	buildGetBillingByIDSuccess(w, billing)
+}
+func (b *billingHandler) GetBillings(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	billings, err := b.billingUsecase.GetBillingsList(r.Context())
+	if err != nil {
+		buildGetBililngsError(w, err)
+		return
+	}
+
+	buildSuccessResponse(w, billings)
 }
