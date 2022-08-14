@@ -341,7 +341,7 @@ export const billingMachine = createMachine<Context, Event, State.t>({
               State.GetBillingsOK.make(context, event.billingsData).context
           ),
         },
-        FETCH_BILLING_ERROR: {
+        FETCH_BILLINGS_ERROR: {
           target: "getBillingsError",
           actions: assign(
             (context, event) =>
@@ -494,7 +494,7 @@ export const billingMachine = createMachine<Context, Event, State.t>({
             (context, event) =>
               State.SubmitBillingError.make(
                 context,
-                event.submitBillingErrorMessage
+                event.submitBillingDetailErrorMessage
               ).context
           ),
         },
@@ -507,7 +507,7 @@ export const billingMachine = createMachine<Context, Event, State.t>({
         },
       },
     },
-    submitBillingDetailError: {
+    submitBillingError: {
       on: {
         BACK_TO_SECOND_STEP_FORM: "billingFormReady.secondStep",
         REFETCH_SUBMIT_BILLING: "submitBilling",
@@ -515,6 +515,31 @@ export const billingMachine = createMachine<Context, Event, State.t>({
     },
   },
 }).withConfig({
+  services: {
+    initMachineTransitition: () => (send) => {
+      send({ type: "FETCH_BILLINGS" });
+    },
+    getBillingsData: () => (send) => {
+      queryClient
+        .fetchQuery("billings", () => billingsApi.getBillingList())
+        .then((response) =>
+          send({ type: "FETCH_BILLINGS_SUCCES", billingsData: response.data })
+        )
+        .catch((error) =>
+          send({ type: "FETCH_BILLINGS_ERROR", billingsErrorMessage: error })
+        );
+    },
+    getMembersData: () => (send) => {
+      queryClient
+        .fetchQuery("members", () => membersApi.getMemberList())
+        .then((response) =>
+          send({ type: "FETCH_MEMBERS_SUCCESS", membersData: response.data })
+        )
+        .catch((error) =>
+          send({ type: "FETCH_MEMBERS_ERROR", membersErrorMessage: error })
+        );
+    },
+  },
   guards: {
     isCreatingForm: (ctx) => ctx.formMode === "CREATE",
   },
