@@ -2,16 +2,18 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
 	"github.com/mnindrazaka/billing/config"
 	"github.com/mnindrazaka/billing/config/database"
 	"github.com/mnindrazaka/billing/core/module"
 	"github.com/mnindrazaka/billing/handler/api"
-	"github.com/mnindrazaka/billing/repository/billing"
+	"github.com/mnindrazaka/billing/repository/billingMembers"
+	"github.com/mnindrazaka/billing/repository/billings"
 	"github.com/mnindrazaka/billing/repository/members"
-	"log"
-	"net/http"
 )
 
 func main() {
@@ -35,15 +37,16 @@ func main() {
 	memberUsecase := module.NewMemberUsecase(memberRepo)
 	memberHalder := api.NewUserHandler(memberUsecase)
 
-	// billings
-	billngRepo := billing.NewBillingRepository(db)
-	billingUsecase := module.NewBillingUsecase(billngRepo)
+	billingRepo := billings.NewBillingRepository(db)
+	billingMemberRepo := billingMembers.NewBillingMemberRepository(db)
+	billingUsecase := module.NewBillingUsecase(billingRepo, billingMemberRepo)
 	billingHandler := api.NewBillingHandler(billingUsecase)
 
 	router := httprouter.New()
 	router.GET("/member/:memberID", memberHalder.GetMemberByID)
 	router.GET("/members", memberHalder.GetMemberList)
 
+	router.GET("/billing/:billingID", billingHandler.GetBillingByID)
 	// billings
 	router.GET("/billings", billingHandler.GetBillings)
 
