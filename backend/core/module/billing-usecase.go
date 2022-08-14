@@ -2,7 +2,6 @@ package module
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/mnindrazaka/billing/core/entity"
 	"github.com/mnindrazaka/billing/core/repository"
@@ -26,7 +25,7 @@ func (b *billingUsecase) GetBillingByID(ctx context.Context, id string) (*entity
 	billingMembers, _ := b.billingMemberRepository.GetBillingMemberByBillingID(ctx, id)
 
 	billing.SetMembers(billingMembers)
-	fmt.Println(billingMembers)
+	// fmt.Println(billingMembers)
 
 	return billing, err
 }
