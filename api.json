@@ -77,7 +77,7 @@
         "tags": [
           "Billings"
         ],
-        "operationId": "getBilling",
+        "operationId": "getBillingList",
         "summary": "GET Billing Data",
         "responses": {
           "200": {
