@@ -26,7 +26,6 @@ func (b *billingUsecase) GetBillingByID(ctx context.Context, id string) (*entity
 	billingMembers, _ := b.billingMemberRepository.GetBillingMemberByBillingID(ctx, id)
 
 	billing.SetMembers(billingMembers)
-	// fmt.Println(billingMembers)
 
 	return billing, err
 }
