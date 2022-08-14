@@ -4,7 +4,10 @@ import {
   Billing,
   BillingDetail,
   BillingMember,
+  membersApi,
+  billingsApi,
 } from "../../utils/fetcher";
+import { queryClient } from "../../pages/_app";
 
 type BillingForm = {
   title: string;
@@ -14,12 +17,12 @@ type BillingForm = {
   members: BillingMember[];
 };
 
-enum FormMode {
+export enum FormMode {
   Create = "CREATE",
   Edit = "EDIT",
 }
 
-interface Context {
+export interface Context {
   billings: Billing[];
   billingError: string | null;
   formMode: FormMode;
@@ -270,14 +273,14 @@ export namespace State {
     | SubmitBillingError.t;
 }
 
-type Event =
-  | { type: "FETCH_BILLING" }
-  | { type: "FETCH_BILLING_SUCCES"; billingsData: Billing[] }
-  | { type: "FETCH_BILLING_ERROR"; billingsErrorMessage: string }
+export type Event =
+  | { type: "FETCH_BILLINGS" }
+  | { type: "FETCH_BILLINGS_SUCCES"; billingsData: Billing[] }
+  | { type: "FETCH_BILLINGS_ERROR"; billingsErrorMessage: string }
   | { type: "ACTIVATE_BILLING_FORM"; formMode: FormMode }
-  | { type: "REFETCH_BILLING" }
-  | { type: "FETCH_MEMBER_SUCCESS"; membersData: Member[] }
-  | { type: "FETCH_MEMBER_ERROR"; membersErrorMessage: string }
+  | { type: "REFETCH_BILLINGS" }
+  | { type: "FETCH_MEMBERS_SUCCESS"; membersData: Member[] }
+  | { type: "FETCH_MEMBERS_ERROR"; membersErrorMessage: string }
   | { type: "REFETCH_MEMBERS" }
   | { type: "FETCH_BILLING_DETAIL_SUCCES"; billingDetailData: BillingDetail }
   | { type: "FETCH_BILLING_DETAIL_ERROR"; billingDetailErrorMessage: string }
@@ -294,7 +297,7 @@ type Event =
       type: "SUBMIT_BILLING";
     }
   | { type: "SUBMIT_BILLING_SUCCES" }
-  | { type: "SUBMIT_BILLING_ERROR"; submitBillingErrorMessage: string }
+  | { type: "SUBMIT_BILLING_ERROR"; submitBillingDetailErrorMessage: string }
   | { type: "BACK_TO_BILLING_SCREEN" }
   | { type: "BACK_TO_SECOND_STEP_FORM" }
   | { type: "REFETCH_SUBMIT_BILLING" };
@@ -319,13 +322,19 @@ export const billingMachine = createMachine<Context, Event, State.t>({
   },
   states: {
     idle: {
+      invoke: {
+        src: "initMachineTransitition",
+      },
       on: {
-        FETCH_BILLING: "loadingBillings",
+        FETCH_BILLINGS: "loadingBillings",
       },
     },
     loadingBillings: {
+      invoke: {
+        src: "getBillingsData",
+      },
       on: {
-        FETCH_BILLING_SUCCES: {
+        FETCH_BILLINGS_SUCCES: {
           target: "getBillingsOK",
           actions: assign(
             (context, event) =>
@@ -355,15 +364,18 @@ export const billingMachine = createMachine<Context, Event, State.t>({
     },
     getBillingsError: {
       on: {
-        REFETCH_BILLING: "loadingBillings",
+        REFETCH_BILLINGS: "loadingBillings",
       },
     },
     billingFormIdle: {
       initial: "loadingMembers",
       states: {
         loadingMembers: {
+          invoke: {
+            src: "getMembersData",
+          },
           on: {
-            FETCH_MEMBER_SUCCESS: {
+            FETCH_MEMBERS_SUCCESS: {
               target: "getBillingDetailCondition",
               actions: assign(
                 (context, event) =>
@@ -373,7 +385,7 @@ export const billingMachine = createMachine<Context, Event, State.t>({
                   ).context
               ),
             },
-            FETCH_MEMBER_ERROR: {
+            FETCH_MEMBERS_ERROR: {
               target: "getMembersError",
               actions: assign(
                 (context, event) =>
@@ -495,7 +507,7 @@ export const billingMachine = createMachine<Context, Event, State.t>({
         },
       },
     },
-    submitBillingError: {
+    submitBillingDetailError: {
       on: {
         BACK_TO_SECOND_STEP_FORM: "billingFormReady.secondStep",
         REFETCH_SUBMIT_BILLING: "submitBilling",

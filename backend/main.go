@@ -8,6 +8,7 @@ import (
 	"github.com/mnindrazaka/billing/config/database"
 	"github.com/mnindrazaka/billing/core/module"
 	"github.com/mnindrazaka/billing/handler/api"
+	"github.com/mnindrazaka/billing/repository/billing"
 	"github.com/mnindrazaka/billing/repository/members"
 	"log"
 	"net/http"
@@ -34,9 +35,17 @@ func main() {
 	memberUsecase := module.NewMemberUsecase(memberRepo)
 	memberHalder := api.NewUserHandler(memberUsecase)
 
+	// billings
+	billngRepo := billing.NewBillingRepository(db)
+	billingUsecase := module.NewBillingUsecase(billngRepo)
+	billingHandler := api.NewBillingHandler(billingUsecase)
+
 	router := httprouter.New()
 	router.GET("/member/:memberID", memberHalder.GetMemberByID)
 	router.GET("/members", memberHalder.GetMemberList)
+
+	// billings
+	router.GET("/billings", billingHandler.GetBillings)
 
 	err = http.ListenAndServe(fmt.Sprintf(":%v", cfg.Port), router)
 	if err != nil {

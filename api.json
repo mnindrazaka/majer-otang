@@ -77,7 +77,7 @@
         "tags": [
           "Billings"
         ],
-        "operationId": "getBilling",
+        "operationId": "getBillingList",
         "summary": "GET Billing Data",
         "responses": {
           "200": {
@@ -353,7 +353,7 @@
           },
           "amount": {
             "type": "integer",
-            "x-go-custom-tag": "bson:\"amount\""
+            "x-go-custom-tag": "bson:\"bill_amount\",json:\"amount\""
           }
         }
       },
