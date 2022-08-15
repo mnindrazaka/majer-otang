@@ -3,84 +3,176 @@ import { Member } from "../__generated__/api";
 import { match } from "ts-pattern";
 
 interface Context {
-  member: Member[];
+  member: Member;
   memberError: string | null;
   payments: [];
   paymentsError: string | null;
   submitPaymetError: string | null;
 }
 
-type MachineState =
-  | {
+export namespace State {
+  export namespace Idle {
+    export type t = {
       value: "idle";
       context: Context & {
         memberError: null;
         paymentsError: null;
         submitPaymetError: null;
       };
-    }
-  | {
-      value: "fetchingMemberDetail";
-      context: Context & {
-        memberError: null;
-        paymentsError: null;
-      };
-    }
-  | {
-      value: "fetchingMemberDetailError";
-      context: Context & {
-        memberError: string;
-        paymentsError: null;
-      };
-    }
-  | {
-      value: "fetchingMemberDetailSucces";
+    };
+  }
+
+  export namespace FetchingMember {
+    export type t = {
+      value: "fetchingMember";
       context: Context & {
         memberError: null;
         paymentsError: null;
         submitPaymetError: null;
       };
-    }
-  | {
+    };
+
+    export const make = (context: Context): t => ({
+      value: "fetchingMember",
+      context: {
+        ...context,
+        paymentsError: null,
+        memberError: null,
+        submitPaymetError: null
+      }
+    });
+  }
+
+  export namespace FetchingMemberSuccess {
+    export type t = {
+      value: "fetchingMemberSuccess";
+      context: Context & {
+        memberError: null;
+        paymentsError: null;
+        submitPaymetError: null;
+      };
+    };
+
+    export const make = (context: Context, member: Member): t => ({
+      value: "fetchingMemberSuccess",
+      context: {
+        ...context,
+        member,
+        memberError: null,
+        paymentsError: null,
+        submitPaymetError: null
+      }
+    });
+  }
+
+  export namespace FetchingMemberError {
+    export type t = {
+      value: "fetchingMemberError";
+      context: Context & {
+        memberError: string;
+        paymentsError: null;
+        submitPaymetError: null;
+      };
+    };
+
+    export const make = (context: Context, memberError: string): t => ({
+      value: "fetchingMemberError",
+      context: {
+        ...context,
+        memberError,
+        paymentsError: null,
+        submitPaymetError: null
+      }
+    });
+  }
+
+  export namespace FetchingPayment {
+    export type t = {
       value: "fetchingPayment";
       context: Context & {
         memberError: null;
         paymentsError: null;
         submitPaymetError: null;
       };
-    }
-  | {
-      value: "fetchingPaymentError";
-      context: Context & {
-        memberError: null;
-        paymentsError: string;
-      };
-    }
-  | {
+    };
+
+    export const make = (context: Context): t => ({
+      value: "fetchingPayment",
+      context: {
+        ...context,
+        paymentsError: null,
+        memberError: null,
+        submitPaymetError: null
+      }
+    });
+  }
+
+  export namespace FetchingPaymentSuccess {
+    export type t = {
       value: "fetchingPaymentSuccess";
       context: Context & {
         memberError: null;
         paymentsError: null;
         submitPaymetError: null;
       };
-    }
-  | {
+    };
+
+    export const make = (context: Context, payments: []): t => ({
+      value: "fetchingPaymentSuccess",
+      context: {
+        ...context,
+        payments,
+        memberError: null,
+        paymentsError: null,
+        submitPaymetError: null
+      }
+    });
+  }
+  export namespace FetchingPaymentError {
+    export type t = {
+      value: "fetchingPaymentError";
+      context: Context & {
+        memberError: null;
+        paymentsError: string;
+        submitPaymetError: null;
+      };
+    };
+
+    export const make = (context: Context, paymentsError: string): t => ({
+      value: "fetchingPaymentError",
+      context: {
+        ...context,
+        paymentsError,
+        memberError: null,
+        submitPaymetError: null
+      }
+    });
+  }
+
+  export namespace ConfirmingPayment {
+    export type t = {
       value: "confirmingPayment";
       context: Context & {
         memberError: null;
         paymentsError: null;
         submitPaymetError: null;
       };
-    }
-  | {
+    };
+  }
+
+  export namespace SubmittingPayment {
+    export type t = {
       value: "submittingPayment";
       context: Context & {
         memberError: null;
         paymentsError: null;
         submitPaymetError: null;
       };
-    }
-  | {
+    };
+  }
+
+  export namespace SubmittingPaymentError {
+    export type t = {
       value: "submittingPaymentError";
       context: Context & {
         memberError: null;
@@ -89,11 +181,35 @@ type MachineState =
       };
     };
 
+    export const make = (context: Context, submitPaymetError: string): t => ({
+      value: "submittingPaymentError",
+      context: {
+        ...context,
+        paymentsError: null,
+        memberError: null,
+        submitPaymetError
+      }
+    });
+  }
+
+  export type t =
+    | Idle.t
+    | FetchingMember.t
+    | FetchingMemberError.t
+    | FetchingMemberSuccess.t
+    | FetchingPayment.t
+    | FetchingPaymentSuccess.t
+    | FetchingPaymentError.t
+    | ConfirmingPayment.t
+    | SubmittingPayment.t
+    | SubmittingPaymentError.t;
+}
+
 type MachineEvents =
-  | { type: "FETCH_MEMBER_DETAIL" }
-  | { type: "FETCH_MEMBER_DETAIL_SUCCESS"; memberData: Member[] }
-  | { type: "FETCH_MEMBER_DETAIL_ERROR"; memberErrorMessage: string }
-  | { type: "REFETCH_MEMBER_DETAIL" }
+  | { type: "FETCH_MEMBER" }
+  | { type: "FETCH_MEMBER_SUCCESS"; memberData: Member }
+  | { type: "FETCH_MEMBER_ERROR"; memberErrorMessage: string }
+  | { type: "REFETCH_MEMBER" }
   | { type: "FETCH_PAYMENT" }
   | { type: "FETCH_PAYMENT_SUCCESS"; paymentsData: [] }
   | { type: "FETCH_PAYMENT_ERROR"; paymentErrorMessage: string }
@@ -105,11 +221,7 @@ type MachineEvents =
   | { type: "SUBMIT_PAYMENT_ERROR"; submitPaymentErrorMessage: string }
   | { type: "RESUBMIT_PAYMENT" };
 
-export const paymentMachine = createMachine<
-  Context,
-  MachineEvents,
-  MachineState
->({
+export const paymentMachine = createMachine<Context, MachineEvents, State.t>({
   id: "Payment",
   initial: "idle",
   schema: {
@@ -117,7 +229,10 @@ export const paymentMachine = createMachine<
     events: {} as MachineEvents
   },
   context: {
-    member: [],
+    member: {
+      id: "",
+      name: ""
+    },
     memberError: null,
     payments: [],
     paymentsError: null,
@@ -126,34 +241,42 @@ export const paymentMachine = createMachine<
   states: {
     idle: {
       on: {
-        FETCH_MEMBER_DETAIL: {
-          target: "fetchingMemberDetail"
+        FETCH_MEMBER: {
+          target: "fetchingMember"
         }
       }
     },
-    fetchingMemberDetail: {
+    fetchingMember: {
       on: {
-        FETCH_MEMBER_DETAIL_SUCCESS: {
-          target: "fetchingMemberDetailSuccess",
-          actions: "updateContext"
+        FETCH_MEMBER_SUCCESS: {
+          target: "fetchingMemberSuccess",
+          actions: assign(
+            (context, event) =>
+              State.FetchingMemberSuccess.make(context, event.memberData)
+                .context
+          )
         },
-        FETCH_MEMBER_DETAIL_ERROR: {
-          target: "fetchingMemberDetailError",
-          actions: "updateContext"
+        FETCH_MEMBER_ERROR: {
+          target: "fetchingMemberError",
+          actions: assign(
+            (context, event) =>
+              State.FetchingMemberError.make(context, event.memberErrorMessage)
+                .context
+          )
         }
       }
     },
-    fetchingMemberDetailSuccess: {
+    fetchingMemberSuccess: {
       on: {
         FETCH_PAYMENT: {
           target: "fetchingPayment"
         }
       }
     },
-    fetchingMemberDetailError: {
+    fetchingMemberError: {
       on: {
-        REFETCH_MEMBER_DETAIL: {
-          target: "fetchingMemberDetail"
+        REFETCH_MEMBER: {
+          target: "fetchingMember"
         }
       }
     },
@@ -161,11 +284,21 @@ export const paymentMachine = createMachine<
       on: {
         FETCH_PAYMENT_SUCCESS: {
           target: "fetchingPaymentSuccess",
-          actions: "updateContext"
+          actions: assign(
+            (context, event) =>
+              State.FetchingPaymentSuccess.make(context, event.paymentsData)
+                .context
+          )
         },
         FETCH_PAYMENT_ERROR: {
           target: "fetchingPaymentError",
-          actions: "updateContext"
+          actions: assign(
+            (context, event) =>
+              State.FetchingPaymentError.make(
+                context,
+                event.paymentErrorMessage
+              ).context
+          )
         }
       }
     },
@@ -197,11 +330,16 @@ export const paymentMachine = createMachine<
       on: {
         SUBMIT_PAYMENT_ERROR: {
           target: "submittingPaymentError",
-          actions: "updateContext"
+          actions: assign(
+            (context, event) =>
+              State.SubmittingPaymentError.make(
+                context,
+                event.submitPaymentErrorMessage
+              ).context
+          )
         },
         SUBMIT_PAYMENT_SUCCESS: {
-          target: "fetchingPayment",
-          actions: "updateContext"
+          target: "fetchingPayment"
         }
       }
     },
@@ -215,41 +353,5 @@ export const paymentMachine = createMachine<
         }
       }
     }
-  }
-}).withConfig({
-  actions: {
-    updateContext: assign((ctx, event) =>
-      match(event)
-        .with({ type: "FETCH_MEMBER_DETAIL" }, () => ctx)
-        .with({ type: "FETCH_MEMBER_DETAIL_ERROR" }, (event) => ({
-          ...ctx,
-          memberError: event.memberErrorMessage
-        }))
-        .with({ type: "REFETCH_MEMBER_DETAIL" }, () => ctx)
-        .with({ type: "FETCH_MEMBER_DETAIL_SUCCESS" }, (event) => ({
-          ...ctx,
-          member: event.memberData
-        }))
-        .with({ type: "FETCH_PAYMENT" }, () => ctx)
-        .with({ type: "FETCH_PAYMENT_ERROR" }, (event) => ({
-          ...ctx,
-          paymentsError: event.paymentErrorMessage
-        }))
-        .with({ type: "REFETCH_PAYMENT" }, () => ctx)
-        .with({ type: "FETCH_PAYMENT_SUCCESS" }, (event) => ({
-          ...ctx,
-          payments: event.paymentsData
-        }))
-        .with({ type: "SELECT_PAYMENT_TARGET" }, () => ctx)
-        .with({ type: "CANCEL_PAYMENT" }, () => ctx)
-        .with({ type: "CONFIRM_PAYMENT" }, () => ctx)
-        .with({ type: "SUBMIT_PAYMENT_SUCCESS" }, () => ctx)
-        .with({ type: "SUBMIT_PAYMENT_ERROR" }, (event) => ({
-          ...ctx,
-          submitPaymetError: event.submitPaymentErrorMessage
-        }))
-        .with({ type: "RESUBMIT_PAYMENT" }, () => ctx)
-        .exhaustive()
-    )
   }
 });
