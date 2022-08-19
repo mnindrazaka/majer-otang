@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 
 type Props = {
-  errorMessage: string | null;
+  errorMessage: string;
   onRefetch: () => void;
 };
 

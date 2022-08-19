@@ -1,5 +1,4 @@
 import { createMachine, assign } from "xstate";
-import { match } from "ts-pattern";
 import {
   Member,
   Billing,
@@ -36,6 +35,46 @@ export interface Context {
 }
 
 export namespace State {
+  export namespace Idle {
+    export type t = {
+      value: "idle";
+      context: Context & {
+        billingError: null;
+        membersError: null;
+        billingDetail: undefined;
+        billingDetailError: null;
+        billingForm: undefined;
+        submitBillingDetailError: null;
+      };
+    };
+  }
+
+  export namespace LoadingBillings {
+    export type t = {
+      value: "loadingBillings";
+      context: Context & {
+        billingError: null;
+        membersError: null;
+        billingDetail: undefined;
+        billingDetailError: null;
+        billingForm: undefined;
+        submitBillingDetailError: null;
+      };
+    };
+
+    export const make = (context: Context): t => ({
+      value: "loadingBillings",
+      context: {
+        ...context,
+        billingError: null,
+        membersError: null,
+        billingDetail: undefined,
+        billingDetailError: null,
+        billingForm: undefined,
+        submitBillingDetailError: null,
+      },
+    });
+  }
   export namespace GetBillingsOK {
     export type t = {
       value: "getBillingsOK";
@@ -53,7 +92,62 @@ export namespace State {
       value: "getBillingsOK",
       context: {
         ...context,
+        billingError: null,
         billings,
+        membersError: null,
+        billingDetail: undefined,
+        billingDetailError: null,
+        billingForm: undefined,
+        submitBillingDetailError: null,
+      },
+    });
+  }
+
+  export namespace GetBillingsError {
+    export type t = {
+      value: "getBillingsError";
+      context: Context & {
+        billingError: string;
+        membersError: null;
+        billingDetail: undefined;
+        billingDetailError: null;
+        billingForm: undefined;
+        submitBillingDetailError: null;
+      };
+    };
+
+    export const make = (context: Context, billingError: string): t => ({
+      value: "getBillingsError",
+      context: {
+        ...context,
+        billingError,
+        membersError: null,
+        billingDetail: undefined,
+        billingDetailError: null,
+        billingForm: undefined,
+        submitBillingDetailError: null,
+      },
+    });
+  }
+
+  export namespace BillingFormIdle {
+    export type t = {
+      value: "billingFormIdle";
+      context: Context & {
+        billingError: null;
+        membersError: null;
+        billingDetail: undefined;
+        billingDetailError: null;
+        billingForm: undefined;
+        submitBillingDetailError: null;
+      };
+    };
+
+    export const make = (context: Context, formMode: FormMode): t => ({
+      value: "billingFormIdle",
+      context: {
+        ...context,
+        formMode,
         billingError: null,
         membersError: null,
         billingDetail: undefined,
@@ -64,173 +158,291 @@ export namespace State {
     });
   }
 
-  export type t =
-    | {
-        value: "idle";
-        context: Context & {
-          billingError: null;
-          membersError: null;
-          billingDetail: undefined;
-          billingDetailError: null;
-          billingForm: undefined;
-          submitBillingDetailError: null;
-        };
-      }
-    | {
-        value: "loadingBillings";
-        context: Context & {
-          billingError: null;
-          membersError: null;
-          billingDetail: undefined;
-          billingDetailError: null;
-          billingForm: undefined;
-          submitBillingDetailError: null;
-        };
-      }
-    | GetBillingsOK.t
-    | {
-        value: "getBillingsError";
-        context: Context & {
-          billingError: string;
-          membersError: null;
-          billingDetail: undefined;
-          billingDetailError: null;
-          billingForm: undefined;
-          submitBillingDetailError: null;
-        };
-      }
-    | {
-        value: "billingFormIdle";
-        context: Context & {
-          billingError: null;
-          membersError: null;
-          billingDetail: undefined;
-          billingDetailError: null;
-          billingForm: undefined;
-          submitBillingDetailError: null;
-        };
-      }
-    | {
-        value: { billingFormIdle: "loadingMembers" };
-        context: Context & {
-          billingError: null;
-          membersError: null;
-          billingDetail: undefined;
-          billingDetailError: null;
-          billingForm: undefined;
-          submitBillingDetailError: null;
-        };
-      }
-    | {
-        value: { billingFormIdle: "getMembersError" };
-        context: Context & {
-          billingError: null;
-          membersError: string;
-          billingDetail: undefined;
-          billingDetailError: null;
-          billingForm: undefined;
-          submitBillingDetailError: null;
-        };
-      }
-    | {
-        value: { billingFormIdle: "getBillingDetailCondition" };
-        context: Context & {
-          billingError: null;
-          membersError: null;
-          billingDetail: undefined;
-          billingDetailError: null;
-          billingForm: undefined;
-          submitBillingDetailError: null;
-        };
-      }
-    | {
-        value: { billingFormIdle: "getBillingDetailData" };
-        context: Context & {
-          billingError: null;
-          membersError: null;
-          billingDetail: undefined;
-          billingDetailError: null;
-          billingForm: undefined;
-          submitBillingDetailError: null;
-        };
-      }
-    | {
-        value: { billingFormIdle: "getBillingDetailDataError" };
-        context: Context & {
-          billingError: null;
-          membersError: null;
-          billingDetail: undefined;
-          billingDetailError: string;
-          billingForm: undefined;
-          submitBillingDetailError: null;
-        };
-      }
-    | {
-        value: "billingFormReady";
-        context: Context & {
-          billingError: null;
-          membersError: null;
-          billingDetail: BillingDetail;
-          billingDetailError: null;
-          billingForm: BillingForm;
-          submitBillingDetailError: null;
-        };
-      }
-    | {
-        value: { billingFormReady: "firstStep" };
-        context: Context & {
-          billingError: null;
-          membersError: null;
-          billingDetail: BillingDetail;
-          billingDetailError: null;
-          billingForm: BillingForm;
-          submitBillingDetailError: null;
-        };
-      }
-    | {
-        value: { billingFormReady: "secondStep" };
-        context: Context & {
-          billingError: null;
-          membersError: null;
-          billingDetail: BillingDetail;
-          billingDetailError: null;
-          billingForm: BillingForm;
-          submitBillingDetailError: null;
-        };
-      }
-    | {
-        value: "submitBilling";
-        context: Context & {
-          billingError: null;
-          membersError: null;
-          billingDetail: BillingDetail;
-          billingDetailError: null;
-          billingForm: BillingForm;
-          submitBillingDetailError: null;
-        };
-      }
-    | {
-        value: "submitBillingOK";
-        context: Context & {
-          billingError: null;
-          membersError: null;
-          billingDetail: BillingDetail;
-          billingDetailError: null;
-          billingForm: BillingForm;
-          submitBillingDetailError: null;
-        };
-      }
-    | {
-        value: "submitBillingDetailError";
-        context: Context & {
-          billingError: null;
-          membersError: null;
-          billingDetail: BillingDetail;
-          billingDetailError: null;
-          billingForm: BillingForm;
-          submitBillingDetailError: string;
-        };
+  export namespace BillingFormIdleLoadingMembers {
+    export type t = {
+      value: { billingFormIdle: "loadingMembers" };
+      context: Context & {
+        billingError: null;
+        membersError: null;
+        billingDetail: undefined;
+        billingDetailError: null;
+        billingForm: undefined;
+        submitBillingDetailError: null;
       };
+    };
+
+    export const make = (context: Context): t => ({
+      value: { billingFormIdle: "loadingMembers" },
+      context: {
+        ...context,
+        billingError: null,
+        membersError: null,
+        billingDetail: undefined,
+        billingDetailError: null,
+        billingForm: undefined,
+        submitBillingDetailError: null,
+      },
+    });
+  }
+
+  export namespace BillingFormIdleGetMembersError {
+    export type t = {
+      value: { billingFormIdle: "getMembersError" };
+      context: Context & {
+        billingError: null;
+        membersError: string;
+        billingDetail: undefined;
+        billingDetailError: null;
+        billingForm: undefined;
+        submitBillingDetailError: null;
+      };
+    };
+
+    export const make = (context: Context, membersError: string): t => ({
+      value: { billingFormIdle: "getMembersError" },
+      context: {
+        ...context,
+        membersError,
+        billingError: null,
+        billingDetail: undefined,
+        billingDetailError: null,
+        billingForm: undefined,
+        submitBillingDetailError: null,
+      },
+    });
+  }
+
+  export namespace BillingFormIdleGetBillingDetailCondition {
+    export type t = {
+      value: { billingFormIdle: "getBillingDetailCondition" };
+      context: Context & {
+        billingError: null;
+        membersError: null;
+        billingDetail: undefined;
+        billingDetailError: null;
+        billingForm: undefined;
+        submitBillingDetailError: null;
+      };
+    };
+
+    export const make = (context: Context, members: Member[]): t => ({
+      value: { billingFormIdle: "getBillingDetailCondition" },
+      context: {
+        ...context,
+        members,
+        billingError: null,
+        membersError: null,
+        billingDetail: undefined,
+        billingDetailError: null,
+        billingForm: undefined,
+        submitBillingDetailError: null,
+      },
+    });
+  }
+
+  export namespace BillingFormIdleGetBillingDetailData {
+    export type t = {
+      value: { billingFormIdle: "getBillingDetailData" };
+      context: Context & {
+        billingError: null;
+        membersError: null;
+        billingDetailError: null;
+        submitBillingDetailError: null;
+      };
+    };
+
+    export const make = (context: Context): t => ({
+      value: { billingFormIdle: "getBillingDetailData" },
+      context: {
+        ...context,
+        billingError: null,
+        membersError: null,
+        billingDetailError: null,
+        submitBillingDetailError: null,
+      },
+    });
+  }
+
+  export namespace BillingFormIdleGetBillingDetailDataError {
+    export type t = {
+      value: { billingFormIdle: "getBillingDetailDataError" };
+      context: Context & {
+        billingDetailError: string;
+        billingError: null;
+        membersError: null;
+        billingDetail: undefined;
+        billingForm: undefined;
+        submitBillingDetailError: null;
+      };
+    };
+
+    export const make = (context: Context, billingDetailError: string): t => ({
+      value: { billingFormIdle: "getBillingDetailDataError" },
+      context: {
+        ...context,
+        billingDetailError,
+        membersError: null,
+        billingError: null,
+        billingDetail: undefined,
+        billingForm: undefined,
+        submitBillingDetailError: null,
+      },
+    });
+  }
+
+  export namespace BillingFormReady {
+    export type t = {
+      value: "billingFormReady";
+      context: Context & {
+        billingError: null;
+        membersError: null;
+        billingDetail: BillingDetail;
+        billingDetailError: null;
+        billingForm: BillingForm;
+        submitBillingDetailError: null;
+      };
+    };
+
+    export const make = (
+      context: Context,
+      billingDetail: BillingDetail
+    ): t => ({
+      value: "billingFormReady",
+      context: {
+        ...context,
+        billingDetail,
+        billingForm: {
+          title: billingDetail.title,
+          total: billingDetail.bill_amount,
+          chargedMember: billingDetail.charged_member_id,
+          isBillEqual: billingDetail.is_bill_equally,
+          members: billingDetail.members,
+        },
+        billingError: null,
+        membersError: null,
+        billingDetailError: null,
+        submitBillingDetailError: null,
+      },
+    });
+  }
+
+  export namespace BillingFormReadyFirstStep {
+    export type t = {
+      value: { billingFormReady: "firstStep" };
+      context: Context & {
+        billingError: null;
+        membersError: null;
+        billingDetailError: null;
+        billingForm: BillingForm;
+        submitBillingDetailError: null;
+      };
+    };
+
+    export const make = (context: Context, billingForm: BillingForm): t => ({
+      value: { billingFormReady: "firstStep" },
+      context: {
+        ...context,
+        billingForm,
+        billingError: null,
+        membersError: null,
+        billingDetailError: null,
+        submitBillingDetailError: null,
+      },
+    });
+  }
+
+  export namespace BillingFormReadySecondStep {
+    export type t = {
+      value: { billingFormReady: "secondStep" };
+      context: Context & {
+        billingError: null;
+        membersError: null;
+        billingDetailError: null;
+        billingForm: BillingForm;
+        submitBillingDetailError: null;
+      };
+    };
+
+    export const make = (context: Context, billingForm: BillingForm): t => ({
+      value: { billingFormReady: "secondStep" },
+      context: {
+        ...context,
+        billingForm,
+        billingError: null,
+        membersError: null,
+        billingDetailError: null,
+        submitBillingDetailError: null,
+      },
+    });
+  }
+
+  export namespace SubmitBilling {
+    export type t = {
+      value: "submitBilling";
+      context: Context & {
+        billingError: null;
+        membersError: null;
+        billingDetailError: null;
+        submitBillingDetailError: null;
+      };
+    };
+  }
+
+  export namespace SubmitBillingOK {
+    export type t = {
+      value: "submitBillingOK";
+      context: Context & {
+        billingError: null;
+        membersError: null;
+        billingDetailError: null;
+        submitBillingDetailError: null;
+      };
+    };
+  }
+
+  export namespace SubmitBillingError {
+    export type t = {
+      value: "submitBillingError";
+      context: Context & {
+        billingError: null;
+        membersError: null;
+        billingDetailError: null;
+        submitBillingDetailError: string;
+      };
+    };
+
+    export const make = (
+      context: Context,
+      submitBillingDetailError: string
+    ): t => ({
+      value: "submitBillingError",
+      context: {
+        ...context,
+        submitBillingDetailError,
+        billingError: null,
+        membersError: null,
+        billingDetailError: null,
+      },
+    });
+  }
+
+  export type t =
+    | Idle.t
+    | LoadingBillings.t
+    | GetBillingsOK.t
+    | GetBillingsError.t
+    | BillingFormIdle.t
+    | BillingFormIdleLoadingMembers.t
+    | BillingFormIdleGetMembersError.t
+    | BillingFormIdleGetBillingDetailCondition.t
+    | BillingFormIdleGetBillingDetailData.t
+    | BillingFormIdleGetBillingDetailDataError.t
+    | BillingFormReady.t
+    | BillingFormReadyFirstStep.t
+    | BillingFormReadySecondStep.t
+    | SubmitBilling.t
+    | SubmitBillingOK.t
+    | SubmitBillingError.t;
 }
 
 export type Event =
@@ -303,21 +515,33 @@ export const billingMachine = createMachine<Context, Event, State.t>({
         },
         FETCH_BILLINGS_ERROR: {
           target: "getBillingsError",
-          actions: "updateContext",
+          actions: assign(
+            (context, event) =>
+              State.GetBillingsError.make(context, event.billingsErrorMessage)
+                .context
+          ),
         },
       },
     },
     getBillingsOK: {
       on: {
         ACTIVATE_BILLING_FORM: {
-          actions: "updateContext",
           target: "billingFormIdle",
+          actions: assign(
+            (context, event) =>
+              State.BillingFormIdle.make(context, event.formMode).context
+          ),
         },
       },
     },
     getBillingsError: {
       on: {
-        REFETCH_BILLINGS: "loadingBillings",
+        REFETCH_BILLINGS: {
+          target: "loadingBillings",
+          actions: assign(
+            (context) => State.LoadingBillings.make(context).context
+          ),
+        },
       },
     },
     billingFormIdle: {
@@ -330,17 +554,35 @@ export const billingMachine = createMachine<Context, Event, State.t>({
           on: {
             FETCH_MEMBERS_SUCCESS: {
               target: "getBillingDetailCondition",
-              actions: "updateContext",
+              actions: assign(
+                (context, event) =>
+                  State.BillingFormIdleGetBillingDetailCondition.make(
+                    context,
+                    event.membersData
+                  ).context
+              ),
             },
             FETCH_MEMBERS_ERROR: {
               target: "getMembersError",
-              actions: "updateContext",
+              actions: assign(
+                (context, event) =>
+                  State.BillingFormIdleGetMembersError.make(
+                    context,
+                    event.membersErrorMessage
+                  ).context
+              ),
             },
           },
         },
         getMembersError: {
           on: {
-            REFETCH_MEMBERS: "loadingMembers",
+            REFETCH_MEMBERS: {
+              target: "loadingMembers",
+              actions: assign(
+                (context) =>
+                  State.BillingFormIdleLoadingMembers.make(context).context
+              ),
+            },
           },
         },
         getBillingDetailCondition: {
@@ -358,17 +600,34 @@ export const billingMachine = createMachine<Context, Event, State.t>({
           on: {
             FETCH_BILLING_DETAIL_SUCCES: {
               target: "#billing.billingFormReady",
-              actions: "updateContext",
+              actions: assign(
+                (context, event) =>
+                  State.BillingFormReady.make(context, event.billingDetailData)
+                    .context
+              ),
             },
             FETCH_BILLING_DETAIL_ERROR: {
               target: "getBillingDetailDataError",
-              actions: "updateContext",
+              actions: assign(
+                (context, event) =>
+                  State.BillingFormIdleGetBillingDetailDataError.make(
+                    context,
+                    event.billingDetailErrorMessage
+                  ).context
+              ),
             },
           },
         },
         getBillingDetailDataError: {
           on: {
-            REFETCH_BILLING_DETAIL: "getBillingDetailData",
+            REFETCH_BILLING_DETAIL: {
+              target: "getBillingDetailData",
+              actions: assign(
+                (context) =>
+                  State.BillingFormIdleGetBillingDetailData.make(context)
+                    .context
+              ),
+            },
           },
         },
       },
@@ -382,7 +641,13 @@ export const billingMachine = createMachine<Context, Event, State.t>({
               target: "secondStep",
             },
             UPDATE_FORM: {
-              actions: "updateContext",
+              actions: assign(
+                (context, event) =>
+                  State.BillingFormReadyFirstStep.make(
+                    context,
+                    event.billingForm
+                  ).context
+              ),
             },
           },
         },
@@ -390,7 +655,13 @@ export const billingMachine = createMachine<Context, Event, State.t>({
           on: {
             PREV_STEP: "firstStep",
             UPDATE_FORM: {
-              actions: "updateContext",
+              actions: assign(
+                (context, event) =>
+                  State.BillingFormReadySecondStep.make(
+                    context,
+                    event.billingForm
+                  ).context
+              ),
             },
             SUBMIT_BILLING: "#billing.submitBilling",
           },
@@ -406,8 +677,14 @@ export const billingMachine = createMachine<Context, Event, State.t>({
           target: "submitBillingOK",
         },
         SUBMIT_BILLING_ERROR: {
-          target: "submitBillingDetailError",
-          actions: "updateContext",
+          target: "submitBillingError",
+          actions: assign(
+            (context, event) =>
+              State.SubmitBillingError.make(
+                context,
+                event.submitBillingDetailErrorMessage
+              ).context
+          ),
         },
       },
     },
@@ -418,10 +695,11 @@ export const billingMachine = createMachine<Context, Event, State.t>({
         },
       },
     },
-    submitBillingDetailError: {
+    submitBillingError: {
       on: {
         BACK_TO_SECOND_STEP_FORM: "billingFormReady.secondStep",
         REFETCH_SUBMIT_BILLING: "submitBilling",
+        // Handle actions
       },
     },
   },
@@ -450,100 +728,6 @@ export const billingMachine = createMachine<Context, Event, State.t>({
           send({ type: "FETCH_MEMBERS_ERROR", membersErrorMessage: error })
         );
     },
-  },
-  actions: {
-    updateContext: assign((ctx, event) =>
-      match(event)
-        .with({ type: "FETCH_BILLINGS" }, () => ctx)
-        .with({ type: "REFETCH_BILLINGS" }, () => ({
-          ...ctx,
-          billingError: null,
-          billings: [],
-        }))
-        .with({ type: "REFETCH_MEMBERS" }, () => ({
-          ...ctx,
-          membersError: null,
-          members: [],
-        }))
-        .with({ type: "REFETCH_BILLING_DETAIL" }, () => ({
-          ...ctx,
-          billingDetailError: null,
-          billingDetail: undefined,
-        }))
-        .with({ type: "REFETCH_SUBMIT_BILLING" }, () => ({
-          ...ctx,
-          submitBillingDetailError: null,
-        }))
-        .with({ type: "NEXT_STEP" }, () => ctx)
-        .with({ type: "PREV_STEP" }, () => ctx)
-        .with({ type: "SUBMIT_BILLING" }, () => ctx)
-        .with({ type: "SUBMIT_BILLING_SUCCES" }, () => ctx)
-        .with({ type: "BACK_TO_SECOND_STEP_FORM" }, () => ctx)
-        .with({ type: "CANCEL_FILL_FORM" }, () => ctx)
-        .with({ type: "BACK_TO_BILLING_SCREEN" }, () => ({
-          ...ctx,
-          billings: [],
-          billingError: null,
-          formMode: FormMode.Create,
-          members: [],
-          membersError: null,
-          billingDetail: undefined,
-          billingDetailError: null,
-          billingForm: undefined,
-          submitBillingDetailError: null,
-        }))
-        .with({ type: "ACTIVATE_BILLING_FORM" }, (event) => ({
-          ...ctx,
-          formMode: event.formMode,
-          billingForm: {
-            title: "",
-            total: 0,
-            chargedMember: "",
-            isBillEqual: true,
-            members: [],
-          },
-        }))
-        .with({ type: "FETCH_BILLINGS_SUCCES" }, (event) => ({
-          ...ctx,
-          billings: event.billingsData,
-        }))
-        .with({ type: "FETCH_BILLINGS_ERROR" }, (event) => ({
-          ...ctx,
-          billingError: event.billingsErrorMessage,
-        }))
-        .with({ type: "FETCH_BILLING_DETAIL_SUCCES" }, (event) => ({
-          ...ctx,
-          billingDetail: event.billingDetailData,
-          billingForm: {
-            title: event.billingDetailData.title,
-            total: event.billingDetailData.bill_amount,
-            chargedMember: event.billingDetailData.charged_member_id,
-            isBillEqual: event.billingDetailData.is_bill_equally,
-            members: event.billingDetailData.members,
-          },
-        }))
-        .with({ type: "FETCH_BILLING_DETAIL_ERROR" }, (event) => ({
-          ...ctx,
-          billingDetailError: event.billingDetailErrorMessage,
-        }))
-        .with({ type: "FETCH_MEMBERS_SUCCESS" }, (event) => ({
-          ...ctx,
-          members: event.membersData,
-        }))
-        .with({ type: "FETCH_MEMBERS_ERROR" }, (event) => ({
-          ...ctx,
-          membersError: event.membersErrorMessage,
-        }))
-        .with({ type: "UPDATE_FORM" }, (event) => ({
-          ...ctx,
-          billingForm: event.billingForm,
-        }))
-        .with({ type: "SUBMIT_BILLING_ERROR" }, (event) => ({
-          ...ctx,
-          submitBillingDetailError: event.submitBillingDetailErrorMessage,
-        }))
-        .exhaustive()
-    ),
   },
   guards: {
     isCreatingForm: (ctx) => ctx.formMode === "CREATE",

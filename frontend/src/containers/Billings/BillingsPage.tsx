@@ -7,16 +7,11 @@ import { GeneralLoading } from "./GeneralLoading";
 import { Box } from "@chakra-ui/react";
 import BottomMenu from "../../components/BottomMenu";
 import { useMachine } from "@xstate/react";
-import {
-  billingMachine,
-  FormMode,
-  State,
-} from "../../machines/billings/billingMachine";
+import { billingMachine, State } from "../../machines/billings/billingMachine";
 import { match } from "ts-pattern";
 
 const BillingsPage = () => {
   const [state, send, service] = useMachine(billingMachine);
-  const { billings, members, billingError } = state.context;
 
   // Debugguing Purposes
   React.useEffect(() => {
@@ -33,15 +28,18 @@ const BillingsPage = () => {
         {match<State.t>(state as State.t)
           .with({ value: "idle" }, () => <GeneralLoading />)
           .with({ value: "loadingBillings" }, () => <GeneralLoading />)
-          .with({ value: "getBillingsOK" }, () => (
-            <BillingList send={send} billings={billings} />
-          ))
-          .with({ value: "getBillingsError" }, () => (
-            <GeneralError
-              errorMessage={billingError}
-              onRefetch={() => send({ type: "REFETCH_BILLINGS" })}
-            />
-          ))
+          .with({ value: "getBillingsOK" }, ({ context: { billings } }) => {
+            return <BillingList send={send} billings={billings} />;
+          })
+          .with(
+            { value: "getBillingsError" },
+            ({ context: { billingError } }) => (
+              <GeneralError
+                errorMessage={billingError}
+                onRefetch={() => send({ type: "REFETCH_BILLINGS" })}
+              />
+            )
+          )
           .with({ value: { billingFormIdle: "loadingMembers" } }, () => (
             <GeneralLoading />
           ))
@@ -49,13 +47,16 @@ const BillingsPage = () => {
             { value: { billingFormIdle: "getBillingDetailCondition" } },
             () => <GeneralLoading />
           )
-          .with({ value: { billingFormReady: "firstStep" } }, () => (
-            <BillingForm members={members} send={send} />
-          ))
+          .with(
+            { value: { billingFormReady: "firstStep" } },
+            ({ context: { members } }) => (
+              <BillingForm members={members} send={send} />
+            )
+          )
           .with({ value: "billingFormIdle" }, () => null)
           .with({ value: "billingFormReady" }, () => null)
           .with({ value: "submitBilling" }, () => null)
-          .with({ value: "submitBillingDetailError" }, () => null)
+          .with({ value: "submitBillingError" }, () => null)
           .with({ value: "submitBillingOK" }, () => null)
           .with(
             { value: { billingFormIdle: "getBillingDetailData" } },
