@@ -1,7 +1,8 @@
 import React from "react";
 import Layout from "../../components/Layout";
 import BillingList from "./BillingList";
-import BillingForm from "./BillingForm";
+import BillingFormFirstStep from "./BillingForm__FirstStep";
+import BillingFormSecondStep from "./BillingForm__SecondStep";
 import GeneralError from "./GeneralError";
 import { GeneralLoading } from "./GeneralLoading";
 import { Box } from "@chakra-ui/react";
@@ -13,7 +14,9 @@ import { match } from "ts-pattern";
 const BillingsPage = () => {
   const [state, send, service] = useMachine(billingMachine);
 
-  // Debugguing Purposes
+  const historyEvent = state.history?.event;
+
+  // Debugging Purposes
   React.useEffect(() => {
     const subscription = service.subscribe((state) => {
       console.log(state);
@@ -49,8 +52,31 @@ const BillingsPage = () => {
           )
           .with(
             { value: { billingFormReady: "firstStep" } },
-            ({ context: { members } }) => (
-              <BillingForm members={members} send={send} />
+            ({
+              context: { members, billingDetail, formMode, billingForm },
+            }) => (
+              <BillingFormFirstStep
+                historyEvent={historyEvent}
+                billingForm={billingForm}
+                formMode={formMode}
+                billingDetail={billingDetail}
+                members={members}
+                send={send}
+              />
+            )
+          )
+          .with(
+            { value: { billingFormReady: "secondStep" } },
+            ({
+              context: { members, billingDetail, billingForm, formMode },
+            }) => (
+              <BillingFormSecondStep
+                formMode={formMode}
+                billingForm={billingForm}
+                billingDetail={billingDetail}
+                members={members}
+                send={send}
+              />
             )
           )
           .with({ value: "billingFormIdle" }, () => null)
@@ -59,7 +85,7 @@ const BillingsPage = () => {
           .with({ value: "submitBillingError" }, () => null)
           .with({ value: "submitBillingOK" }, () => null)
           .with(
-            { value: { billingFormIdle: "getBillingDetailData" } },
+            { value: { billingFormIdle: "loadingBillingDetailData" } },
             () => null
           )
           .with(
@@ -67,7 +93,6 @@ const BillingsPage = () => {
             () => null
           )
           .with({ value: { billingFormIdle: "getMembersError" } }, () => null)
-          .with({ value: { billingFormReady: "secondStep" } }, () => null)
           .exhaustive()}
         <BottomMenu activeMenu="billings" />
       </Box>

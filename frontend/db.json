@@ -29,5 +29,70 @@
       "id": "3",
       "name": "Danny Dwi C"
     }
+  ],
+  "billing": [
+    {
+      "id": "1",
+      "title": "Iuran Minyak Goreng",
+      "bill_amount": 110.000,
+      "charged_member_id": "2",
+      "is_bill_equally": false,
+      "members": [
+        {
+          "id": "1",
+          "amount": 0
+        },
+        {
+          "id": "2",
+          "amount": 0
+        },
+        {
+          "id": "3",
+          "amount": 0
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Iuran Beras 50Kg",
+      "bill_amount": 75.000,
+      "charged_member_id": "1",
+      "is_bill_equally": true,
+      "members": [
+        {
+          "id": "1",
+          "amount": 0
+        },
+        {
+          "id": "2",
+          "amount": 0
+        },
+        {
+          "id": "3",
+          "amount": 0
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "Iuran belanja mingguan",
+      "bill_amount": 23.000,
+      "charged_member_id": "2",
+      "is_bill_equally": false,
+      "members": [
+        {
+          "id": "1",
+          "amount": 0
+        },
+        {
+          "id": "2",
+          "amount": 0
+        },
+        {
+          "id": "3",
+          "amount": 0
+        }
+      ]
+    }
   ]
 }
