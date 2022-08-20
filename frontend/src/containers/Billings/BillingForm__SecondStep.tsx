@@ -39,11 +39,30 @@ const BillingFormSecondStep = ({
   billingDetail,
   billingForm,
 }: Props) => {
-  const defaultValueState =
+  const defaultValueBillingDetail =
     formMode === FormMode.Create ? billingForm : billingDetail;
 
-  const [isBillEqual, setIsBillEqual] = React.useState(
-    defaultValueState?.is_bill_equally
+  const defaultCheckedMembers = members.map((member) => false);
+  const defaultMembersAmount = members.map((member) => 0);
+  const defaultBillingMembersAmount = billingDetail?.members.map(
+    (member) => member.amount
+  );
+
+  const defaultValueMembersAmountState =
+    formMode === FormMode.Create
+      ? defaultMembersAmount
+      : defaultBillingMembersAmount;
+
+  const [isBillEqually, setIsBillEqually] = React.useState(
+    defaultValueBillingDetail?.is_bill_equally
+  );
+
+  const [checkedMembers, setCheckedMembers] = React.useState(
+    defaultCheckedMembers
+  );
+
+  const [amountMembers, setAmountMembers] = React.useState(
+    defaultValueMembersAmountState ?? []
   );
 
   const handleCloseForm = () => {
@@ -65,8 +84,8 @@ const BillingFormSecondStep = ({
             <Checkbox
               size="lg"
               colorScheme="cyan"
-              isChecked={isBillEqual}
-              onChange={(event) => setIsBillEqual(event.target.checked)}
+              isChecked={isBillEqually}
+              onChange={(event) => setIsBillEqually(event.target.checked)}
             >
               Bill Equally
             </Checkbox>
@@ -84,19 +103,48 @@ const BillingFormSecondStep = ({
                 <Flex justifyContent="space-between">
                   <Box>
                     <Text>{member.name}</Text>
-                    {!isBillEqual && (
-                      // Todo => Handle the input state
+                    {!isBillEqually && (
                       <Input
                         type="number"
                         placeholder="Input the amount of bill"
                         borderColor="whiteAlpha.600"
                         mt="2"
+                        value={amountMembers[index]}
+                        onChange={(event) =>
+                          setAmountMembers((prevAmountMembers) => {
+                            const newAmountMembers = prevAmountMembers.map(
+                              (prevAmountMember, idx) =>
+                                idx === index
+                                  ? event.target.valueAsNumber
+                                  : prevAmountMember
+                            );
+                            return newAmountMembers;
+                          })
+                        }
                       />
                     )}
                   </Box>
                   <Center>
-                    {/* Todo => Handle the checkbox state */}
-                    <Checkbox size="lg" colorScheme="blue" />
+                    {isBillEqually ? (
+                      <Checkbox size="lg" colorScheme="blue" isChecked={true} />
+                    ) : (
+                      <Checkbox
+                        size="lg"
+                        colorScheme="blue"
+                        isChecked={checkedMembers[index]}
+                        onChange={(event) =>
+                          setCheckedMembers((prevCheckMember) => {
+                            const newCheckMembers = prevCheckMember.map(
+                              (checkedMember, idx) =>
+                                idx === index
+                                  ? event.target.checked
+                                  : checkedMember
+                            );
+                            return newCheckMembers;
+                          })
+                        }
+                      />
+                    )}
                   </Center>
                 </Flex>
               </Box>
