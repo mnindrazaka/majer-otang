@@ -43,12 +43,6 @@ func (b *billingHandler) CreateBilling(w http.ResponseWriter, r *http.Request, p
 	billingCreateRequest := entity.BillingDetail{}
 
 	ReadFromRequestBody(w, r, &billingCreateRequest)
-	//decoder := json.NewDecoder(r.Body)
-	//
-	//err := decoder.Decode(&billingCreateRequest)
-	//if err != nil {
-	//	buildBadRequestResponse(w, err)
-	//}
 
 	billingResponse, err := b.billingUsecase.CreateBilling(r.Context(), billingCreateRequest)
 
