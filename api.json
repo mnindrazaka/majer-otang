@@ -256,9 +256,7 @@
           "data": {
             "type": "object",
             "x-go-custom-tag": "bson:\"data\"",
-            "items": {
-              "$ref": "#/components/BillingDetail"
-            }
+            "$ref": "#/components/BillingDetail"
           },
           "status": {
             "type": "string",
