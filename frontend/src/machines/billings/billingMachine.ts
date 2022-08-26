@@ -30,7 +30,7 @@ export interface Context {
   members: Member[];
   membersError: string | null;
   billingDetail?: BillingDetail;
-  selectedBillingDetail: string | null;
+  selectedBillingId: string | null;
   billingDetailError: string | null;
   billingForm?: BillingForm;
   submitBillingDetailError: string | null;
@@ -44,7 +44,7 @@ export namespace State {
         billingError: null;
         membersError: null;
         billingDetail: undefined;
-        selectedBillingDetail: null;
+        selectedBillingId: null;
         billingDetailError: null;
         billingForm: undefined;
         submitBillingDetailError: null;
@@ -59,7 +59,7 @@ export namespace State {
         billingError: null;
         membersError: null;
         billingDetail: undefined;
-        selectedBillingDetail: null;
+        selectedBillingId: null;
         billingDetailError: null;
         billingForm: undefined;
         submitBillingDetailError: null;
@@ -73,7 +73,7 @@ export namespace State {
         billingError: null,
         membersError: null,
         billingDetail: undefined,
-        selectedBillingDetail: null,
+        selectedBillingId: null,
         billingDetailError: null,
         billingForm: undefined,
         submitBillingDetailError: null,
@@ -87,7 +87,7 @@ export namespace State {
         billingError: null;
         membersError: null;
         billingDetail: undefined;
-        selectedBillingDetail: null;
+        selectedBillingId: null;
         billingDetailError: null;
         billingForm: undefined;
         submitBillingDetailError: null;
@@ -102,7 +102,7 @@ export namespace State {
         billings,
         membersError: null,
         billingDetail: undefined,
-        selectedBillingDetail: null,
+        selectedBillingId: null,
         billingDetailError: null,
         billingForm: undefined,
         submitBillingDetailError: null,
@@ -117,7 +117,7 @@ export namespace State {
         billingError: string;
         membersError: null;
         billingDetail: undefined;
-        selectedBillingDetail: null;
+        selectedBillingId: null;
         billingDetailError: null;
         billingForm: undefined;
         submitBillingDetailError: null;
@@ -131,7 +131,7 @@ export namespace State {
         billingError,
         membersError: null,
         billingDetail: undefined,
-        selectedBillingDetail: null,
+        selectedBillingId: null,
         billingDetailError: null,
         billingForm: undefined,
         submitBillingDetailError: null,
@@ -164,7 +164,7 @@ export namespace State {
         billingError: null,
         membersError: null,
         billingDetail: undefined,
-        selectedBillingDetail: billingId,
+        selectedBillingId: billingId,
         billingDetailError: null,
         billingForm: undefined,
         submitBillingDetailError: null,
@@ -514,7 +514,7 @@ export const billingMachine = createMachine<Context, Event, State.t>({
     billings: [],
     billingError: null,
     formMode: FormMode.Create,
-    selectedBillingDetail: null,
+    selectedBillingId: null,
     members: [],
     membersError: null,
     billingDetail: undefined,
@@ -760,7 +760,7 @@ export const billingMachine = createMachine<Context, Event, State.t>({
     getBillingDetailData: (ctx) => (send) => {
       queryClient
         .fetchQuery("billingId", () =>
-          getBillingDetailById(ctx.selectedBillingDetail ?? "")
+          getBillingDetailById(ctx.selectedBillingId ?? "")
         )
         .then((response) =>
           send({
