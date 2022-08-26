@@ -17,7 +17,7 @@ import {
   Input,
   Center,
 } from "@chakra-ui/react";
-import { Member, BillingDetail } from "../../utils/fetcher";
+import { Member } from "../../utils/fetcher";
 import {
   Event,
   BillingForm,
@@ -25,49 +25,25 @@ import {
 } from "../../machines/billings/billingMachine";
 
 type Props = {
-  formMode: FormMode;
   members: Member[];
   billingForm: BillingForm;
-  billingDetail?: BillingDetail;
   send: (event: Event) => void;
 };
 
-const BillingFormSecondStep = ({
-  formMode,
-  members,
-  send,
-  billingDetail,
-  billingForm,
-}: Props) => {
-  const defaultValueBillingDetail =
-    formMode === FormMode.Create ? billingForm : billingDetail;
+const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
+  const handleCloseForm = () => {
+    send({ type: "CANCEL_FILL_FORM" });
+  };
 
-  const defaultCheckedMembers = members.map((member) => false);
-  const defaultMembersAmount = members.map((member) => 0);
-  const defaultBillingMembersAmount = billingDetail?.members.map(
-    (member) => member.amount
+  const filteredMembers = members.filter(
+    (member) => member.id !== billingForm.charged_member_id
   );
 
-  const defaultValueMembersAmountState =
-    formMode === FormMode.Create
-      ? defaultMembersAmount
-      : defaultBillingMembersAmount;
-
-  const [isBillEqually, setIsBillEqually] = React.useState(
-    defaultValueBillingDetail?.is_bill_equally
-  );
+  const defaultCheckedMembers = filteredMembers.map((_) => false);
 
   const [checkedMembers, setCheckedMembers] = React.useState(
     defaultCheckedMembers
   );
-
-  const [amountMembers, setAmountMembers] = React.useState(
-    defaultValueMembersAmountState ?? []
-  );
-
-  const handleCloseForm = () => {
-    send({ type: "CANCEL_FILL_FORM" });
-  };
 
   return (
     <Modal isOpen={true} onClose={handleCloseForm} isCentered>
@@ -80,18 +56,31 @@ const BillingFormSecondStep = ({
         <ModalCloseButton />
         <ModalBody pb={6}>
           <Flex justifyContent="space-between">
-            <Heading size="md">Total Bill</Heading>
+            <Flex>
+              <Text size="md" mr="2">
+                Total Bill
+              </Text>
+              <Text fontWeight="bold">Rp. {billingForm.bill_amount}</Text>
+            </Flex>
             <Checkbox
               size="lg"
               colorScheme="cyan"
-              isChecked={isBillEqually}
-              onChange={(event) => setIsBillEqually(event.target.checked)}
+              isChecked={billingForm?.is_bill_equally}
+              onChange={(event) =>
+                send({
+                  type: "UPDATE_FORM",
+                  billingForm: {
+                    ...billingForm,
+                    is_bill_equally: event.target.checked,
+                  },
+                })
+              }
             >
               Bill Equally
             </Checkbox>
           </Flex>
           <VStack spacing="4" my="4">
-            {members.map((member, index) => (
+            {filteredMembers.map((member, index) => (
               <Box
                 key={member.id}
                 border="1px"
@@ -103,46 +92,37 @@ const BillingFormSecondStep = ({
                 <Flex justifyContent="space-between">
                   <Box>
                     <Text>{member.name}</Text>
-                    {!isBillEqually && (
+                    {!billingForm.is_bill_equally && checkedMembers[index] ? (
                       <Input
                         type="number"
                         placeholder="Input the amount of bill"
                         borderColor="whiteAlpha.600"
                         mt="2"
-                        value={amountMembers[index]}
-                        onChange={(event) =>
-                          setAmountMembers((prevAmountMembers) => {
-                            const newAmountMembers = prevAmountMembers.map(
-                              (prevAmountMember, idx) =>
-                                idx === index
-                                  ? event.target.valueAsNumber
-                                  : prevAmountMember
-                            );
-                            return newAmountMembers;
-                          })
-                        }
+                        value={billingForm.members[index]?.amount}
+                        onChange={(event) => {
+                          (billingForm.members[index].amount =
+                            event.target.valueAsNumber),
+                            send({ type: "UPDATE_FORM", billingForm });
+                        }}
                       />
-                    )}
+                    ) : null}
                   </Box>
                   <Center>
-                    {isBillEqually ? (
+                    {billingForm.is_bill_equally ? (
                       <Checkbox size="lg" colorScheme="blue" isChecked={true} />
                     ) : (
                       <Checkbox
                         size="lg"
                         colorScheme="blue"
                         isChecked={checkedMembers[index]}
-                        onChange={(event) =>
-                          setCheckedMembers((prevCheckMember) => {
-                            const newCheckMembers = prevCheckMember.map(
-                              (checkedMember, idx) =>
-                                idx === index
-                                  ? event.target.checked
-                                  : checkedMember
-                            );
-                            return newCheckMembers;
-                          })
-                        }
+                        onChange={(event) => {
+                          const { checked } = event.target;
+                          setCheckedMembers((prevCheckMember) =>
+                            prevCheckMember.map((checkedMember, currentIndex) =>
+                              currentIndex === index ? checked : checkedMember
+                            )
+                          );
+                        }}
                       />
                     )}
                   </Center>
@@ -156,13 +136,28 @@ const BillingFormSecondStep = ({
           <Button
             onClick={() => {
               send({ type: "PREV_STEP" });
-              send({ type: "UPDATE_FORM", billingForm });
             }}
             mr="4"
           >
             Previous Step
           </Button>
-          <Button colorScheme="blue" mr={3}>
+          <Button
+            colorScheme="blue"
+            mr={3}
+            onClick={() => {
+              const selectedMembers = billingForm.members.filter(
+                (_, index) => checkedMembers[index]
+              );
+              console.log(selectedMembers);
+              send({
+                type: "UPDATE_FORM",
+                billingForm: {
+                  ...billingForm,
+                  members: selectedMembers,
+                },
+              });
+            }}
+          >
             Submit
           </Button>
         </ModalFooter>

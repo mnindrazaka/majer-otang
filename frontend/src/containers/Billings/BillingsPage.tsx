@@ -65,9 +65,7 @@ const BillingsPage = () => {
               context: { members, billingDetail, billingForm, formMode },
             }) => (
               <BillingFormSecondStep
-                formMode={formMode}
                 billingForm={billingForm}
-                billingDetail={billingDetail}
                 members={members}
                 send={send}
               />

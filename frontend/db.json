@@ -43,10 +43,6 @@
           "amount": 50000
         },
         {
-          "id": "2",
-          "amount": 50000
-        },
-        {
           "id": "3",
           "amount": 10000
         }
@@ -59,10 +55,6 @@
       "charged_member_id": "1",
       "is_bill_equally": true,
       "members": [
-        {
-          "id": "1",
-          "amount": 0
-        },
         {
           "id": "2",
           "amount": 0
@@ -82,10 +74,6 @@
       "members": [
         {
           "id": "1",
-          "amount": 10000
-        },
-        {
-          "id": "2",
           "amount": 10000
         },
         {

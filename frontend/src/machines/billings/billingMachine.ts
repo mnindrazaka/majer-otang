@@ -11,7 +11,6 @@ import { getBillingDetailById } from "./mockFetcher";
 import { queryClient } from "../../pages/_app";
 
 export type BillingForm = {
-  id: string;
   title: string;
   bill_amount: number;
   charged_member_id: string;
@@ -327,7 +326,6 @@ export namespace State {
         ...context,
         billingDetail,
         billingForm: {
-          id: billingDetail.id,
           title: billingDetail.title,
           bill_amount: billingDetail.bill_amount,
           charged_member_id: billingDetail.charged_member_id,
@@ -521,7 +519,6 @@ export const billingMachine = createMachine<Context, Event, State.t>({
     membersError: null,
     billingDetail: undefined,
     billingDetailError: null,
-    billingForm: undefined,
     submitBillingDetailError: null,
   },
   states: {
