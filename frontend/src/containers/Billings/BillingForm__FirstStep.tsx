@@ -13,53 +13,26 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
-import { Member, BillingDetail } from "../../utils/fetcher";
+import { Member } from "../../utils/fetcher";
 import {
   Event,
-  FormMode,
   BillingForm,
+  FormMode,
 } from "../../machines/billings/billingMachine";
 
 type Props = {
-  historyEvent: Event | undefined;
-  formMode: FormMode;
   billingForm: BillingForm;
+  formMode: FormMode;
   members: Member[];
-  billingDetail?: BillingDetail;
   send: (event: Event) => void;
 };
 
 const BillingFormFirstStep = ({
-  historyEvent,
   members,
   send,
-  billingDetail,
-  formMode,
   billingForm,
+  formMode,
 }: Props) => {
-  const emptyBillingDetail = {
-    title: "",
-    bill_amount: 0,
-    charged_member_id: "",
-    id: "",
-    is_bill_equally: true,
-    members: members.map((member) => ({
-      id: "",
-      amount: 0,
-    })),
-  };
-
-  const defaultValueState =
-    formMode === FormMode.Create
-      ? billingForm
-      : historyEvent?.type === "PREV_STEP"
-      ? billingForm
-      : billingDetail;
-
-  const [formValue, setFormValue] = React.useState(
-    defaultValueState ?? emptyBillingDetail
-  );
-
   const handleCloseForm = () => {
     send({ type: "CANCEL_FILL_FORM" });
   };
@@ -78,12 +51,15 @@ const BillingFormFirstStep = ({
             <FormLabel>Title</FormLabel>
             <Input
               placeholder="Please kindly fill the billing title"
-              value={formValue?.title}
+              value={billingForm?.title}
               onChange={(event) =>
-                setFormValue((prevValue) => ({
-                  ...prevValue,
-                  title: event.target.value,
-                }))
+                send({
+                  type: "UPDATE_FORM",
+                  billingForm: {
+                    ...billingForm,
+                    title: event.target.value,
+                  },
+                })
               }
             />
           </FormControl>
@@ -93,12 +69,15 @@ const BillingFormFirstStep = ({
             <Input
               type="number"
               placeholder="Please kindly fill the billing total"
-              value={formValue?.bill_amount}
+              value={billingForm?.bill_amount}
               onChange={(event) =>
-                setFormValue((prevValue) => ({
-                  ...prevValue,
-                  bill_amount: event.target.valueAsNumber,
-                }))
+                send({
+                  type: "UPDATE_FORM",
+                  billingForm: {
+                    ...billingForm,
+                    bill_amount: event.target.valueAsNumber,
+                  },
+                })
               }
             />
           </FormControl>
@@ -106,13 +85,16 @@ const BillingFormFirstStep = ({
           <FormControl mt={4}>
             <FormLabel>Charged Member</FormLabel>
             <Select
-              value={formValue?.charged_member_id}
+              value={billingForm?.charged_member_id}
               placeholder="Select Member"
               onChange={(event) =>
-                setFormValue((prevValue) => ({
-                  ...prevValue,
-                  charged_member_id: event.target.value,
-                }))
+                send({
+                  type: "UPDATE_FORM",
+                  billingForm: {
+                    ...billingForm,
+                    charged_member_id: event.target.value,
+                  },
+                })
               }
             >
               {members.map((member: Member) => (
@@ -131,12 +113,17 @@ const BillingFormFirstStep = ({
           <Button
             colorScheme="blue"
             mr={3}
+            // Todo => Handle Disabled Next Button
             onClick={() => {
               send({ type: "NEXT_STEP" }),
-                send({
-                  type: "UPDATE_FORM",
-                  billingForm: formValue,
-                });
+                formMode === FormMode.Create &&
+                  send({
+                    type: "UPDATE_FORM",
+                    billingForm: {
+                      ...billingForm,
+                      is_bill_equally: true,
+                    },
+                  });
             }}
           >
             Next

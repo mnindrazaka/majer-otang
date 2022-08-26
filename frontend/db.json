@@ -3,27 +3,27 @@
     {
       "id": "1",
       "title": "Iuran Minyak Goreng",
-      "amount": 25.000
+      "amount": 25000
     },
     {
       "id": "2",
       "title": "Iuran Beras 50Kg",
-      "amount": 50.0000
+      "amount": 500000
     },
     {
       "id": "3",
       "title": "Iuran belanja mingguan",
-      "amount": 200.000
+      "amount": 200000
     }
   ],
   "members": [
     {
       "id": "1",
-      "name": "M. Nindra Zaka"
+      "name": "M Nindra Zaka"
     },
     {
       "id": "2",
-      "name": "Ilham Surya P."
+      "name": "Ilham Surya P"
     },
     {
       "id": "3",
@@ -34,28 +34,28 @@
     {
       "id": "1",
       "title": "Iuran Minyak Goreng",
-      "bill_amount": 110.000,
+      "bill_amount": 110000,
       "charged_member_id": "2",
       "is_bill_equally": false,
       "members": [
         {
           "id": "1",
-          "amount": 50.000
+          "amount": 50000
         },
         {
           "id": "2",
-          "amount": 50.000
+          "amount": 50000
         },
         {
           "id": "3",
-          "amount": 10.000
+          "amount": 10000
         }
       ]
     },
     {
       "id": "2",
       "title": "Iuran Beras 50Kg",
-      "bill_amount": 75.000,
+      "bill_amount": 75000,
       "charged_member_id": "1",
       "is_bill_equally": true,
       "members": [
@@ -76,21 +76,21 @@
     {
       "id": "3",
       "title": "Iuran belanja mingguan",
-      "bill_amount": 23.000,
+      "bill_amount": 23000,
       "charged_member_id": "2",
       "is_bill_equally": false,
       "members": [
         {
           "id": "1",
-          "amount": 10.000
+          "amount": 10000
         },
         {
           "id": "2",
-          "amount": 10.000
+          "amount": 10000
         },
         {
           "id": "3",
-          "amount": 3.000
+          "amount": 3000
         }
       ]
     }

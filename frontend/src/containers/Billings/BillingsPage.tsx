@@ -14,8 +14,6 @@ import { match } from "ts-pattern";
 const BillingsPage = () => {
   const [state, send, service] = useMachine(billingMachine);
 
-  const historyEvent = state.history?.event;
-
   // Debugging Purposes
   React.useEffect(() => {
     const subscription = service.subscribe((state) => {
@@ -52,14 +50,10 @@ const BillingsPage = () => {
           )
           .with(
             { value: { billingFormReady: "firstStep" } },
-            ({
-              context: { members, billingDetail, formMode, billingForm },
-            }) => (
+            ({ context: { members, formMode, billingForm } }) => (
               <BillingFormFirstStep
-                historyEvent={historyEvent}
                 billingForm={billingForm}
                 formMode={formMode}
-                billingDetail={billingDetail}
                 members={members}
                 send={send}
               />
