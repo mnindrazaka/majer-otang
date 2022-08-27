@@ -26,11 +26,17 @@ import {
 
 type Props = {
   members: Member[];
+  formMode: FormMode;
   billingForm: BillingForm;
   send: (event: Event) => void;
 };
 
-const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
+const BillingFormSecondStep = ({
+  members,
+  formMode,
+  send,
+  billingForm,
+}: Props) => {
   const handleCloseForm = () => {
     send({ type: "CANCEL_FILL_FORM" });
   };
@@ -44,6 +50,25 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
   const [checkedMembers, setCheckedMembers] = React.useState(
     defaultCheckedMembers
   );
+
+  // React.useEffect(() => {
+  //   if (formMode === FormMode.Create) {
+  // const selectedMembers = filteredMembers.map((member, index) => {
+  //   const selectedMember = checkedMembers[index] ? member.id : "";
+  //   return {
+  //     id: selectedMember,
+  //     amount: 0,
+  //   };
+  // });
+  //     send({
+  //       type: "UPDATE_FORM",
+  //       billingForm: {
+  //         ...billingForm,
+  //         members: selectedMembers,
+  //       },
+  //     });
+  //   }
+  // }, [billingForm, checkedMembers, filteredMembers, formMode, send]);
 
   return (
     <Modal isOpen={true} onClose={handleCloseForm} isCentered>
@@ -92,7 +117,7 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
                 <Flex justifyContent="space-between">
                   <Box>
                     <Text>{member.name}</Text>
-                    {!billingForm.is_bill_equally && checkedMembers[index] ? (
+                    {!billingForm.is_bill_equally && checkedMembers[index] && (
                       <Input
                         type="number"
                         placeholder="Input the amount of bill"
@@ -100,31 +125,30 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
                         mt="2"
                         value={billingForm.members[index]?.amount}
                         onChange={(event) => {
-                          (billingForm.members[index].amount =
-                            event.target.valueAsNumber),
-                            send({ type: "UPDATE_FORM", billingForm });
-                        }}
-                      />
-                    ) : null}
-                  </Box>
-                  <Center>
-                    {billingForm.is_bill_equally ? (
-                      <Checkbox size="lg" colorScheme="blue" isChecked={true} />
-                    ) : (
-                      <Checkbox
-                        size="lg"
-                        colorScheme="blue"
-                        isChecked={checkedMembers[index]}
-                        onChange={(event) => {
-                          const { checked } = event.target;
-                          setCheckedMembers((prevCheckMember) =>
-                            prevCheckMember.map((checkedMember, currentIndex) =>
-                              currentIndex === index ? checked : checkedMember
-                            )
-                          );
+                          billingForm.members[index].amount =
+                            event.target.valueAsNumber;
+                          send({ type: "UPDATE_FORM", billingForm });
                         }}
                       />
                     )}
+                  </Box>
+                  <Center>
+                    <Checkbox
+                      size="lg"
+                      colorScheme="blue"
+                      isChecked={checkedMembers[index]}
+                      onChange={(event) => {
+                        const { checked } = event.target;
+                        setCheckedMembers((prevCheckMember) => {
+                          const newMembers = prevCheckMember.map(
+                            (checkedMember, currentIndex) =>
+                              currentIndex === index ? checked : checkedMember
+                          );
+
+                          return newMembers;
+                        });
+                      }}
+                    />
                   </Center>
                 </Flex>
               </Box>
@@ -145,10 +169,22 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
             colorScheme="blue"
             mr={3}
             onClick={() => {
-              const selectedMembers = billingForm.members.filter(
-                (_, index) => checkedMembers[index]
-              );
-              console.log(selectedMembers);
+              const selectedMembers =
+                formMode === FormMode.Create
+                  ? filteredMembers.map((member, index) => {
+                      const selectedMember = checkedMembers[index]
+                        ? member.id
+                        : "";
+                      return {
+                        id: selectedMember,
+                        amount: 0,
+                      };
+                    })
+                  : billingForm.members.filter(
+                      (member, index) =>
+                        checkedMembers[index] && member.id !== ""
+                    );
+
               send({
                 type: "UPDATE_FORM",
                 billingForm: {
