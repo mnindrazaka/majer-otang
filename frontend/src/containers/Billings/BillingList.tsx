@@ -1,19 +1,28 @@
 import React from "react";
 import { Box, Flex, Heading, VStack, Text, Button } from "@chakra-ui/react";
 import { Billing } from "../../utils/fetcher";
-import {
-  FormMode,
-  MachineEvents,
-} from "../../machines/billings/billingMachine";
+import { FormMode, Event } from "../../machines/billings/billingMachine";
 
 type Props = {
   billings: Billing[];
-  send: (event: MachineEvents) => void;
+  send: (event: Event) => void;
 };
 
 const BillingList = ({ billings, send }: Props) => {
   const handleCreateForm = () => {
-    send({ type: "ACTIVATE_BILLING_FORM", formMode: FormMode.Create });
+    send({
+      type: "ACTIVATE_BILLING_FORM",
+      formMode: FormMode.Create,
+      billingId: null,
+    });
+  };
+
+  const handleEditForm = (billingId: string) => {
+    send({
+      type: "ACTIVATE_BILLING_FORM",
+      formMode: FormMode.Edit,
+      billingId,
+    });
   };
 
   return (
@@ -39,7 +48,12 @@ const BillingList = ({ billings, send }: Props) => {
               </Text>
               <Text>{`Rp ${billing.amount}`}</Text>
             </Box>
-            <Button colorScheme="telegram">Edit</Button>
+            <Button
+              colorScheme="telegram"
+              onClick={() => handleEditForm(billing.id)}
+            >
+              Edit
+            </Button>
           </Box>
         ))}
       </VStack>
