@@ -22,10 +22,15 @@ func buildResponse(data interface{}, status string, err error) response {
 	return res
 }
 
-func buildSuccessResponse2(w http.ResponseWriter, result interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(result)
+func buildCreateResponse(status string, err error) response {
+	var res response
+
+	res.Status = status
+	if err != nil {
+		res.Message = err.Error()
+	}
+
+	return res
 }
 
 func buildSuccessResponse(w http.ResponseWriter, result interface{}) {
