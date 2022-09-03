@@ -322,7 +322,7 @@ type MachineEvents =
     };
 
 interface Params {
-  memberId: "";
+  memberId: string;
 }
 
 export const createPaymentMachine = (params: Params) =>
