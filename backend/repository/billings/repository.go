@@ -66,12 +66,17 @@ func (b *billingRepository) CreateBilling(ctx context.Context, billingDetail ent
 
 	result, err := b.db.Database("billing").Collection("billings").InsertOne(context.TODO(), data)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, utils.ErrNoDocument
-		}
 		return nil, err
 	}
 	// get id from inserted row
 	billingDetail.Id = result.InsertedID.(primitive.ObjectID).Hex()
+	//dataMember := bson.A{billingDetail.Members}
+	//a := append(dataMember, bson.E{Key: "billing_id", Value: result.InsertedID.(primitive.ObjectID).Hex()})
+	//_, err = b.db.Database("billing").Collection("billing_members").InsertOne(context.TODO(), a)
+
+	//if err != nil {
+	//	return nil, err
+	//}
+
 	return &billingDetail, nil
 }

@@ -50,3 +50,17 @@ func (bm *billingMemberRepository) GetBillingMemberByBillingID(ctx context.Conte
 
 	return billingMembers, nil
 }
+
+func (bm *billingMemberRepository) CreateBillingMember(ctx context.Context, billingMemberData repository.BillingMemberData) error {
+	data := bson.D{
+		{"billingId", billingMemberData.BillingId},
+		{"chargedMemberId", billingMemberData.ChargedMemberId},
+		{"memberId", billingMemberData.MemberId},
+		{"amount", billingMemberData.Amount},
+		{"status", billingMemberData.Status},
+	}
+
+	_, err := bm.db.Database("billing").Collection("billing_members").InsertOne(context.TODO(), data)
+
+	return err
+}

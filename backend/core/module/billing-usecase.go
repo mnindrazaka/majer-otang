@@ -38,14 +38,28 @@ func (b *billingUsecase) GetBillingsList(ctx context.Context) ([]*entity.Billing
 }
 
 func (b *billingUsecase) CreateBilling(ctx context.Context, request entity.BillingDetail) (*entity.BillingDetail, error) {
-	err := b.validate.Struct(request)
-
 	billing := entity.BillingDetail{
 		Title:           request.Title,
 		BillAmount:      request.BillAmount,
 		ChargedMemberId: request.ChargedMemberId,
 		IsBillEqually:   request.IsBillEqually,
-		Members:         request.Members,
 	}
-	return &billing, err
+
+	billingDetail, err := b.billingRepository.CreateBilling(ctx, billing)
+
+	// loop members
+	for _, member := range request.Members {
+		err := b.billingMemberRepository.CreateBillingMember(ctx, repository.BillingMemberData{
+			MemberId:        member.Id,
+			Amount:          member.Amount,
+			BillingId:       billingDetail.Id,
+			Status:          "unpaid",
+			ChargedMemberId: billingDetail.ChargedMemberId,
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return nil, err
 }
