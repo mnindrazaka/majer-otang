@@ -66,3 +66,15 @@ func (bm *billingMemberRepository) CreateBillingMember(ctx context.Context, bill
 
 	return err
 }
+
+func (bm *billingMemberRepository) UpdateBillingMemberByBillingID(ctx context.Context, memberID string) error {
+	MemberObjectID, _ := primitive.ObjectIDFromHex(memberID)
+
+	filter := bson.D{{"billing_id", MemberObjectID}, {"charged_member_id", MemberObjectID}}
+
+	update := bson.D{{"$set", bson.D{{"status", "paid"}}}}
+
+	_, err := bm.db.Database("billing").Collection("billing_members").UpdateMany(ctx, filter, update)
+
+	return err
+}
