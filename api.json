@@ -295,7 +295,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success CREATE Payment Data",
+            "description": "Success UPDATE Payment Data",
             "content": {
               "application/json": {
                 "schema": {

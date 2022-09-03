@@ -17,4 +17,5 @@ type BillingMemberData struct {
 type BillingMemberRepository interface {
 	GetBillingMemberByBillingID(ctx context.Context, id string) ([]entity.BillingMember, error)
 	CreateBillingMember(ctx context.Context, billingMemberData BillingMemberData) error
+	UpdateBillingMemberByBillingID(ctx context.Context, memberID string) error
 }

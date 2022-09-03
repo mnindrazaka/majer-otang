@@ -44,6 +44,9 @@ func main() {
 	billingUsecase := module.NewBillingUsecase(billingRepo, billingMemberRepo, validate)
 	billingHandler := api.NewBillingHandler(billingUsecase)
 
+	paymentUsecase := module.NewPaymentUsecase(billingMemberRepo)
+	paymentHandler := api.NewPaymentHandler(paymentUsecase)
+
 	router := httprouter.New()
 	router.GET("/member/:memberID", memberHandler.GetMemberByID)
 	router.GET("/members", memberHandler.GetMemberList)
@@ -52,6 +55,9 @@ func main() {
 	router.GET("/billing/:billingID", billingHandler.GetBillingByID)
 	router.POST("/billing", billingHandler.CreateBilling)
 	router.GET("/billings", billingHandler.GetBillings)
+
+	// payment
+	router.PUT("/payment", paymentHandler.UpdatePayment)
 
 	err = http.ListenAndServe(fmt.Sprintf(":%v", cfg.Port), router)
 	if err != nil {
