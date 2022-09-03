@@ -330,10 +330,7 @@ export const createPaymentMachine = (params: Params) =>
     id: "Payment",
     initial: "idle",
     context: {
-      member: {
-        id: "",
-        name: ""
-      },
+      member: null,
       targetMemberId: null,
       memberError: null,
       payments: [],
