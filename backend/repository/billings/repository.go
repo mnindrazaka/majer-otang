@@ -61,8 +61,7 @@ func (b *billingRepository) CreateBilling(ctx context.Context, billingDetail ent
 		{"title", billingDetail.Title},
 		{"billAmount", billingDetail.BillAmount},
 		{"chargedMemberId", billingDetail.ChargedMemberId},
-		{"isBillEqually", billingDetail.IsBillEqually},
-		{"member", billingDetail.Members}}
+		{"isBillEqually", billingDetail.IsBillEqually}}
 
 	result, err := b.db.Database("billing").Collection("billings").InsertOne(context.TODO(), data)
 	if err != nil {

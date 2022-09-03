@@ -2,6 +2,7 @@ package module
 
 import (
 	"context"
+	"fmt"
 	"github.com/go-playground/validator/v10"
 
 	"github.com/mnindrazaka/billing/core/entity"
@@ -46,9 +47,11 @@ func (b *billingUsecase) CreateBilling(ctx context.Context, request entity.Billi
 	}
 
 	billingDetail, err := b.billingRepository.CreateBilling(ctx, billing)
+	//fmt.Println(billingDetail.Id)
 
 	// loop members
 	for _, member := range request.Members {
+		fmt.Println(member)
 		err := b.billingMemberRepository.CreateBillingMember(ctx, repository.BillingMemberData{
 			MemberId:        member.Id,
 			Amount:          member.Amount,

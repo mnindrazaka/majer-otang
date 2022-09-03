@@ -2,6 +2,7 @@ package billingMembers
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mnindrazaka/billing/core/entity"
 	"github.com/mnindrazaka/billing/core/repository"
@@ -59,8 +60,12 @@ func (bm *billingMemberRepository) CreateBillingMember(ctx context.Context, bill
 		{"amount", billingMemberData.Amount},
 		{"status", billingMemberData.Status},
 	}
+	fmt.Println(billingMemberData)
 
 	_, err := bm.db.Database("billing").Collection("billing_members").InsertOne(context.TODO(), data)
+
+	//fmt.Println(dataBillingMember)
+	//fmt.Println(err)
 
 	return err
 }
