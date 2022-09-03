@@ -2,7 +2,6 @@ package billingMembers
 
 import (
 	"context"
-
 	"github.com/mnindrazaka/billing/core/entity"
 	"github.com/mnindrazaka/billing/core/repository"
 	"github.com/mnindrazaka/billing/utils"
@@ -49,4 +48,21 @@ func (bm *billingMemberRepository) GetBillingMemberByBillingID(ctx context.Conte
 	}
 
 	return billingMembers, nil
+}
+
+func (bm *billingMemberRepository) CreateBillingMember(ctx context.Context, billingMemberData repository.BillingMemberData) error {
+	billingIdConvert, _ := primitive.ObjectIDFromHex(billingMemberData.BillingId)
+	chargedMemberIdConvert, _ := primitive.ObjectIDFromHex(billingMemberData.ChargedMemberId)
+	memberIdConvert, _ := primitive.ObjectIDFromHex(billingMemberData.MemberId)
+	data := bson.D{
+		{"billing_id", billingIdConvert},
+		{"charged_member_id", chargedMemberIdConvert},
+		{"member_id", memberIdConvert},
+		{"amount", billingMemberData.Amount},
+		{"status", billingMemberData.Status},
+	}
+
+	_, err := bm.db.Database("billing").Collection("billing_members").InsertOne(context.TODO(), data)
+
+	return err
 }

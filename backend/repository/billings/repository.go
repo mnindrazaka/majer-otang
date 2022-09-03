@@ -2,7 +2,6 @@ package billings
 
 import (
 	"context"
-
 	"github.com/mnindrazaka/billing/core/entity"
 	"github.com/mnindrazaka/billing/core/repository"
 	"github.com/mnindrazaka/billing/utils"
@@ -55,4 +54,22 @@ func (b *billingRepository) GetBillingByID(ctx context.Context, id string) (*ent
 	}
 
 	return billing, nil
+}
+
+func (b *billingRepository) CreateBilling(ctx context.Context, billingDetail entity.BillingDetail) (*entity.BillingDetail, error) {
+	chargedMemberIdConvert, _ := primitive.ObjectIDFromHex(billingDetail.ChargedMemberId)
+	data := bson.D{
+		{"title", billingDetail.Title},
+		{"billAmount", billingDetail.BillAmount},
+		{"chargedMemberId", chargedMemberIdConvert},
+		{"isBillEqually", billingDetail.IsBillEqually}}
+
+	result, err := b.db.Database("billing").Collection("billings").InsertOne(context.TODO(), data)
+	if err != nil {
+		return nil, err
+	}
+	// get id from inserted row
+	billingDetail.Id = result.InsertedID.(primitive.ObjectID).Hex()
+
+	return &billingDetail, nil
 }

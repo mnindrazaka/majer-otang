@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/go-playground/validator/v10"
 	"log"
 	"net/http"
 
@@ -17,7 +18,7 @@ import (
 )
 
 func main() {
-	// load environemnt
+	// load environment
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -32,22 +33,24 @@ func main() {
 		log.Fatalf("Error init database connection = %v", err)
 	}
 
-	// example impelementation
+	// example implementation
 	memberRepo := members.NewMemberRepository(db)
 	memberUsecase := module.NewMemberUsecase(memberRepo)
-	memberHalder := api.NewUserHandler(memberUsecase)
+	memberHandler := api.NewUserHandler(memberUsecase)
 
+	validate := validator.New()
 	billingRepo := billings.NewBillingRepository(db)
 	billingMemberRepo := billingMembers.NewBillingMemberRepository(db)
-	billingUsecase := module.NewBillingUsecase(billingRepo, billingMemberRepo)
+	billingUsecase := module.NewBillingUsecase(billingRepo, billingMemberRepo, validate)
 	billingHandler := api.NewBillingHandler(billingUsecase)
 
 	router := httprouter.New()
-	router.GET("/member/:memberID", memberHalder.GetMemberByID)
-	router.GET("/members", memberHalder.GetMemberList)
+	router.GET("/member/:memberID", memberHandler.GetMemberByID)
+	router.GET("/members", memberHandler.GetMemberList)
 
-	router.GET("/billing/:billingID", billingHandler.GetBillingByID)
 	// billings
+	router.GET("/billing/:billingID", billingHandler.GetBillingByID)
+	router.POST("/billing", billingHandler.CreateBilling)
 	router.GET("/billings", billingHandler.GetBillings)
 
 	err = http.ListenAndServe(fmt.Sprintf(":%v", cfg.Port), router)
