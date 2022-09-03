@@ -357,7 +357,7 @@
             "type": "array",
             "x-go-custom-tag": "bson:\"data\"",
             "items": {
-              "$ref": "#/components/paymentByMemberId"
+              "$ref": "#/components/payment"
             }
           },
           "status": {
@@ -551,7 +551,7 @@
           }
         }
       },
-      "paymentByMemberId": {
+      "payment": {
         "type": "object",
         "required": ["memberId", "name", "amount"],
         "properties": {
