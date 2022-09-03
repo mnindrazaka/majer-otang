@@ -57,10 +57,11 @@ func (b *billingRepository) GetBillingByID(ctx context.Context, id string) (*ent
 }
 
 func (b *billingRepository) CreateBilling(ctx context.Context, billingDetail entity.BillingDetail) (*entity.BillingDetail, error) {
+	chargedMemberIdConvert, _ := primitive.ObjectIDFromHex(billingDetail.ChargedMemberId)
 	data := bson.D{
 		{"title", billingDetail.Title},
 		{"billAmount", billingDetail.BillAmount},
-		{"chargedMemberId", billingDetail.ChargedMemberId},
+		{"chargedMemberId", chargedMemberIdConvert},
 		{"isBillEqually", billingDetail.IsBillEqually}}
 
 	result, err := b.db.Database("billing").Collection("billings").InsertOne(context.TODO(), data)
@@ -69,13 +70,6 @@ func (b *billingRepository) CreateBilling(ctx context.Context, billingDetail ent
 	}
 	// get id from inserted row
 	billingDetail.Id = result.InsertedID.(primitive.ObjectID).Hex()
-	//dataMember := bson.A{billingDetail.Members}
-	//a := append(dataMember, bson.E{Key: "billing_id", Value: result.InsertedID.(primitive.ObjectID).Hex()})
-	//_, err = b.db.Database("billing").Collection("billing_members").InsertOne(context.TODO(), a)
-
-	//if err != nil {
-	//	return nil, err
-	//}
 
 	return &billingDetail, nil
 }
