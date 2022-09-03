@@ -51,7 +51,7 @@ const BillingFormFirstStep = ({
             <FormLabel>Title</FormLabel>
             <Input
               placeholder="Please kindly fill the billing title"
-              value={billingForm?.title}
+              value={billingForm.title}
               onChange={(event) =>
                 send({
                   type: "UPDATE_FORM",
@@ -69,7 +69,7 @@ const BillingFormFirstStep = ({
             <Input
               type="number"
               placeholder="Please kindly fill the billing total"
-              value={billingForm?.bill_amount}
+              value={billingForm.bill_amount}
               onChange={(event) =>
                 send({
                   type: "UPDATE_FORM",
@@ -85,7 +85,7 @@ const BillingFormFirstStep = ({
           <FormControl mt={4}>
             <FormLabel>Charged Member</FormLabel>
             <Select
-              value={billingForm?.charged_member_id}
+              value={billingForm.charged_member_id}
               placeholder="Select Member"
               onChange={(event) =>
                 send({

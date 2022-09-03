@@ -234,7 +234,7 @@ export namespace State {
         membersError: null;
         billingDetail: undefined;
         billingDetailError: null;
-        billingForm: undefined;
+        billingForm: BillingForm;
         submitBillingDetailError: null;
       };
     };
@@ -248,7 +248,13 @@ export namespace State {
         membersError: null,
         billingDetail: undefined,
         billingDetailError: null,
-        billingForm: undefined,
+        billingForm: {
+          bill_amount: 0,
+          charged_member_id: "",
+          is_bill_equally: true,
+          members: [],
+          title: "",
+        },
         submitBillingDetailError: null,
       },
     });

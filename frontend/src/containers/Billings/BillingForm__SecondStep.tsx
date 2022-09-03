@@ -51,25 +51,6 @@ const BillingFormSecondStep = ({
     defaultCheckedMembers
   );
 
-  // React.useEffect(() => {
-  //   if (formMode === FormMode.Create) {
-  // const selectedMembers = filteredMembers.map((member, index) => {
-  //   const selectedMember = checkedMembers[index] ? member.id : "";
-  //   return {
-  //     id: selectedMember,
-  //     amount: 0,
-  //   };
-  // });
-  //     send({
-  //       type: "UPDATE_FORM",
-  //       billingForm: {
-  //         ...billingForm,
-  //         members: selectedMembers,
-  //       },
-  //     });
-  //   }
-  // }, [billingForm, checkedMembers, filteredMembers, formMode, send]);
-
   return (
     <Modal isOpen={true} onClose={handleCloseForm} isCentered>
       <ModalOverlay
@@ -90,7 +71,7 @@ const BillingFormSecondStep = ({
             <Checkbox
               size="lg"
               colorScheme="cyan"
-              isChecked={billingForm?.is_bill_equally}
+              isChecked={billingForm.is_bill_equally}
               onChange={(event) =>
                 send({
                   type: "UPDATE_FORM",
