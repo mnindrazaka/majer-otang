@@ -14,25 +14,15 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { Member } from "../../utils/fetcher";
-import {
-  Event,
-  BillingForm,
-  FormMode,
-} from "../../machines/billings/billingMachine";
+import { Event, BillingForm } from "../../machines/billings/billingMachine";
 
 type Props = {
   billingForm: BillingForm;
-  formMode: FormMode;
   members: Member[];
   send: (event: Event) => void;
 };
 
-const BillingFormFirstStep = ({
-  members,
-  send,
-  billingForm,
-  formMode,
-}: Props) => {
+const BillingFormFirstStep = ({ members, send, billingForm }: Props) => {
   const handleCloseForm = () => {
     send({ type: "CANCEL_FILL_FORM" });
   };
@@ -114,17 +104,7 @@ const BillingFormFirstStep = ({
             colorScheme="blue"
             mr={3}
             // Todo => Handle Disabled Next Button
-            onClick={() => {
-              send({ type: "NEXT_STEP" }),
-                formMode === FormMode.Create &&
-                  send({
-                    type: "UPDATE_FORM",
-                    billingForm: {
-                      ...billingForm,
-                      is_bill_equally: true,
-                    },
-                  });
-            }}
+            onClick={() => send({ type: "NEXT_STEP" })}
           >
             Next
           </Button>

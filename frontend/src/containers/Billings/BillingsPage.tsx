@@ -50,10 +50,9 @@ const BillingsPage = () => {
           )
           .with(
             { value: { billingFormReady: "firstStep" } },
-            ({ context: { members, formMode, billingForm } }) => (
+            ({ context: { members, billingForm } }) => (
               <BillingFormFirstStep
                 billingForm={billingForm}
-                formMode={formMode}
                 members={members}
                 send={send}
               />
@@ -61,10 +60,9 @@ const BillingsPage = () => {
           )
           .with(
             { value: { billingFormReady: "secondStep" } },
-            ({ context: { members, billingForm, formMode } }) => (
+            ({ context: { members, billingForm } }) => (
               <BillingFormSecondStep
                 billingForm={billingForm}
-                formMode={formMode}
                 members={members}
                 send={send}
               />
