@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"github.com/mnindrazaka/billing/core/entity"
 	"net/http"
 
@@ -59,7 +58,6 @@ func (b *billingHandler) UpdateBilling(w http.ResponseWriter, r *http.Request, p
 	billingUpdateRequest := entity.BillingDetail{}
 
 	ReadFromRequestBody(w, r, &billingUpdateRequest)
-	fmt.Println(billingUpdateRequest)
 
 	billing, err := b.billingUsecase.UpdateBilling(r.Context(), ps.ByName("billingID"), billingUpdateRequest)
 	if err != nil {

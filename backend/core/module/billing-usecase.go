@@ -2,7 +2,6 @@ package module
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-playground/validator/v10"
 
 	"github.com/mnindrazaka/billing/core/entity"
@@ -81,7 +80,6 @@ func (b *billingUsecase) UpdateBilling(ctx context.Context, billingId string, re
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("billing update -->", billingUpdate)
 
 	// delete dulu data di billingMember lalu insert data baru
 	// delete previous data first
@@ -90,13 +88,12 @@ func (b *billingUsecase) UpdateBilling(ctx context.Context, billingId string, re
 		return nil, err
 	}
 
-	fmt.Println("request member -->", request.Members)
 	// insert new data from request
 	for _, member := range request.Members {
 		err := b.billingMemberRepository.CreateBillingMember(ctx, repository.BillingMemberData{
 			MemberId:        member.Id,
 			Amount:          member.Amount,
-			BillingId:       billingUpdate.Id,
+			BillingId:       billingId,
 			Status:          "unpaid",
 			ChargedMemberId: billingUpdate.ChargedMemberId,
 		})

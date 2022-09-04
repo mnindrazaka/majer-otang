@@ -2,7 +2,6 @@ package billings
 
 import (
 	"context"
-	"fmt"
 	"github.com/mnindrazaka/billing/core/entity"
 	"github.com/mnindrazaka/billing/core/repository"
 	"github.com/mnindrazaka/billing/utils"
@@ -78,9 +77,6 @@ func (b *billingRepository) CreateBilling(ctx context.Context, billingDetail ent
 func (b *billingRepository) UpdateBilling(ctx context.Context, billingId string, billingDetail entity.BillingDetail) (*entity.BillingDetail, error) {
 	billing := b.db.Database("billing").Collection("billings")
 
-	fmt.Println("billing id di billings repository:", billingId)
-	fmt.Println("billing detail:", billingDetail)
-
 	id, err := primitive.ObjectIDFromHex(billingId)
 	if err != nil {
 		return nil, utils.ErrorInvalidPrimitiveID
@@ -89,7 +85,6 @@ func (b *billingRepository) UpdateBilling(ctx context.Context, billingId string,
 	if err != nil {
 		return nil, utils.ErrorInvalidPrimitiveID
 	}
-	fmt.Println("id & charged member ID", id, chargedMemberIdConvert)
 
 	filter := bson.D{{"_id", id}}
 	dataUpdate := bson.D{{"$set", bson.D{
