@@ -785,23 +785,56 @@ export const billingMachine = createMachine<Context, Event, State.t>({
         );
     },
     submitBillingData: (ctx) => (send) => {
-      fetch(`http://localhost:4000/billings`, {
-        method: ctx.formMode === FormMode.Create ? "POST" : "PUT",
-        body: JSON.stringify(ctx.billingForm),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
-      })
-        .then((response) => {
-          send({ type: "SUBMIT_BILLING_SUCCESS" });
-          response.json();
-        })
-        .catch((err) =>
-          send({
-            type: "SUBMIT_BILLING_ERROR",
-            submitBillingDetailErrorMessage: err,
-          })
-        );
+      const { title, billAmount, chargedMemberId, isBillEqually, members } =
+        ctx.billingForm ?? {
+          title: "",
+          billAmount: 0,
+          chargedMemberId: "",
+          isBillEqually: true,
+          members: [],
+        };
+
+      ctx.formMode === FormMode.Create
+        ? billingsApi
+            .createBilling({
+              billingRequest: {
+                title,
+                bill_amount: billAmount,
+                charged_member_id: chargedMemberId,
+                is_bill_equally: isBillEqually,
+                members: members,
+              },
+            })
+            .then((response) => {
+              send({ type: "SUBMIT_BILLING_SUCCESS" });
+              response;
+            })
+            .catch((err) =>
+              send({
+                type: "SUBMIT_BILLING_ERROR",
+                submitBillingDetailErrorMessage: err,
+              })
+            )
+        : billingsApi
+            .updateBilling({
+              billingRequest: {
+                title,
+                bill_amount: billAmount,
+                charged_member_id: chargedMemberId,
+                is_bill_equally: isBillEqually,
+                members: members,
+              },
+            })
+            .then((response) => {
+              send({ type: "SUBMIT_BILLING_SUCCESS" });
+              response;
+            })
+            .catch((err) =>
+              send({
+                type: "SUBMIT_BILLING_ERROR",
+                submitBillingDetailErrorMessage: err,
+              })
+            );
     },
   },
   guards: {
