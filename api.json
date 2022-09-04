@@ -9,9 +9,7 @@
     "/members": {
       "get": {
         "description": "GET all members",
-        "tags": [
-          "Members"
-        ],
+        "tags": ["Members"],
         "operationId": "getMemberList",
         "summary": "GET all member",
         "responses": {
@@ -31,9 +29,7 @@
     "/members/{memberId}": {
       "get": {
         "description": "GET member by memberId",
-        "tags": [
-          "Members"
-        ],
+        "tags": ["Members"],
         "operationId": "getMemberDetail",
         "summary": "GET member by memberId",
         "parameters": [
@@ -74,9 +70,7 @@
     "/billings": {
       "get": {
         "description": "GET Billing Data",
-        "tags": [
-          "Billings"
-        ],
+        "tags": ["Billings"],
         "operationId": "getBillingList",
         "summary": "GET Billing Data",
         "responses": {
@@ -94,9 +88,7 @@
       },
       "post": {
         "description": "CREATE Billing Data",
-        "tags": [
-          "Billings"
-        ],
+        "tags": ["Billings"],
         "operationId": "createBilling",
         "summary": "CREATE Billing Data",
         "requestBody": {
@@ -143,9 +135,7 @@
       },
       "put": {
         "description": "UPDATE Billing Data",
-        "tags": [
-          "Billings"
-        ],
+        "tags": ["Billings"],
         "operationId": "updateBilling",
         "summary": "UPDATE Billing Data",
         "requestBody": {
@@ -194,9 +184,7 @@
     "/billing/{billingId}": {
       "get": {
         "description": "GET Billing by ID",
-        "tags": [
-          "Billings"
-        ],
+        "tags": ["Billings"],
         "operationId": "getBillingByID",
         "parameters": [
           {
@@ -241,22 +229,136 @@
           }
         }
       }
+    },
+    "/payments": {
+      "get": {
+        "description": "GET Payments by MemberId",
+        "tags": ["Payments"],
+        "operationId": "getPaymentByMemberId",
+        "parameters": [
+          {
+            "name": "memberId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The id of member",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success GET Payments by MemberId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPaymentListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ERROR GET Payments By MemberId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERROR GET Payments By MemberId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "UPDATE Payment Data",
+        "tags": ["Payments"],
+        "operationId": "updatePayment",
+        "summary": "UPDATE Payment Data",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success UPDATE Payment Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoDataResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ERROR CREATE Payment Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERROR CREATE Payment Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
       "GetBillingDetailResponse": {
         "type": "object",
-        "required": [
-          "data",
-          "status",
-          "message"
-        ],
+        "required": ["data", "status", "message"],
         "properties": {
           "data": {
             "type": "object",
             "x-go-custom-tag": "bson:\"data\"",
             "$ref": "#/components/BillingDetail"
+          },
+          "status": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"status\""
+          },
+          "message": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"message\""
+          }
+        }
+      },
+      "GetPaymentListResponse": {
+        "type": "object",
+        "required": ["data", "status", "message"],
+        "properties": {
+          "data": {
+            "type": "array",
+            "x-go-custom-tag": "bson:\"data\"",
+            "items": {
+              "$ref": "#/components/Payment"
+            }
           },
           "status": {
             "type": "string",
@@ -310,11 +412,7 @@
       },
       "GetBillingListResponse": {
         "type": "object",
-        "required": [
-          "data",
-          "status",
-          "message"
-        ],
+        "required": ["data", "status", "message"],
         "properties": {
           "data": {
             "type": "array",
@@ -335,11 +433,7 @@
       },
       "Billing": {
         "type": "object",
-        "required": [
-          "id",
-          "title",
-          "amount"
-        ],
+        "required": ["id", "title", "amount"],
         "properties": {
           "id": {
             "type": "string",
@@ -392,10 +486,7 @@
       },
       "BillingMember": {
         "type": "object",
-        "required": [
-          "id",
-          "amount"
-        ],
+        "required": ["id", "amount"],
         "properties": {
           "id": {
             "type": "string",
@@ -409,11 +500,7 @@
       },
       "GetMemberListResponse": {
         "type": "object",
-        "required": [
-          "data",
-          "status",
-          "message"
-        ],
+        "required": ["data", "status", "message"],
         "properties": {
           "data": {
             "type": "array",
@@ -434,11 +521,7 @@
       },
       "GetMemberDetailResponse": {
         "type": "object",
-        "required": [
-          "data",
-          "status",
-          "message"
-        ],
+        "required": ["data", "status", "message"],
         "properties": {
           "data": {
             "$ref": "#/components/Member"
@@ -456,10 +539,7 @@
       "Member": {
         "type": "object",
         "x-go-custom-tag": "bson:\"member\"",
-        "required": [
-          "id",
-          "name"
-        ],
+        "required": ["id", "name"],
         "properties": {
           "id": {
             "type": "string",
@@ -471,13 +551,41 @@
           }
         }
       },
+      "Payment": {
+        "type": "object",
+        "required": ["memberId", "name", "amount"],
+        "properties": {
+          "memberId": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"_id\""
+          },
+          "name": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"name\""
+          },
+          "amount": {
+            "type": "integer",
+            "x-go-custom-tag": "bson:\"amount\""
+          }
+        }
+      },
+      "PaymentRequest": {
+        "type": "object",
+        "required": ["targetMemberId", "chargedMemberId"],
+        "properties": {
+          "targetMemberId": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"targetMemberId\""
+          },
+          "chargedMemberId": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"chargedMemberId\""
+          }
+        }
+      },
       "NoDataResponse": {
         "type": "object",
-        "required": [
-          "data",
-          "status",
-          "message"
-        ],
+        "required": ["data", "status", "message"],
         "properties": {
           "data": {
             "type": null,
@@ -495,11 +603,7 @@
       },
       "ErrorResponse": {
         "type": "object",
-        "required": [
-          "data",
-          "status",
-          "message"
-        ],
+        "required": ["data", "status", "message"],
         "properties": {
           "data": {
             "type": null,

@@ -2,6 +2,7 @@ package billingMembers
 
 import (
 	"context"
+
 	"github.com/mnindrazaka/billing/core/entity"
 	"github.com/mnindrazaka/billing/core/repository"
 	"github.com/mnindrazaka/billing/utils"
@@ -76,5 +77,16 @@ func (bm *billingMemberRepository) DeleteBillingMember(ctx context.Context, bill
 	if err != nil {
 		return err
 	}
+	return err
+}
+func (bm *billingMemberRepository) UpdateBillingMemberByBillingID(ctx context.Context, memberID string) error {
+	MemberObjectID, _ := primitive.ObjectIDFromHex(memberID)
+
+	filter := bson.D{{"billing_id", MemberObjectID}, {"charged_member_id", MemberObjectID}}
+
+	update := bson.D{{"$set", bson.D{{"status", "paid"}}}}
+
+	_, err := bm.db.Database("billing").Collection("billing_members").UpdateMany(ctx, filter, update)
+
 	return err
 }

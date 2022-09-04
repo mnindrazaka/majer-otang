@@ -18,4 +18,5 @@ type BillingMemberRepository interface {
 	GetBillingMemberByBillingID(ctx context.Context, id string) ([]entity.BillingMember, error)
 	CreateBillingMember(ctx context.Context, billingMemberData BillingMemberData) error
 	DeleteBillingMember(ctx context.Context, billingId string) error
+	UpdateBillingMemberByBillingID(ctx context.Context, memberID string) error
 }
