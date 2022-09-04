@@ -57,12 +57,16 @@ func (b *billingRepository) GetBillingByID(ctx context.Context, id string) (*ent
 }
 
 func (b *billingRepository) CreateBilling(ctx context.Context, billingDetail entity.BillingDetail) (*entity.BillingDetail, error) {
-	chargedMemberIdConvert, _ := primitive.ObjectIDFromHex(billingDetail.ChargedMemberId)
+	chargedMemberIdConvert, err := primitive.ObjectIDFromHex(billingDetail.MemberId)
+	if err != nil {
+		return nil, utils.ErrorInvalidPrimitiveID
+	}
+
 	data := bson.D{
 		{"title", billingDetail.Title},
-		{"billAmount", billingDetail.BillAmount},
-		{"chargedMemberId", chargedMemberIdConvert},
-		{"isBillEqually", billingDetail.IsBillEqually}}
+		{"bill_amount", billingDetail.BillAmount},
+		{"member_id", chargedMemberIdConvert},
+		{"is_bill_equal", billingDetail.IsBillEqually}}
 
 	result, err := b.db.Database("billing").Collection("billings").InsertOne(context.TODO(), data)
 	if err != nil {
@@ -72,4 +76,39 @@ func (b *billingRepository) CreateBilling(ctx context.Context, billingDetail ent
 	billingDetail.Id = result.InsertedID.(primitive.ObjectID).Hex()
 
 	return &billingDetail, nil
+}
+
+func (b *billingRepository) GetBillingByMemberID(ctx context.Context, memberID string) ([]*entity.BillingDetail, error) {
+	var billings []*entity.BillingDetail
+
+	memberObjectID, err := primitive.ObjectIDFromHex(memberID)
+	if err != nil {
+		return nil, utils.ErrorInvalidPrimitiveID
+	}
+
+	cursor, err := b.db.Database("billing").Collection("billings").Find(ctx, bson.D{{"member_id", memberObjectID}})
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, utils.ErrNoDocument
+		}
+		return nil, err
+	}
+
+	defer cursor.Close(context.Background())
+
+	for cursor.Next(context.Background()) {
+		// To decode into a struct, use cursor.Decode()
+		result := &entity.BillingDetail{}
+		err := cursor.Decode(&result)
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				return nil, utils.ErrNoDocument
+			}
+			return nil, err
+		}
+
+		billings = append(billings, result)
+	}
+
+	return billings, nil
 }

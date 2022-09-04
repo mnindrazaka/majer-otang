@@ -13,6 +13,7 @@ type paymentHandler struct {
 
 type PaymentHandler interface {
 	UpdatePayment(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
+	GetPaymentByMemberID(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 }
 
 func NewPaymentHandler(paymentUsecase module.PaymentUsecase) PaymentHandler {
@@ -30,4 +31,14 @@ func (p *paymentHandler) UpdatePayment(w http.ResponseWriter, r *http.Request, p
 	}
 
 	buildSuccessResponse(w, nil)
+}
+
+func (p *paymentHandler) GetPaymentByMemberID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	memberID := r.URL.Query().Get("memberId")
+	billings, err := p.paymentUsecase.GetPaymentByMemberID(r.Context(), memberID)
+	if err != nil {
+		buildGetPaymentByMemberIDError(w, err)
+	}
+
+	buildSuccessResponse(w, billings)
 }
