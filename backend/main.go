@@ -51,6 +51,7 @@ func main() {
 	// billings
 	router.GET("/billing/:billingID", billingHandler.GetBillingByID)
 	router.POST("/billing", billingHandler.CreateBilling)
+	router.PUT("/billing/:billingID", billingHandler.UpdateBilling)
 	router.GET("/billings", billingHandler.GetBillings)
 
 	err = http.ListenAndServe(fmt.Sprintf(":%v", cfg.Port), router)

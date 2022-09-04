@@ -2,6 +2,7 @@ package billingMembers
 
 import (
 	"context"
+	"fmt"
 	"github.com/mnindrazaka/billing/core/entity"
 	"github.com/mnindrazaka/billing/core/repository"
 	"github.com/mnindrazaka/billing/utils"
@@ -64,5 +65,19 @@ func (bm *billingMemberRepository) CreateBillingMember(ctx context.Context, bill
 
 	_, err := bm.db.Database("billing").Collection("billing_members").InsertOne(context.TODO(), data)
 
+	return err
+}
+
+func (bm *billingMemberRepository) DeleteBillingMember(ctx context.Context, billingId string) error {
+	billingMember := bm.db.Database("billing").Collection("billings")
+	// perlu filter by billing_id
+	billingIdConvert, _ := primitive.ObjectIDFromHex(billingId)
+	filter := bson.D{{"billing_id", bson.D{{"$gt", billingIdConvert}}}}
+
+	deleteBillingMember, err := billingMember.DeleteMany(context.TODO(), filter)
+	if err != nil {
+		return err
+	}
+	fmt.Println("delete billing member: ", deleteBillingMember)
 	return err
 }
