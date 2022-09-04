@@ -377,6 +377,9 @@ export const createPaymentMachine = (params: Params) =>
         }
       },
       fetchingMemberSuccess: {
+        invoke: {
+          src: "fetchingPayment"
+        },
         on: {
           FETCH_PAYMENT: {
             target: "fetchingPayment",
@@ -554,6 +557,9 @@ export const createPaymentMachine = (params: Params) =>
           .catch((error) =>
             send({ type: "FETCH_MEMBER_ERROR", memberErrorMessage: error })
           );
+      },
+      fetchingPayment: () => (send) => {
+        send({ type: "FETCH_PAYMENT" });
       },
       getPaymentsData: () => (send) => {
         queryClient
