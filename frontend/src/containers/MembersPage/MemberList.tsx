@@ -1,4 +1,4 @@
-import { Box, Spinner, Text, VStack } from "@chakra-ui/react";
+import { Box, Heading, Spinner, Text, VStack } from "@chakra-ui/react";
 import Link from "next/link";
 import { useQuery } from "react-query";
 import { membersApi } from "../../utils/fetcher";
@@ -35,7 +35,11 @@ const MemberList = () => {
           .with({ status: "loading" }, () => (
             <Spinner color="blue.500" size="xl" thickness="4px" />
           ))
-          .with({ status: "error" }, () => <Text>Something went wrong</Text>)
+          .with({ status: "error" }, () => (
+            <Heading size="lg" color="blackAlpha.700">
+              Something went wrong
+            </Heading>
+          ))
           .with({ status: "idle" }, () => (
             <Spinner color="blue.500" size="xl" thickness="4px" />
           ))
