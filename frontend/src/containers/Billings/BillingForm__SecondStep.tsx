@@ -31,7 +31,7 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
   };
 
   const filteredMembers = members.filter(
-    (member) => member.id !== billingForm.charged_member_id
+    (member) => member.id !== billingForm.chargedMemberId
   );
 
   return (
@@ -49,12 +49,12 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
               <Text size="md" mr="2">
                 Total Bill
               </Text>
-              <Text fontWeight="bold">Rp. {billingForm.bill_amount}</Text>
+              <Text fontWeight="bold">Rp. {billingForm.billAmount}</Text>
             </Flex>
             <Checkbox
               size="lg"
               colorScheme="cyan"
-              isChecked={billingForm.is_bill_equally}
+              isChecked={billingForm.isBillEqually}
               onChange={(event) => {
                 const updatedMembers = billingForm.members.map(({ id }) => ({
                   id,
@@ -64,7 +64,7 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
                   type: "UPDATE_FORM",
                   billingForm: {
                     ...billingForm,
-                    is_bill_equally: event.target.checked,
+                    isBillEqually: event.target.checked,
                     members: updatedMembers,
                   },
                 });
@@ -86,7 +86,7 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
                 <Flex justifyContent="space-between">
                   <Box>
                     <Text>{member.name}</Text>
-                    {!billingForm.is_bill_equally &&
+                    {!billingForm.isBillEqually &&
                       billingForm.members.some(
                         (billingMember) => billingMember.id === member.id
                       ) && (
@@ -162,7 +162,13 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
           >
             Previous Step
           </Button>
-          <Button colorScheme="blue" mr={3}>
+          <Button
+            colorScheme="blue"
+            mr={3}
+            onClick={() => {
+              send({ type: "SUBMIT_BILLING" });
+            }}
+          >
             Submit
           </Button>
         </ModalFooter>
