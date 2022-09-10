@@ -7,14 +7,13 @@ import {
   membersApi,
   billingsApi,
 } from "../../utils/fetcher";
-import { getBillingDetailById } from "./mockFetcher";
 import { queryClient } from "../../pages/_app";
 
 export type BillingForm = {
   title: string;
-  bill_amount: number;
-  charged_member_id: string;
-  is_bill_equally: boolean;
+  billAmount: number;
+  chargedMemberId: string;
+  isBillEqually: boolean;
   members: BillingMember[];
 };
 
@@ -249,9 +248,9 @@ export namespace State {
         billingDetail: undefined,
         billingDetailError: null,
         billingForm: {
-          bill_amount: 0,
-          charged_member_id: "",
-          is_bill_equally: true,
+          billAmount: 0,
+          chargedMemberId: "",
+          isBillEqually: true,
           members: [],
           title: "",
         },
@@ -333,9 +332,9 @@ export namespace State {
         billingDetail,
         billingForm: {
           title: billingDetail.title,
-          bill_amount: billingDetail.bill_amount,
-          charged_member_id: billingDetail.charged_member_id,
-          is_bill_equally: billingDetail.is_bill_equally,
+          billAmount: billingDetail.bill_amount,
+          chargedMemberId: billingDetail.charged_member_id,
+          isBillEqually: billingDetail.is_bill_equally,
           members: billingDetail.members,
         },
         billingError: null,
@@ -357,9 +356,22 @@ export namespace State {
         submitBillingDetailError: null;
       };
     };
+  }
 
-    export const make = (context: Context, billingForm: BillingForm): t => ({
-      value: { billingFormReady: "firstStep" },
+  export namespace BillingFormUpdate {
+    export type t = {
+      value: "billingFormReady";
+      context: Context & {
+        billingError: null;
+        membersError: null;
+        billingDetailError: null;
+        billingForm: BillingForm;
+        submitBillingDetailError: null;
+      };
+    };
+
+    export const update = (context: Context, billingForm: BillingForm): t => ({
+      value: "billingFormReady",
       context: {
         ...context,
         billingForm,
@@ -382,18 +394,6 @@ export namespace State {
         submitBillingDetailError: null;
       };
     };
-
-    export const make = (context: Context, billingForm: BillingForm): t => ({
-      value: { billingFormReady: "secondStep" },
-      context: {
-        ...context,
-        billingForm,
-        billingError: null,
-        membersError: null,
-        billingDetailError: null,
-        submitBillingDetailError: null,
-      },
-    });
   }
 
   export namespace SubmitBilling {
@@ -526,6 +526,7 @@ export const billingMachine = createMachine<Context, Event, State.t>({
     billingDetail: undefined,
     billingDetailError: null,
     submitBillingDetailError: null,
+    billingForm: undefined,
   },
   states: {
     idle: {
@@ -696,13 +697,15 @@ export const billingMachine = createMachine<Context, Event, State.t>({
         UPDATE_FORM: {
           actions: assign(
             (context, event) =>
-              State.BillingFormReadySecondStep.make(context, event.billingForm)
-                .context
+              State.BillingFormUpdate.update(context, event.billingForm).context
           ),
         },
       },
     },
     submitBilling: {
+      invoke: {
+        src: "submitBillingData",
+      },
       on: {
         SUBMIT_BILLING_SUCCESS: {
           target: "submitBillingOK",
@@ -766,7 +769,7 @@ export const billingMachine = createMachine<Context, Event, State.t>({
     getBillingDetailData: (ctx) => (send) => {
       queryClient
         .fetchQuery("billingId", () =>
-          getBillingDetailById(ctx.selectedBillingId ?? "")
+          billingsApi.getBillingByID({ billingId: ctx.selectedBillingId ?? "" })
         )
         .then((response) =>
           send({
@@ -780,6 +783,58 @@ export const billingMachine = createMachine<Context, Event, State.t>({
             billingDetailErrorMessage: error,
           })
         );
+    },
+    submitBillingData: (ctx) => (send) => {
+      const { title, billAmount, chargedMemberId, isBillEqually, members } =
+        ctx.billingForm ?? {
+          title: "",
+          billAmount: 0,
+          chargedMemberId: "",
+          isBillEqually: true,
+          members: [],
+        };
+
+      ctx.formMode === FormMode.Create
+        ? billingsApi
+            .createBilling({
+              billingRequest: {
+                title,
+                bill_amount: billAmount,
+                charged_member_id: chargedMemberId,
+                is_bill_equally: isBillEqually,
+                members: members,
+              },
+            })
+            .then((response) => {
+              send({ type: "SUBMIT_BILLING_SUCCESS" });
+              response;
+            })
+            .catch((err) =>
+              send({
+                type: "SUBMIT_BILLING_ERROR",
+                submitBillingDetailErrorMessage: err,
+              })
+            )
+        : billingsApi
+            .updateBilling({
+              billingRequest: {
+                title,
+                bill_amount: billAmount,
+                charged_member_id: chargedMemberId,
+                is_bill_equally: isBillEqually,
+                members: members,
+              },
+            })
+            .then((response) => {
+              send({ type: "SUBMIT_BILLING_SUCCESS" });
+              response;
+            })
+            .catch((err) =>
+              send({
+                type: "SUBMIT_BILLING_ERROR",
+                submitBillingDetailErrorMessage: err,
+              })
+            );
     },
   },
   guards: {

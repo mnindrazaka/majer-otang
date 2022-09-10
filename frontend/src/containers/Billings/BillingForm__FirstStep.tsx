@@ -59,13 +59,13 @@ const BillingFormFirstStep = ({ members, send, billingForm }: Props) => {
             <Input
               type="number"
               placeholder="Please kindly fill the billing total"
-              value={billingForm.bill_amount}
+              value={billingForm.billAmount}
               onChange={(event) =>
                 send({
                   type: "UPDATE_FORM",
                   billingForm: {
                     ...billingForm,
-                    bill_amount: event.target.valueAsNumber,
+                    billAmount: event.target.valueAsNumber,
                   },
                 })
               }
@@ -75,14 +75,14 @@ const BillingFormFirstStep = ({ members, send, billingForm }: Props) => {
           <FormControl mt={4}>
             <FormLabel>Charged Member</FormLabel>
             <Select
-              value={billingForm.charged_member_id}
+              value={billingForm.chargedMemberId}
               placeholder="Select Member"
               onChange={(event) =>
                 send({
                   type: "UPDATE_FORM",
                   billingForm: {
                     ...billingForm,
-                    charged_member_id: event.target.value,
+                    chargedMemberId: event.target.value,
                   },
                 })
               }
