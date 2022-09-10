@@ -30,6 +30,23 @@
       "name": "Danny Dwi C"
     }
   ],
+  "payments": [
+    {
+      "member_id": "1",
+      "name": "Ilham Surya P",
+      "amount": "10000"
+    },
+    {
+      "member_id": "2",
+      "name": "Danny Dwi C",
+      "amount": "10000"
+    },
+    {
+      "member_id": "3",
+      "name": "M Nindra Zaka",
+      "amount": "10000"
+    }
+  ],
   "billing": [
     {
       "id": "1",
