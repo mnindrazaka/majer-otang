@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "gen:type": "rm -rf src/__generated__/api; openapi-generator-cli generate -i ../api.json -o src/__generated__/api -g typescript-fetch --additional-properties=supportsES6=true,modelPropertyNaming=snake_case,npmVersion=6.9.0,typescriptThreePlus=true",
+    "gen:type": "rm -rf src/__generated__/api; openapi-generator-cli generate -i ../backend/api.json -o src/__generated__/api -g typescript-fetch --additional-properties=supportsES6=true,modelPropertyNaming=snake_case,npmVersion=6.9.0,typescriptThreePlus=true",
     "dev": "yarn gen:type && next dev",
     "build": "yarn gen:type && next build",
     "start": "next start",
