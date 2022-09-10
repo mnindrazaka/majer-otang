@@ -335,8 +335,6 @@
         "required": ["data", "status", "message"],
         "properties": {
           "data": {
-            "type": "object",
-            "x-go-custom-tag": "bson:\"data\"",
             "$ref": "#/components/BillingDetail"
           },
           "status": {
@@ -372,11 +370,12 @@
       },
       "BillingDetail": {
         "type": "object",
+        "x-go-custom-tag": "bson:\"billingDetail\"",
         "required": [
           "id",
           "title",
           "billAmount",
-          "chargedMemberId",
+          "memberId",
           "isBillEqually",
           "members"
         ],
@@ -391,15 +390,15 @@
           },
           "billAmount": {
             "type": "integer",
-            "x-go-custom-tag": "bson:\"billAmount\""
+            "x-go-custom-tag": "bson:\"bill_amount\""
           },
-          "chargedMemberId": {
+          "memberId": {
             "type": "string",
-            "x-go-custom-tag": "bson:\"chargedMemberId\""
+            "x-go-custom-tag": "bson:\"member_id\""
           },
           "isBillEqually": {
             "type": "boolean",
-            "x-go-custom-tag": "bson:\"isBillEqually\""
+            "x-go-custom-tag": "bson:\"is_bill_equally\""
           },
           "members": {
             "type": "array",

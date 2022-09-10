@@ -1,7 +1,10 @@
 package repository
 
-import "context"
+import (
+	"context"
+	"github.com/mnindrazaka/billing/core/entity"
+)
 
-type PaymenRepository interface {
-	UpdatePayment(ctx context.Context, billingId string) error
+type PaymentRepository interface {
+	GetPaymentByMemberID(ctx context.Context, memberID string) *entity.BillingDetail
 }
