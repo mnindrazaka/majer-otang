@@ -2,6 +2,7 @@ package module
 
 import (
 	"context"
+
 	"github.com/go-playground/validator/v10"
 
 	"github.com/mnindrazaka/billing/core/entity"
@@ -17,7 +18,7 @@ type billingUsecase struct {
 type BillingUsecase interface {
 	GetBillingsList(ctx context.Context) ([]*entity.Billing, error)
 	GetBillingByID(ctx context.Context, id string) (*entity.BillingDetail, error)
-	CreateBilling(ctx context.Context, billingDetail entity.BillingDetail) (*entity.BillingDetail, error)
+	CreateBilling(ctx context.Context, billingDetail entity.BillingRequest) (*entity.BillingDetail, error)
 	UpdateBilling(ctx context.Context, billingId string, request entity.BillingDetail) (*entity.BillingDetail, error)
 }
 
@@ -27,6 +28,9 @@ func NewBillingUsecase(billingRepository repository.BillingRepository, billingMe
 
 func (b *billingUsecase) GetBillingByID(ctx context.Context, id string) (*entity.BillingDetail, error) {
 	billing, err := b.billingRepository.GetBillingByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
 	billingMembers, err := b.billingMemberRepository.GetBillingMemberByBillingID(ctx, id)
 
 	billing.SetMembers(billingMembers)
@@ -38,11 +42,11 @@ func (b *billingUsecase) GetBillingsList(ctx context.Context) ([]*entity.Billing
 	return b.billingRepository.GetBillingList(ctx)
 }
 
-func (b *billingUsecase) CreateBilling(ctx context.Context, request entity.BillingDetail) (*entity.BillingDetail, error) {
+func (b *billingUsecase) CreateBilling(ctx context.Context, request entity.BillingRequest) (*entity.BillingDetail, error) {
 	billing := entity.BillingDetail{
 		Title:         request.Title,
 		BillAmount:    request.BillAmount,
-		MemberId:      request.MemberId,
+		MemberId:      request.ChargedMemberId,
 		IsBillEqually: request.IsBillEqually,
 	}
 
@@ -52,14 +56,26 @@ func (b *billingUsecase) CreateBilling(ctx context.Context, request entity.Billi
 	}
 
 	// loop members
+	var amount int
+	if request.IsBillEqually {
+		amount = int(request.BillAmount) / len(request.Members)
+	}
+
 	for _, member := range request.Members {
-		err := b.billingMemberRepository.CreateBillingMember(ctx, repository.BillingMemberData{
+		billingMember := repository.BillingMemberData{
 			MemberId:        member.Id,
-			Amount:          member.Amount,
 			BillingId:       billingDetail.Id,
 			Status:          "unpaid",
 			ChargedMemberId: billingDetail.MemberId,
-		})
+		}
+
+		if request.IsBillEqually && amount != 0 {
+			billingMember.Amount = int32(amount)
+		} else {
+			billingMember.Amount = member.Amount
+		}
+
+		err := b.billingMemberRepository.CreateBillingMember(ctx, billingMember)
 		if err != nil {
 			return nil, err
 		}

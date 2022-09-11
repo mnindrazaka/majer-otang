@@ -29,11 +29,9 @@ const GeneralError = ({ errorMessage, onRefetch }: Props) => {
       <AlertDialogOverlay />
 
       <AlertDialogContent>
-        <AlertDialogHeader>Discard Changes?</AlertDialogHeader>
+        <AlertDialogHeader>Oops there was something wrong</AlertDialogHeader>
         <AlertDialogCloseButton />
-        <AlertDialogBody>
-          `Oops there was something wrong, ${errorMessage}`
-        </AlertDialogBody>
+        <AlertDialogBody>{errorMessage}</AlertDialogBody>
         <AlertDialogFooter>
           <Button colorScheme="cyan" ml={3} onClick={onRefetch}>
             Retry

@@ -36,7 +36,7 @@ func buildCreateResponse(status string, err error) response {
 func buildSuccessResponse(w http.ResponseWriter, result interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, DELETE, HEAD")
 	w.Header().Set("Access-Control-Allow-Headers", "*")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(buildResponse(result, http.StatusText(http.StatusOK), nil))
@@ -45,7 +45,7 @@ func buildSuccessResponse(w http.ResponseWriter, result interface{}) {
 func buildBadRequestResponse(w http.ResponseWriter, err error) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, DELETE, HEAD")
 	w.Header().Set("Access-Control-Allow-Headers", "*")
 	w.WriteHeader(http.StatusBadRequest)
 	json.NewEncoder(w).Encode(buildResponse(nil, http.StatusText(http.StatusBadRequest), err))
@@ -54,7 +54,7 @@ func buildBadRequestResponse(w http.ResponseWriter, err error) {
 func buildInternalServerResponse(w http.ResponseWriter, err error) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, DELETE, HEAD")
 	w.Header().Set("Access-Control-Allow-Headers", "*")
 	w.WriteHeader(http.StatusInternalServerError)
 	json.NewEncoder(w).Encode(buildResponse(nil, http.StatusText(http.StatusInternalServerError), err))
