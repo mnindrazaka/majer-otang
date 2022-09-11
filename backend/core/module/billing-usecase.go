@@ -48,14 +48,26 @@ func (b *billingUsecase) CreateBilling(ctx context.Context, request entity.Billi
 	billingDetail, err := b.billingRepository.CreateBilling(ctx, billing)
 
 	// loop members
+	var amount int
+	if request.IsBillEqually {
+		amount = int(request.BillAmount) / len(request.Members)
+	}
+
 	for _, member := range request.Members {
-		err := b.billingMemberRepository.CreateBillingMember(ctx, repository.BillingMemberData{
+		billingMember := repository.BillingMemberData{
 			MemberId:        member.Id,
-			Amount:          member.Amount,
 			BillingId:       billingDetail.Id,
 			Status:          "unpaid",
 			ChargedMemberId: billingDetail.MemberId,
-		})
+		}
+
+		if request.IsBillEqually && amount != 0 {
+			billingMember.Amount = int32(amount)
+		} else {
+			billingMember.Amount = member.Amount
+		}
+
+		err := b.billingMemberRepository.CreateBillingMember(ctx, billingMember)
 		if err != nil {
 			return nil, err
 		}
