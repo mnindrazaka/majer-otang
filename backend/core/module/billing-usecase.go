@@ -17,7 +17,7 @@ type billingUsecase struct {
 type BillingUsecase interface {
 	GetBillingsList(ctx context.Context) ([]*entity.Billing, error)
 	GetBillingByID(ctx context.Context, id string) (*entity.BillingDetail, error)
-	CreateBilling(ctx context.Context, billingDetail entity.BillingDetail) (*entity.BillingDetail, error)
+	CreateBilling(ctx context.Context, billingDetail entity.BillingRequest) (*entity.BillingDetail, error)
 }
 
 func NewBillingUsecase(billingRepository repository.BillingRepository, billingMemberRepository repository.BillingMemberRepository, validate *validator.Validate) BillingUsecase {
@@ -37,15 +37,18 @@ func (b *billingUsecase) GetBillingsList(ctx context.Context) ([]*entity.Billing
 	return b.billingRepository.GetBillingList(ctx)
 }
 
-func (b *billingUsecase) CreateBilling(ctx context.Context, request entity.BillingDetail) (*entity.BillingDetail, error) {
+func (b *billingUsecase) CreateBilling(ctx context.Context, request entity.BillingRequest) (*entity.BillingDetail, error) {
 	billing := entity.BillingDetail{
 		Title:         request.Title,
 		BillAmount:    request.BillAmount,
-		MemberId:      request.MemberId,
+		MemberId:      request.ChargedMemberId,
 		IsBillEqually: request.IsBillEqually,
 	}
 
 	billingDetail, err := b.billingRepository.CreateBilling(ctx, billing)
+	if err != nil {
+		return nil, err
+	}
 
 	// loop members
 	for _, member := range request.Members {

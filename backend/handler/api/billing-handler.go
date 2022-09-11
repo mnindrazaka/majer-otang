@@ -40,7 +40,7 @@ func (b *billingHandler) GetBillings(w http.ResponseWriter, r *http.Request, ps 
 	buildSuccessResponse(w, billings)
 }
 func (b *billingHandler) CreateBilling(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	billingCreateRequest := entity.BillingDetail{}
+	billingCreateRequest := entity.BillingRequest{}
 
 	ReadFromRequestBody(w, r, &billingCreateRequest)
 
