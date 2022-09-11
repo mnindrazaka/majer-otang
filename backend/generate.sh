@@ -1,1 +1,1 @@
-openapi-generator generate -i ../api.json -g go -o core/entity --global-property models --package-name entity
+openapi-generator generate -i api.json -g go -o core/entity --global-property models --package-name entity
