@@ -1,12 +1,13 @@
 import { assign, createMachine } from "xstate";
-import { Member } from "../__generated__/api";
-import { match } from "ts-pattern";
+import { Member, Payment, PaymentsApi } from "../__generated__/api";
+import { queryClient } from "../pages/_app";
+import { membersApi, paymentsApi } from "../utils/fetcher";
 
 interface Context {
   targetMemberId: string | null;
   member: Member | null;
   memberError: string | null;
-  payments: [];
+  payments: Payment[];
   paymentsError: string | null;
   submitPaymetError: string | null;
 }
@@ -114,7 +115,7 @@ export namespace State {
 
   export namespace FetchingPayment {
     export type t = {
-      value: "fetchingPayment";
+      value: "fetchingPayments";
       context: Context & {
         member: Member;
         memberError: null;
@@ -125,7 +126,7 @@ export namespace State {
     };
 
     export const make = (context: Context, member: Member): t => ({
-      value: "fetchingPayment",
+      value: "fetchingPayments",
       context: {
         ...context,
         member,
@@ -151,7 +152,7 @@ export namespace State {
 
     export const make = (
       context: Context,
-      payments: [],
+      payments: Payment[],
       member: Member
     ): t => ({
       value: "fetchingPaymentSuccess",
@@ -260,7 +261,7 @@ export namespace State {
         member: Member;
         memberError: null;
         paymentsError: null;
-        targetMemberId: null;
+        targetMemberId: string;
         submitPaymetError: string;
       };
     };
@@ -268,7 +269,8 @@ export namespace State {
     export const make = (
       context: Context,
       submitPaymetError: string,
-      member: Member
+      member: Member,
+      targetMemberId: string
     ): t => ({
       value: "submittingPaymentError",
       context: {
@@ -276,7 +278,7 @@ export namespace State {
         member,
         paymentsError: null,
         memberError: null,
-        targetMemberId: null,
+        targetMemberId,
         submitPaymetError
       }
     });
@@ -295,230 +297,289 @@ export namespace State {
     | SubmittingPaymentError.t;
 }
 
-type MachineEvents =
+export type MachineEvents =
   | { type: "FETCH_MEMBER" }
   | { type: "FETCH_MEMBER_SUCCESS"; memberData: Member }
   | { type: "FETCH_MEMBER_ERROR"; memberErrorMessage: string }
   | { type: "REFETCH_MEMBER" }
-  | { type: "FETCH_PAYMENT" }
-  | { type: "FETCH_PAYMENT_SUCCESS"; paymentsData: [] }
-  | { type: "FETCH_PAYMENT_ERROR"; paymentErrorMessage: string }
-  | { type: "REFETCH_PAYMENT" }
+  | { type: "FETCH_PAYMENTS" }
+  | { type: "FETCH_PAYMENTS_SUCCESS"; paymentsData: Payment[] }
+  | { type: "FETCH_PAYMENTS_ERROR"; paymentErrorMessage: string }
+  | { type: "REFETCH_PAYMENTS" }
   | {
       type: "SELECT_PAYMENT_TARGET";
       targetMemberId: string;
     }
-  | { type: "CANCEL_PAYMENT"; paymentsData: [] }
-  | {
-      type: "CONFIRM_PAYMENT";
-      targetMemberId: string;
-    }
+  | { type: "CANCEL_PAYMENT" }
+  | { type: "CONFIRM_PAYMENT" }
   | { type: "SUBMIT_PAYMENT_SUCCESS" }
   | { type: "SUBMIT_PAYMENT_ERROR"; submitPaymentErrorMessage: string }
-  | {
-      type: "RESUBMIT_PAYMENT";
-      targetMemberId: string;
-    };
+  | { type: "RESUBMIT_PAYMENT" };
 
-export const paymentMachine = createMachine<Context, MachineEvents, State.t>({
-  id: "Payment",
-  initial: "idle",
-  context: {
-    targetMemberId: null,
-    member: null,
-    memberError: null,
-    payments: [],
-    paymentsError: null,
-    submitPaymetError: null
-  },
-  states: {
-    idle: {
-      on: {
-        FETCH_MEMBER: {
+export interface Params {
+  memberId: string;
+}
+
+export const createPaymentMachine = (params: Params) =>
+  createMachine<Context, MachineEvents, State.t>({
+    id: "Payment",
+    initial: "idle",
+    context: {
+      member: null,
+      targetMemberId: null,
+      memberError: null,
+      payments: [],
+      paymentsError: null,
+      submitPaymetError: null
+    },
+    states: {
+      idle: {
+        always: {
           target: "fetchingMember",
           actions: assign(
             (context) => State.FetchingMember.make(context).context
           )
         }
-      }
-    },
-    fetchingMember: {
-      on: {
-        FETCH_MEMBER_SUCCESS: {
-          target: "fetchingMemberSuccess",
-          actions: assign(
-            (context, event) =>
-              State.FetchingMemberSuccess.make(context, event.memberData)
-                .context
-          )
+      },
+      fetchingMember: {
+        invoke: {
+          src: "getMemberData"
         },
-        FETCH_MEMBER_ERROR: {
-          target: "fetchingMemberError",
-          actions: assign(
-            (context, event) =>
-              State.FetchingMemberError.make(context, event.memberErrorMessage)
-                .context
-          )
+        on: {
+          FETCH_MEMBER_SUCCESS: {
+            target: "fetchingMemberSuccess",
+            actions: assign(
+              (context, event) =>
+                State.FetchingMemberSuccess.make(context, event.memberData)
+                  .context
+            )
+          },
+          FETCH_MEMBER_ERROR: {
+            target: "fetchingMemberError",
+            actions: assign(
+              (context, event) =>
+                State.FetchingMemberError.make(
+                  context,
+                  event.memberErrorMessage
+                ).context
+            )
+          }
         }
-      }
-    },
-    fetchingMemberSuccess: {
-      on: {
-        FETCH_PAYMENT: {
-          target: "fetchingPayment",
+      },
+      fetchingMemberSuccess: {
+        always: {
+          target: "fetchingPayments",
           actions: assign((context) =>
             context.member === null
               ? context
               : State.FetchingPayment.make(context, context.member).context
           )
         }
-      }
-    },
-    fetchingMemberError: {
-      on: {
-        REFETCH_MEMBER: {
-          target: "fetchingMember",
-          actions: assign(
-            (context) => State.FetchingMember.make(context).context
-          )
+      },
+      fetchingMemberError: {
+        on: {
+          REFETCH_MEMBER: {
+            target: "fetchingMember",
+            actions: assign(
+              (context) => State.FetchingMember.make(context).context
+            )
+          }
         }
-      }
-    },
-    fetchingPayment: {
-      on: {
-        FETCH_PAYMENT_SUCCESS: {
-          target: "fetchingPaymentSuccess",
-          actions: assign((context, event) =>
-            context.member === null
-              ? context
-              : State.FetchingPaymentSuccess.make(
-                  context,
-                  event.paymentsData,
-                  context.member
-                ).context
-          )
+      },
+      fetchingPayments: {
+        invoke: {
+          src: "getPaymentsData"
         },
-        FETCH_PAYMENT_ERROR: {
-          target: "fetchingPaymentError",
-          actions: assign((context, event) =>
-            context.member === null
-              ? context
-              : State.FetchingPaymentError.make(
-                  context,
-                  event.paymentErrorMessage,
-                  context.member
-                ).context
-          )
+        on: {
+          FETCH_PAYMENTS_SUCCESS: {
+            target: "fetchingPaymentSuccess",
+            actions: assign((context, event) =>
+              context.member === null
+                ? context
+                : State.FetchingPaymentSuccess.make(
+                    context,
+                    event.paymentsData,
+                    context.member
+                  ).context
+            )
+          },
+          FETCH_PAYMENTS_ERROR: {
+            target: "fetchingPaymentError",
+            actions: assign((context, event) =>
+              context.member === null
+                ? context
+                : State.FetchingPaymentError.make(
+                    context,
+                    event.paymentErrorMessage,
+                    context.member
+                  ).context
+            )
+          }
         }
-      }
-    },
-    fetchingPaymentSuccess: {
-      on: {
-        SELECT_PAYMENT_TARGET: {
-          target: "confirmingPayment",
-          actions: assign((context, event) => {
-            return context.member === null || event.targetMemberId === null
-              ? context
-              : State.ConfirmingPayment.make(
-                  context,
-                  context.member,
-                  event.targetMemberId
-                ).context;
-          })
+      },
+      fetchingPaymentSuccess: {
+        on: {
+          SELECT_PAYMENT_TARGET: {
+            target: "confirmingPayment",
+            actions: assign((context, event) => {
+              return context.member === null || event.targetMemberId === null
+                ? context
+                : State.ConfirmingPayment.make(
+                    context,
+                    context.member,
+                    event.targetMemberId
+                  ).context;
+            })
+          }
         }
-      }
-    },
-    fetchingPaymentError: {
-      on: {
-        REFETCH_PAYMENT: {
-          target: "fetchingPayment",
-          actions: assign((context) =>
-            context.member === null
-              ? context
-              : State.FetchingPayment.make(context, context.member).context
-          )
+      },
+      fetchingPaymentError: {
+        on: {
+          REFETCH_PAYMENTS: {
+            target: "fetchingPayments",
+            actions: assign((context) =>
+              context.member === null
+                ? context
+                : State.FetchingPayment.make(context, context.member).context
+            )
+          }
         }
-      }
-    },
-    confirmingPayment: {
-      on: {
-        CONFIRM_PAYMENT: {
-          target: "submittingPayment",
-          actions: assign((context, event) => {
-            return context.member === null || event.targetMemberId === null
-              ? context
-              : State.SubmittingPayment.make(
-                  context,
-                  context.member,
-                  event.targetMemberId
-                ).context;
-          })
+      },
+      confirmingPayment: {
+        on: {
+          CONFIRM_PAYMENT: {
+            target: "submittingPayment",
+            actions: assign((context) => {
+              return context.member === null || context.targetMemberId === null
+                ? context
+                : State.SubmittingPayment.make(
+                    context,
+                    context.member,
+                    context.targetMemberId
+                  ).context;
+            })
+          },
+          CANCEL_PAYMENT: {
+            target: "fetchingPaymentSuccess",
+            actions: assign((context) =>
+              context.member === null
+                ? context
+                : State.FetchingPaymentSuccess.make(
+                    context,
+                    context.payments,
+                    context.member
+                  ).context
+            )
+          }
+        }
+      },
+      submittingPayment: {
+        invoke: {
+          src: "submitPayment"
         },
-        CANCEL_PAYMENT: {
-          target: "fetchingPaymentSuccess",
-          actions: assign((context, event) =>
-            context.member === null
-              ? context
-              : State.FetchingPaymentSuccess.make(
-                  context,
-                  event.paymentsData,
-                  context.member
-                ).context
-          )
+        on: {
+          SUBMIT_PAYMENT_ERROR: {
+            target: "submittingPaymentError",
+            actions: assign((context, event) =>
+              context.member === null || context.targetMemberId === null
+                ? context
+                : State.SubmittingPaymentError.make(
+                    context,
+                    event.submitPaymentErrorMessage,
+                    context.member,
+                    context.targetMemberId
+                  ).context
+            )
+          },
+          SUBMIT_PAYMENT_SUCCESS: {
+            target: "fetchingPayments",
+            actions: assign((context) =>
+              context.member === null
+                ? context
+                : State.FetchingPayment.make(context, context.member).context
+            )
+          }
         }
-      }
-    },
-    submittingPayment: {
-      on: {
-        SUBMIT_PAYMENT_ERROR: {
-          target: "submittingPaymentError",
-          actions: assign((context, event) =>
-            context.member === null
-              ? context
-              : State.SubmittingPaymentError.make(
-                  context,
-                  event.submitPaymentErrorMessage,
-                  context.member
-                ).context
-          )
-        },
-        SUBMIT_PAYMENT_SUCCESS: {
-          target: "fetchingPayment",
-          actions: assign((context) =>
-            context.member === null
-              ? context
-              : State.FetchingPayment.make(context, context.member).context
-          )
-        }
-      }
-    },
-    submittingPaymentError: {
-      on: {
-        RESUBMIT_PAYMENT: {
-          target: "submittingPayment",
-          actions: assign((context, event) => {
-            return context.member === null || event.targetMemberId === null
-              ? context
-              : State.ConfirmingPayment.make(
-                  context,
-                  context.member,
-                  event.targetMemberId
-                ).context;
-          })
-        },
-        CANCEL_PAYMENT: {
-          target: "fetchingPaymentSuccess",
-          actions: assign((context, event) =>
-            context.member === null
-              ? context
-              : State.FetchingPaymentSuccess.make(
-                  context,
-                  event.paymentsData,
-                  context.member
-                ).context
-          )
+      },
+      submittingPaymentError: {
+        on: {
+          RESUBMIT_PAYMENT: {
+            target: "submittingPayment",
+            actions: assign((context) => {
+              return context.member === null || context.targetMemberId === null
+                ? context
+                : State.ConfirmingPayment.make(
+                    context,
+                    context.member,
+                    context.targetMemberId
+                  ).context;
+            })
+          },
+          CANCEL_PAYMENT: {
+            target: "fetchingPaymentSuccess",
+            actions: assign((context) =>
+              context.member === null
+                ? context
+                : State.FetchingPaymentSuccess.make(
+                    context,
+                    context.payments,
+                    context.member
+                  ).context
+            )
+          }
         }
       }
     }
-  }
-});
+  }).withConfig({
+    services: {
+      getMemberData: () => (send) => {
+        queryClient
+          .fetchQuery("member", () =>
+            membersApi.getMemberDetail({ memberId: params.memberId })
+          )
+          .then((response) =>
+            send({ type: "FETCH_MEMBER_SUCCESS", memberData: response.data })
+          )
+          .catch(() =>
+            send({
+              type: "FETCH_MEMBER_ERROR",
+              memberErrorMessage: "Fetching Member error"
+            })
+          );
+      },
+      getPaymentsData: () => (send) => {
+        queryClient
+          .fetchQuery("payments", () =>
+            paymentsApi.getPaymentByMemberId({ memberId: params.memberId })
+          )
+          .then((response) =>
+            send({
+              type: "FETCH_PAYMENTS_SUCCESS",
+              paymentsData: response.data
+            })
+          )
+          .catch(() =>
+            send({
+              type: "FETCH_PAYMENTS_ERROR",
+              paymentErrorMessage: "Fetching Payments error"
+            })
+          );
+      },
+      submitPayment: (context) => (send) => {
+        paymentsApi
+          .updatePayment({
+            paymentRequest: {
+              charged_member_id: params.memberId,
+              target_member_id: context.targetMemberId ?? ""
+            }
+          })
+          .then(() => send({ type: "SUBMIT_PAYMENT_SUCCESS" }))
+          .catch(() =>
+            send({
+              type: "SUBMIT_PAYMENT_ERROR",
+              submitPaymentErrorMessage: "Submit payment failed"
+            })
+          );
+      }
+    }
+  });

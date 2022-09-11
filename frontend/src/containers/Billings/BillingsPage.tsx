@@ -3,6 +3,7 @@ import Layout from "../../components/Layout";
 import BillingList from "./BillingList";
 import BillingFormFirstStep from "./BillingForm__FirstStep";
 import BillingFormSecondStep from "./BillingForm__SecondStep";
+import GeneralSuccess from "./GeneralSuccess";
 import GeneralError from "./GeneralError";
 import { GeneralLoading } from "./GeneralLoading";
 import { Box } from "@chakra-ui/react";
@@ -72,7 +73,12 @@ const BillingsPage = () => {
           .with({ value: "billingFormReady" }, () => null)
           .with({ value: "submitBilling" }, () => null)
           .with({ value: "submitBillingError" }, () => null)
-          .with({ value: "submitBillingOK" }, () => null)
+          .with({ value: "submitBillingOK" }, () => (
+            <GeneralSuccess
+              content="Congrats! Success To Submit Billing"
+              onOk={() => send({ type: "BACK_TO_BILLING_SCREEN" })}
+            />
+          ))
           .with(
             { value: { billingFormIdle: "loadingBillingDetailData" } },
             () => null

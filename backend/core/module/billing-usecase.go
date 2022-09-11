@@ -39,10 +39,10 @@ func (b *billingUsecase) GetBillingsList(ctx context.Context) ([]*entity.Billing
 
 func (b *billingUsecase) CreateBilling(ctx context.Context, request entity.BillingDetail) (*entity.BillingDetail, error) {
 	billing := entity.BillingDetail{
-		Title:           request.Title,
-		BillAmount:      request.BillAmount,
-		ChargedMemberId: request.ChargedMemberId,
-		IsBillEqually:   request.IsBillEqually,
+		Title:         request.Title,
+		BillAmount:    request.BillAmount,
+		MemberId:      request.MemberId,
+		IsBillEqually: request.IsBillEqually,
 	}
 
 	billingDetail, err := b.billingRepository.CreateBilling(ctx, billing)
@@ -54,7 +54,7 @@ func (b *billingUsecase) CreateBilling(ctx context.Context, request entity.Billi
 			Amount:          member.Amount,
 			BillingId:       billingDetail.Id,
 			Status:          "unpaid",
-			ChargedMemberId: billingDetail.ChargedMemberId,
+			ChargedMemberId: billingDetail.MemberId,
 		})
 		if err != nil {
 			return nil, err
