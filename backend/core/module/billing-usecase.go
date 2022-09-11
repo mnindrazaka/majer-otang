@@ -19,7 +19,7 @@ type BillingUsecase interface {
 	GetBillingsList(ctx context.Context) ([]*entity.Billing, error)
 	GetBillingByID(ctx context.Context, id string) (*entity.BillingDetail, error)
 	CreateBilling(ctx context.Context, billingDetail entity.BillingRequest) (*entity.BillingDetail, error)
-	UpdateBilling(ctx context.Context, billingId string, request entity.BillingDetail) (*entity.BillingDetail, error)
+	UpdateBilling(ctx context.Context, billingId string, request entity.BillingRequest) (*entity.BillingDetail, error)
 }
 
 func NewBillingUsecase(billingRepository repository.BillingRepository, billingMemberRepository repository.BillingMemberRepository, validate *validator.Validate) BillingUsecase {
@@ -84,11 +84,11 @@ func (b *billingUsecase) CreateBilling(ctx context.Context, request entity.Billi
 	return billingDetail, err
 }
 
-func (b *billingUsecase) UpdateBilling(ctx context.Context, billingId string, request entity.BillingDetail) (*entity.BillingDetail, error) {
+func (b *billingUsecase) UpdateBilling(ctx context.Context, billingId string, request entity.BillingRequest) (*entity.BillingDetail, error) {
 	billing := entity.BillingDetail{
 		Title:         request.Title,
 		BillAmount:    request.BillAmount,
-		MemberId:      request.MemberId,
+		MemberId:      request.ChargedMemberId,
 		IsBillEqually: request.IsBillEqually,
 	}
 
@@ -104,15 +104,28 @@ func (b *billingUsecase) UpdateBilling(ctx context.Context, billingId string, re
 		return nil, err
 	}
 
+	// loop members
+	var amount int
+	if request.IsBillEqually {
+		amount = int(request.BillAmount) / len(request.Members)
+	}
+
 	// insert new data from request
 	for _, member := range request.Members {
-		err := b.billingMemberRepository.CreateBillingMember(ctx, repository.BillingMemberData{
+		billingMember := repository.BillingMemberData{
 			MemberId:        member.Id,
-			Amount:          member.Amount,
 			BillingId:       billingId,
 			Status:          "unpaid",
 			ChargedMemberId: billingUpdate.MemberId,
-		})
+		}
+
+		if request.IsBillEqually && amount != 0 {
+			billingMember.Amount = int32(amount)
+		} else {
+			billingMember.Amount = member.Amount
+		}
+
+		err := b.billingMemberRepository.CreateBillingMember(ctx, billingMember)
 		if err != nil {
 			return nil, err
 		}

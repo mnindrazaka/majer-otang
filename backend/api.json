@@ -444,7 +444,7 @@
           },
           "amount": {
             "type": "integer",
-            "x-go-custom-tag": "bson:\"amount\""
+            "x-go-custom-tag": "bson:\"bill_amount\""
           }
         }
       },
@@ -489,7 +489,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "x-go-custom-tag": "bson:\"_id\""
+            "x-go-custom-tag": "bson:\"member_id\""
           },
           "amount": {
             "type": "integer",

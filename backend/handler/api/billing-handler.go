@@ -55,7 +55,7 @@ func (b *billingHandler) CreateBilling(w http.ResponseWriter, r *http.Request, p
 	buildSuccessResponse(w, &billingResponse)
 }
 func (b *billingHandler) UpdateBilling(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	billingUpdateRequest := entity.BillingDetail{}
+	billingUpdateRequest := entity.BillingRequest{}
 
 	ReadFromRequestBody(w, r, &billingUpdateRequest)
 
