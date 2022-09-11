@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-playground/validator/v10"
 	"log"
 	"net/http"
+
+	"github.com/go-playground/validator/v10"
 
 	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
@@ -48,18 +49,17 @@ func main() {
 	paymentHandler := api.NewPaymentHandler(paymentUsecase)
 
 	router := httprouter.New()
-	router.GET("/member/:memberID", memberHandler.GetMemberByID)
+	router.GET("/members/:memberID", memberHandler.GetMemberByID)
 	router.GET("/members", memberHandler.GetMemberList)
 
 	// billings
-	router.GET("/billing/:billingID", billingHandler.GetBillingByID)
-	router.POST("/billing", billingHandler.CreateBilling)
-	router.PUT("/billing/:billingID", billingHandler.UpdateBilling)
+	router.GET("/billings/:billingID", billingHandler.GetBillingByID)
+	router.POST("/billings", billingHandler.CreateBilling)
 	router.GET("/billings", billingHandler.GetBillings)
 
 	// payment
-	router.PUT("/payment", paymentHandler.UpdatePayment)
-	router.GET("/payment", paymentHandler.GetPaymentByMemberID)
+	router.PUT("/payments", paymentHandler.UpdatePayment)
+	router.GET("/payments", paymentHandler.GetPaymentByMemberID)
 
 	err = http.ListenAndServe(fmt.Sprintf(":%v", cfg.Port), router)
 	if err != nil {
