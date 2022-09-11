@@ -2,6 +2,7 @@ package module
 
 import (
 	"context"
+	"fmt"
 	"github.com/go-playground/validator/v10"
 
 	"github.com/mnindrazaka/billing/core/entity"
@@ -70,10 +71,10 @@ func (b *billingUsecase) CreateBilling(ctx context.Context, request entity.Billi
 
 func (b *billingUsecase) UpdateBilling(ctx context.Context, billingId string, request entity.BillingDetail) (*entity.BillingDetail, error) {
 	billing := entity.BillingDetail{
-		Title:           request.Title,
-		BillAmount:      request.BillAmount,
-		ChargedMemberId: request.ChargedMemberId,
-		IsBillEqually:   request.IsBillEqually,
+		Title:         request.Title,
+		BillAmount:    request.BillAmount,
+		MemberId:      request.MemberId,
+		IsBillEqually: request.IsBillEqually,
 	}
 
 	billingUpdate, err := b.billingRepository.UpdateBilling(ctx, billingId, billing)
@@ -88,6 +89,7 @@ func (b *billingUsecase) UpdateBilling(ctx context.Context, billingId string, re
 		return nil, err
 	}
 
+	fmt.Println("bill amount: ", billingUpdate.BillAmount)
 	// insert new data from request
 	for _, member := range request.Members {
 		err := b.billingMemberRepository.CreateBillingMember(ctx, repository.BillingMemberData{
@@ -95,7 +97,7 @@ func (b *billingUsecase) UpdateBilling(ctx context.Context, billingId string, re
 			Amount:          member.Amount,
 			BillingId:       billingId,
 			Status:          "unpaid",
-			ChargedMemberId: billingUpdate.ChargedMemberId,
+			ChargedMemberId: billingUpdate.MemberId,
 		})
 		if err != nil {
 			return nil, err
