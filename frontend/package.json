@@ -3,12 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "gen:type": "rm -rf src/__generated__/api; openapi-generator-cli generate -i ../backend/api.json -o src/__generated__/api -g typescript-fetch --additional-properties=supportsES6=true,modelPropertyNaming=snake_case,npmVersion=6.9.0,typescriptThreePlus=true",
+    "gen:type": "rm -rf src/__generated__/api; openapi-generator-cli generate -i ../backend/api.json -o src/__generated__/api -g typescript-fetch --additional-properties=supportsES6=true,modelPropertyNaming=camelCase,npmVersion=6.9.0,typescriptThreePlus=true",
     "dev": "yarn gen:type && next dev",
     "build": "yarn gen:type && next build",
     "start": "next start",
-    "lint": "next lint",
-    "start-json-server": "node server.js"
+    "lint": "next lint"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.2.4",
@@ -16,7 +15,6 @@
     "@emotion/styled": "^11",
     "@xstate/react": "^3.0.0",
     "framer-motion": "^6",
-    "json-server": "^0.17.0",
     "next": "12.2.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",

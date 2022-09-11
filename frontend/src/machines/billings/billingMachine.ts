@@ -332,9 +332,9 @@ export namespace State {
         billingDetail,
         billingForm: {
           title: billingDetail.title,
-          billAmount: billingDetail.bill_amount,
-          chargedMemberId: billingDetail.charged_member_id,
-          isBillEqually: billingDetail.is_bill_equally,
+          billAmount: billingDetail.billAmount,
+          chargedMemberId: billingDetail.memberId,
+          isBillEqually: billingDetail.isBillEqually,
           members: billingDetail.members,
         },
         billingError: null,
@@ -753,7 +753,10 @@ export const billingMachine = createMachine<Context, Event, State.t>({
           send({ type: "FETCH_BILLINGS_SUCCESS", billingsData: response.data })
         )
         .catch((error) =>
-          send({ type: "FETCH_BILLINGS_ERROR", billingsErrorMessage: error })
+          send({
+            type: "FETCH_BILLINGS_ERROR",
+            billingsErrorMessage: error.message,
+          })
         );
     },
     getMembersData: () => (send) => {
@@ -763,7 +766,10 @@ export const billingMachine = createMachine<Context, Event, State.t>({
           send({ type: "FETCH_MEMBERS_SUCCESS", membersData: response.data })
         )
         .catch((error) =>
-          send({ type: "FETCH_MEMBERS_ERROR", membersErrorMessage: error })
+          send({
+            type: "FETCH_MEMBERS_ERROR",
+            membersErrorMessage: error.message,
+          })
         );
     },
     getBillingDetailData: (ctx) => (send) => {
@@ -780,7 +786,7 @@ export const billingMachine = createMachine<Context, Event, State.t>({
         .catch((error) =>
           send({
             type: "FETCH_BILLING_DETAIL_ERROR",
-            billingDetailErrorMessage: error,
+            billingDetailErrorMessage: error.message,
           })
         );
     },
@@ -799,10 +805,10 @@ export const billingMachine = createMachine<Context, Event, State.t>({
             .createBilling({
               billingRequest: {
                 title,
-                bill_amount: billAmount,
-                charged_member_id: chargedMemberId,
-                is_bill_equally: isBillEqually,
-                members: members,
+                billAmount,
+                chargedMemberId,
+                isBillEqually,
+                members,
               },
             })
             .then((response) => {
@@ -812,17 +818,17 @@ export const billingMachine = createMachine<Context, Event, State.t>({
             .catch((err) =>
               send({
                 type: "SUBMIT_BILLING_ERROR",
-                submitBillingDetailErrorMessage: err,
+                submitBillingDetailErrorMessage: err.message,
               })
             )
         : billingsApi
             .updateBilling({
               billingRequest: {
                 title,
-                bill_amount: billAmount,
-                charged_member_id: chargedMemberId,
-                is_bill_equally: isBillEqually,
-                members: members,
+                billAmount,
+                chargedMemberId,
+                isBillEqually,
+                members,
               },
             })
             .then((response) => {
@@ -832,7 +838,7 @@ export const billingMachine = createMachine<Context, Event, State.t>({
             .catch((err) =>
               send({
                 type: "SUBMIT_BILLING_ERROR",
-                submitBillingDetailErrorMessage: err,
+                submitBillingDetailErrorMessage: err.message,
               })
             );
     },
