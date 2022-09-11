@@ -2,7 +2,6 @@ package module
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-playground/validator/v10"
 
 	"github.com/mnindrazaka/billing/core/entity"
@@ -89,7 +88,6 @@ func (b *billingUsecase) UpdateBilling(ctx context.Context, billingId string, re
 		return nil, err
 	}
 
-	fmt.Println("bill amount: ", billingUpdate.BillAmount)
 	// insert new data from request
 	for _, member := range request.Members {
 		err := b.billingMemberRepository.CreateBillingMember(ctx, repository.BillingMemberData{

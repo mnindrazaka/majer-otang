@@ -59,10 +59,10 @@ func (b *billingHandler) UpdateBilling(w http.ResponseWriter, r *http.Request, p
 
 	ReadFromRequestBody(w, r, &billingUpdateRequest)
 
-	billing, err := b.billingUsecase.UpdateBilling(r.Context(), ps.ByName("billingID"), billingUpdateRequest)
+	_, err := b.billingUsecase.UpdateBilling(r.Context(), ps.ByName("billingID"), billingUpdateRequest)
 	if err != nil {
-		buildGetBililngsError(w, err)
+		buildUpdateBililngError(w, err)
 		return
 	}
-	buildSuccessResponse(w, &billing)
+	buildSuccessResponse(w, nil)
 }

@@ -69,7 +69,7 @@ func (b *billingRepository) CreateBilling(ctx context.Context, billingDetail ent
 		{"member_id", chargedMemberIdConvert},
 		{"is_bill_equally", billingDetail.IsBillEqually}}
 
-	result, err := b.db.Database("billing").Collection("billings").InsertOne(context.TODO(), data)
+	result, err := b.db.Database("billing").Collection("billings").InsertOne(ctx, data)
 	if err != nil {
 		return nil, err
 	}
@@ -94,12 +94,12 @@ func (b *billingRepository) UpdateBilling(ctx context.Context, billingId string,
 	filter := bson.D{{"_id", id}}
 	dataUpdate := bson.D{{"$set", bson.D{
 		{"title", billingDetail.Title},
-		{"billAmount", billingDetail.BillAmount},
-		{"memberId", chargedMemberIdConvert},
-		{"isBillEqually", billingDetail.IsBillEqually},
+		{"bill_amount", billingDetail.BillAmount},
+		{"member_id", chargedMemberIdConvert},
+		{"is_bill_equally", billingDetail.IsBillEqually},
 	}}}
 
-	_, err = billing.UpdateOne(context.TODO(), filter, dataUpdate)
+	_, err = billing.UpdateOne(ctx, filter, dataUpdate)
 	if err != nil {
 		return nil, err
 	}

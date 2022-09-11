@@ -50,9 +50,3 @@ func buildInternalServerResponse(w http.ResponseWriter, err error) {
 	w.WriteHeader(http.StatusInternalServerError)
 	json.NewEncoder(w).Encode(buildResponse(nil, http.StatusText(http.StatusInternalServerError), err))
 }
-
-func buildCreatedResponse(w http.ResponseWriter, err error) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(buildResponse(nil, http.StatusText(http.StatusCreated), err))
-}
