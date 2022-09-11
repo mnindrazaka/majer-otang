@@ -17,11 +17,12 @@ const BillingsPage = () => {
 
   // Debugging Purposes
   React.useEffect(() => {
-    const subscription = service.subscribe((state) => {
-      console.log(state);
-    });
-
-    return subscription.unsubscribe;
+    if (process.env.NODE_ENV === "development") {
+      const subscription = service.subscribe((state) => {
+        console.log(state);
+      });
+      return subscription.unsubscribe;
+    }
   }, [service]);
 
   return (
@@ -42,13 +43,37 @@ const BillingsPage = () => {
               />
             )
           )
+          .with({ value: "billingFormIdle" }, () => <GeneralLoading />)
           .with({ value: { billingFormIdle: "loadingMembers" } }, () => (
             <GeneralLoading />
           ))
           .with(
+            { value: { billingFormIdle: "getMembersError" } },
+            ({ context: { membersError } }) => (
+              <GeneralError
+                errorMessage={membersError}
+                onRefetch={() => send({ type: "REFETCH_MEMBERS" })}
+              />
+            )
+          )
+          .with(
             { value: { billingFormIdle: "getBillingDetailCondition" } },
             () => <GeneralLoading />
           )
+          .with(
+            { value: { billingFormIdle: "loadingBillingDetailData" } },
+            () => <GeneralLoading />
+          )
+          .with(
+            { value: { billingFormIdle: "getBillingDetailDataError" } },
+            ({ context: { billingDetailError } }) => (
+              <GeneralError
+                errorMessage={billingDetailError}
+                onRefetch={() => send({ type: "REFETCH_BILLING_DETAIL" })}
+              />
+            )
+          )
+          .with({ value: "billingFormReady" }, () => <GeneralLoading />)
           .with(
             { value: { billingFormReady: "firstStep" } },
             ({ context: { members, billingForm } }) => (
@@ -69,25 +94,22 @@ const BillingsPage = () => {
               />
             )
           )
-          .with({ value: "billingFormIdle" }, () => null)
-          .with({ value: "billingFormReady" }, () => null)
-          .with({ value: "submitBilling" }, () => null)
-          .with({ value: "submitBillingError" }, () => null)
+          .with({ value: "submitBilling" }, () => <GeneralLoading />)
+          .with(
+            { value: "submitBillingError" },
+            ({ context: { submitBillingDetailError } }) => (
+              <GeneralError
+                errorMessage={submitBillingDetailError}
+                onRefetch={() => send({ type: "REFETCH_SUBMIT_BILLING" })}
+              />
+            )
+          )
           .with({ value: "submitBillingOK" }, () => (
             <GeneralSuccess
               content="Congrats! Success To Submit Billing"
               onOk={() => send({ type: "BACK_TO_BILLING_SCREEN" })}
             />
           ))
-          .with(
-            { value: { billingFormIdle: "loadingBillingDetailData" } },
-            () => null
-          )
-          .with(
-            { value: { billingFormIdle: "getBillingDetailDataError" } },
-            () => null
-          )
-          .with({ value: { billingFormIdle: "getMembersError" } }, () => null)
           .exhaustive()}
         <BottomMenu activeMenu="billings" />
       </Box>

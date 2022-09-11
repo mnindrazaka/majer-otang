@@ -7,7 +7,7 @@ const MembersPage = () => {
   return (
     <Layout>
       <Box width={"full"}>
-        <Heading as={"h3"} textAlign={"center"} my={"6"}>
+        <Heading color="gray.700" as={"h3"} textAlign={"center"} my={"6"}>
           Members
         </Heading>
         <MemberList />

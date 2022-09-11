@@ -16,7 +16,7 @@ const PaymentList = (props: PaymentListProps) => {
       <VStack spacing={"4"}>
         {props.payments.map((payment) => (
           <Box
-            key={payment.member_id}
+            key={payment.memberId}
             border={"1px"}
             borderRadius={"16px"}
             p={"6"}
