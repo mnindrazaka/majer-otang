@@ -2,6 +2,7 @@ package billings
 
 import (
 	"context"
+
 	"github.com/mnindrazaka/billing/core/entity"
 	"github.com/mnindrazaka/billing/core/repository"
 	"github.com/mnindrazaka/billing/utils"
@@ -66,9 +67,9 @@ func (b *billingRepository) CreateBilling(ctx context.Context, billingDetail ent
 		{"title", billingDetail.Title},
 		{"bill_amount", billingDetail.BillAmount},
 		{"member_id", chargedMemberIdConvert},
-		{"is_bill_equal", billingDetail.IsBillEqually}}
+		{"is_bill_equally", billingDetail.IsBillEqually}}
 
-	result, err := b.db.Database("billing").Collection("billings").InsertOne(context.TODO(), data)
+	result, err := b.db.Database("billing").Collection("billings").InsertOne(ctx, data)
 	if err != nil {
 		return nil, err
 	}
@@ -78,6 +79,33 @@ func (b *billingRepository) CreateBilling(ctx context.Context, billingDetail ent
 	return &billingDetail, nil
 }
 
+func (b *billingRepository) UpdateBilling(ctx context.Context, billingId string, billingDetail entity.BillingDetail) (*entity.BillingDetail, error) {
+	billing := b.db.Database("billing").Collection("billings")
+
+	id, err := primitive.ObjectIDFromHex(billingId)
+	if err != nil {
+		return nil, utils.ErrorInvalidPrimitiveID
+	}
+	chargedMemberIdConvert, err := primitive.ObjectIDFromHex(billingDetail.MemberId)
+	if err != nil {
+		return nil, utils.ErrorInvalidPrimitiveID
+	}
+
+	filter := bson.D{{"_id", id}}
+	dataUpdate := bson.D{{"$set", bson.D{
+		{"title", billingDetail.Title},
+		{"bill_amount", billingDetail.BillAmount},
+		{"member_id", chargedMemberIdConvert},
+		{"is_bill_equally", billingDetail.IsBillEqually},
+	}}}
+
+	_, err = billing.UpdateOne(ctx, filter, dataUpdate)
+	if err != nil {
+		return nil, err
+	}
+
+	return &billingDetail, nil
+}
 func (b *billingRepository) GetBillingByMemberID(ctx context.Context, memberID string) ([]*entity.BillingDetail, error) {
 	var billings []*entity.BillingDetail
 

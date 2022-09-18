@@ -56,6 +56,7 @@ func main() {
 	router.GET("/billings/:billingID", billingHandler.GetBillingByID)
 	router.POST("/billings", billingHandler.CreateBilling)
 	router.GET("/billings", billingHandler.GetBillings)
+	router.PUT("/billings/:billingID", billingHandler.UpdateBilling)
 
 	// payment
 	router.PUT("/payments", paymentHandler.UpdatePayment)

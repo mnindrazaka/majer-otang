@@ -22,6 +22,10 @@ func buildGetBililngsError(w http.ResponseWriter, err error) {
 	}
 }
 
+func buildUpdateBililngError(w http.ResponseWriter, err error) {
+	buildInternalServerResponse(w, err)
+}
+
 func buildGetBillingByIDSuccess(w http.ResponseWriter, data interface{}) {
 	buildSuccessResponse(w, data)
 }

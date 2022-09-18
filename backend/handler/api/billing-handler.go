@@ -15,6 +15,7 @@ type BillingHandler interface {
 	GetBillingByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	GetBillings(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	CreateBilling(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
+	UpdateBilling(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 }
 
 func NewBillingHandler(billingUsecase module.BillingUsecase) BillingHandler {
@@ -52,4 +53,16 @@ func (b *billingHandler) CreateBilling(w http.ResponseWriter, r *http.Request, p
 	}
 
 	buildSuccessResponse(w, &billingResponse)
+}
+func (b *billingHandler) UpdateBilling(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	billingUpdateRequest := entity.BillingRequest{}
+
+	ReadFromRequestBody(w, r, &billingUpdateRequest)
+
+	_, err := b.billingUsecase.UpdateBilling(r.Context(), ps.ByName("billingID"), billingUpdateRequest)
+	if err != nil {
+		buildUpdateBililngError(w, err)
+		return
+	}
+	buildSuccessResponse(w, nil)
 }

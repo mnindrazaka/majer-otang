@@ -46,35 +46,34 @@ func (m *memberRepository) GetMemberList(ctx context.Context) ([]entity.Member, 
 	var allMembers []entity.Member
 
 	cursor, err := m.db.Database("billing").Collection("members").Find(context.TODO(), bson.D{})
-		if err != nil {
-			if err == mongo.ErrNoDocuments{
-				return nil, utils.ErrNoDocument
-			}
-			return nil, err
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, utils.ErrNoDocument
 		}
-	// fmt.Print(cursor)
+		return nil, err
+	}
 
 	defer cursor.Close(context.Background())
 
-	for cursor.Next(context.Background()){
+	for cursor.Next(context.Background()) {
 		// To decode into a struct, use cursor.Decode()
 		result := &entity.Member{}
 		err := cursor.Decode(&result)
 		if err != nil {
-			if err == mongo.ErrNoDocuments{
+			if err == mongo.ErrNoDocuments {
 				return nil, utils.ErrNoDocument
 			}
 			return nil, err
 		}
-		
+
 		allMembers = append(allMembers, *result)
 	}
 	if err := cursor.Err(); err != nil {
-		if err == mongo.ErrNoDocuments{
-				return nil, utils.ErrNoDocument
-			}
-			return nil, err
+		if err == mongo.ErrNoDocuments {
+			return nil, utils.ErrNoDocument
+		}
+		return nil, err
 	}
 
-	return allMembers, err	
+	return allMembers, err
 }
