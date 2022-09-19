@@ -18,6 +18,15 @@ import (
 	"github.com/mnindrazaka/billing/repository/members"
 )
 
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "*")
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	// load environment
 	err := godotenv.Load()
@@ -62,7 +71,7 @@ func main() {
 	router.PUT("/payments", paymentHandler.UpdatePayment)
 	router.GET("/payments", paymentHandler.GetPaymentByMemberID)
 
-	err = http.ListenAndServe(fmt.Sprintf(":%v", cfg.Port), router)
+	err = http.ListenAndServe(fmt.Sprintf(":%v", cfg.Port), corsMiddleware(router))
 	if err != nil {
 		log.Fatalf("error serve server = %v", err)
 	}
