@@ -54,7 +54,7 @@ func main() {
 	billingUsecase := module.NewBillingUsecase(billingRepo, billingMemberRepo, validate)
 	billingHandler := api.NewBillingHandler(billingUsecase)
 
-	paymentUsecase := module.NewPaymentUsecase(billingMemberRepo, billingRepo)
+	paymentUsecase := module.NewPaymentUsecase(billingMemberRepo, billingRepo, memberRepo)
 	paymentHandler := api.NewPaymentHandler(paymentUsecase)
 
 	router := httprouter.New()

@@ -330,6 +330,43 @@
   },
   "components": {
     "schemas": {
+      "BillingMemberDB": {
+        "type": "object",
+        "required": [
+          "id",
+          "billing_id",
+          "charged_member_id",
+          "member_id",
+          "amount",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"_id\""
+          },
+          "billing_id": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"billing_id\""
+          },
+          "charged_member_id": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"charged_member_id\""
+          },
+          "member_id": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"member_id\""
+          },
+          "amount": {
+            "type": "integer",
+            "x-go-custom-tag": "bson:\"amount\""
+          },
+          "status": {
+            "type": "string",
+            "x-go-custom-tag": "bson:\"status\""
+          }
+        }
+      },
       "GetBillingDetailResponse": {
         "type": "object",
         "required": ["data", "status", "message"],
