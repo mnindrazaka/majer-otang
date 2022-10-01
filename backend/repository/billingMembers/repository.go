@@ -2,7 +2,6 @@ package billingMembers
 
 import (
 	"context"
-
 	"github.com/mnindrazaka/billing/core/entity"
 	"github.com/mnindrazaka/billing/core/repository"
 	"github.com/mnindrazaka/billing/utils"
@@ -89,4 +88,44 @@ func (bm *billingMemberRepository) UpdateBillingMemberByBillingID(ctx context.Co
 	_, err := bm.db.Database("billing").Collection("billing_members").UpdateMany(ctx, filter, update)
 
 	return err
+}
+
+func (bm *billingMemberRepository) GetBillingMemberByChargedMemberID(ctx context.Context, chargedeMemberID string, excludeMemberID bool) ([]*entity.BillingMemberDB, error) {
+	memberObjectID, err := primitive.ObjectIDFromHex(chargedeMemberID)
+	if err != nil {
+		return nil, utils.ErrorInvalidPrimitiveID
+	}
+
+	var elements bson.M
+	if excludeMemberID {
+		elements = bson.M{
+			"charged_member_id": bson.M{"$ne": memberObjectID},
+			"status":            "unpaid",
+		}
+	} else {
+		elements = bson.M{
+			"charged_member_id": memberObjectID,
+			"status":            "unpaid",
+		}
+	}
+
+	cursor, err := bm.db.Database("billing").Collection("billing_members").Find(ctx, elements)
+	defer cursor.Close(context.Background())
+
+	var billingMembers = []*entity.BillingMemberDB{}
+	for cursor.Next(context.Background()) {
+		// To decode into a struct, use cursor.Decode()
+		result := &entity.BillingMemberDB{}
+		err := cursor.Decode(&result)
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				return nil, utils.ErrNoDocument
+			}
+			return nil, err
+		}
+
+		billingMembers = append(billingMembers, result)
+	}
+
+	return billingMembers, nil
 }
