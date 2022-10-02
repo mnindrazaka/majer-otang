@@ -2,7 +2,6 @@ package module
 
 import (
 	"context"
-
 	"github.com/go-playground/validator/v10"
 
 	"github.com/mnindrazaka/billing/core/entity"
@@ -39,7 +38,16 @@ func (b *billingUsecase) GetBillingByID(ctx context.Context, id string) (*entity
 }
 
 func (b *billingUsecase) GetBillingsList(ctx context.Context) ([]*entity.Billing, error) {
-	return b.billingRepository.GetBillingList(ctx)
+	billings, err := b.billingRepository.GetBillingList(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if billings == nil {
+		return []*entity.Billing{}, nil
+	}
+
+	return billings, err
 }
 
 func (b *billingUsecase) CreateBilling(ctx context.Context, request entity.BillingRequest) (*entity.BillingDetail, error) {
