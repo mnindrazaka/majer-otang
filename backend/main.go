@@ -28,22 +28,18 @@ func corsMiddleware(next http.Handler) http.Handler {
 }
 
 func main() {
-	// load environment
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
-	// get config
 	cfg := config.Get()
 
-	// ini database connection
 	db, err := database.Init(cfg)
 	if err != nil {
 		log.Fatalf("Error init database connection = %v", err)
 	}
 
-	// example implementation
 	memberRepo := members.NewMemberRepository(db)
 	memberUsecase := module.NewMemberUsecase(memberRepo)
 	memberHandler := api.NewUserHandler(memberUsecase)
@@ -61,13 +57,11 @@ func main() {
 	router.GET("/members/:memberID", memberHandler.GetMemberByID)
 	router.GET("/members", memberHandler.GetMemberList)
 
-	// billings
 	router.GET("/billings/:billingID", billingHandler.GetBillingByID)
 	router.POST("/billings", billingHandler.CreateBilling)
 	router.GET("/billings", billingHandler.GetBillings)
 	router.PUT("/billings/:billingID", billingHandler.UpdateBilling)
 
-	// payment
 	router.PUT("/payments", paymentHandler.UpdatePayment)
 	router.GET("/payments", paymentHandler.GetPaymentByMemberID)
 

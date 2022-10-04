@@ -63,7 +63,6 @@ func (b *billingUsecase) CreateBilling(ctx context.Context, request entity.Billi
 		return nil, err
 	}
 
-	// loop members
 	var amount int
 	if request.IsBillEqually {
 		amount = int(request.BillAmount) / len(request.Members)
@@ -105,20 +104,16 @@ func (b *billingUsecase) UpdateBilling(ctx context.Context, billingId string, re
 		return nil, err
 	}
 
-	// delete dulu data di billingMember lalu insert data baru
-	// delete previous data first
 	err = b.billingMemberRepository.DeleteBillingMember(ctx, billingId)
 	if err != nil {
 		return nil, err
 	}
 
-	// loop members
 	var amount int
 	if request.IsBillEqually {
 		amount = int(request.BillAmount) / len(request.Members)
 	}
 
-	// insert new data from request
 	for _, member := range request.Members {
 		billingMember := repository.BillingMemberData{
 			MemberId:        member.Id,

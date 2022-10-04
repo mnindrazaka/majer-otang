@@ -2,6 +2,7 @@ package billingMembers
 
 import (
 	"context"
+
 	"github.com/mnindrazaka/billing/core/entity"
 	"github.com/mnindrazaka/billing/core/repository"
 	"github.com/mnindrazaka/billing/utils"
@@ -25,7 +26,6 @@ func (bm *billingMemberRepository) GetBillingMemberByBillingID(ctx context.Conte
 		return nil, utils.ErrorInvalidPrimitiveID
 	}
 
-	// get all members by billing_id
 	var billingMembers []entity.BillingMember
 	curr, _ := bm.db.Database("billing").Collection("billing_members").Find(context.TODO(), bson.M{"billing_id": objectId})
 
@@ -69,7 +69,7 @@ func (bm *billingMemberRepository) CreateBillingMember(ctx context.Context, bill
 
 func (bm *billingMemberRepository) DeleteBillingMember(ctx context.Context, billingId string) error {
 	billingMember := bm.db.Database("billing").Collection("billing_members")
-	// perlu filter by billing_id
+
 	billingIdConvert, _ := primitive.ObjectIDFromHex(billingId)
 
 	_, err := billingMember.DeleteMany(context.TODO(), bson.M{"billing_id": billingIdConvert})
@@ -114,7 +114,7 @@ func (bm *billingMemberRepository) GetBillingMemberByChargedMemberID(ctx context
 
 	var billingMembers = []*entity.BillingMemberDB{}
 	for cursor.Next(context.Background()) {
-		// To decode into a struct, use cursor.Decode()
+
 		result := &entity.BillingMemberDB{}
 		err := cursor.Decode(&result)
 		if err != nil {
