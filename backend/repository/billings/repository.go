@@ -73,7 +73,6 @@ func (b *billingRepository) CreateBilling(ctx context.Context, billingDetail ent
 	if err != nil {
 		return nil, err
 	}
-	// get id from inserted row
 	billingDetail.Id = result.InsertedID.(primitive.ObjectID).Hex()
 
 	return &billingDetail, nil
@@ -125,7 +124,6 @@ func (b *billingRepository) GetBillingByMemberID(ctx context.Context, memberID s
 	defer cursor.Close(context.Background())
 
 	for cursor.Next(context.Background()) {
-		// To decode into a struct, use cursor.Decode()
 		result := &entity.BillingDetail{}
 		err := cursor.Decode(&result)
 		if err != nil {

@@ -22,13 +22,11 @@ func NewPaymentUsecase(billingMemberRepo repository.BillingMemberRepository, bil
 }
 
 func (p *paymentUsecase) UpdatePayment(ctx context.Context, paymentRequest *entity.PaymentRequest) error {
-	// update target member id
 	err := p.billingMemberRepo.UpdateBillingMemberByBillingID(ctx, paymentRequest.TargetMemberId)
 	if err != nil {
 		return err
 	}
 
-	// update charged member id
 	err = p.billingMemberRepo.UpdateBillingMemberByBillingID(ctx, paymentRequest.ChargedMemberId)
 	if err != nil {
 		return err
