@@ -83,6 +83,10 @@ func (p *paymentUsecase) GetPaymentByMemberID(ctx context.Context, memberID stri
 			Amount:   int32(mapBilingMemberID[id]),
 		})
 	}
+	
+	if payments == nil {
+		return []*entity.Payment{}, nil
+	}
 
 	return payments, nil
 }
