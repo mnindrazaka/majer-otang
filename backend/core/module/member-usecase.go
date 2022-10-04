@@ -25,6 +25,12 @@ func (m *memberUsecase) GetMemberByID(ctx context.Context, id string) (*entity.M
 }
 
 func (m *memberUsecase) GetMemberList(ctx context.Context) ([]entity.Member, error) {
-	return m.memberRepository.GetMemberList(ctx)
+	members, err := m.memberRepository.GetMemberList(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if members == nil {
+		return []entity.Member{}, nil
+	}
+	return members, err
 }
-
