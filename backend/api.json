@@ -9,7 +9,9 @@
     "/members": {
       "get": {
         "description": "GET all members",
-        "tags": ["Members"],
+        "tags": [
+          "Members"
+        ],
         "operationId": "getMemberList",
         "summary": "GET all member",
         "responses": {
@@ -29,7 +31,9 @@
     "/members/{memberId}": {
       "get": {
         "description": "GET member by memberId",
-        "tags": ["Members"],
+        "tags": [
+          "Members"
+        ],
         "operationId": "getMemberDetail",
         "summary": "GET member by memberId",
         "parameters": [
@@ -70,7 +74,9 @@
     "/billings": {
       "get": {
         "description": "GET Billing Data",
-        "tags": ["Billings"],
+        "tags": [
+          "Billings"
+        ],
         "operationId": "getBillingList",
         "summary": "GET Billing Data",
         "responses": {
@@ -88,7 +94,9 @@
       },
       "post": {
         "description": "CREATE Billing Data",
-        "tags": ["Billings"],
+        "tags": [
+          "Billings"
+        ],
         "operationId": "createBilling",
         "summary": "CREATE Billing Data",
         "requestBody": {
@@ -135,7 +143,9 @@
       },
       "put": {
         "description": "UPDATE Billing Data",
-        "tags": ["Billings"],
+        "tags": [
+          "Billings"
+        ],
         "operationId": "updateBilling",
         "summary": "UPDATE Billing Data",
         "requestBody": {
@@ -181,10 +191,12 @@
         }
       }
     },
-    "/billing/{billingId}": {
+    "/billings/{billingId}": {
       "get": {
         "description": "GET Billing by ID",
-        "tags": ["Billings"],
+        "tags": [
+          "Billings"
+        ],
         "operationId": "getBillingByID",
         "parameters": [
           {
@@ -233,7 +245,9 @@
     "/payments": {
       "get": {
         "description": "GET Payments by MemberId",
-        "tags": ["Payments"],
+        "tags": [
+          "Payments"
+        ],
         "operationId": "getPaymentByMemberId",
         "parameters": [
           {
@@ -281,7 +295,9 @@
       },
       "put": {
         "description": "UPDATE Payment Data",
-        "tags": ["Payments"],
+        "tags": [
+          "Payments"
+        ],
         "operationId": "updatePayment",
         "summary": "UPDATE Payment Data",
         "requestBody": {
@@ -369,7 +385,11 @@
       },
       "GetBillingDetailResponse": {
         "type": "object",
-        "required": ["data", "status", "message"],
+        "required": [
+          "data",
+          "status",
+          "message"
+        ],
         "properties": {
           "data": {
             "$ref": "#/components/BillingDetail"
@@ -386,7 +406,11 @@
       },
       "GetPaymentListResponse": {
         "type": "object",
-        "required": ["data", "status", "message"],
+        "required": [
+          "data",
+          "status",
+          "message"
+        ],
         "properties": {
           "data": {
             "type": "array",
@@ -448,7 +472,11 @@
       },
       "GetBillingListResponse": {
         "type": "object",
-        "required": ["data", "status", "message"],
+        "required": [
+          "data",
+          "status",
+          "message"
+        ],
         "properties": {
           "data": {
             "type": "array",
@@ -469,7 +497,11 @@
       },
       "Billing": {
         "type": "object",
-        "required": ["id", "title", "amount"],
+        "required": [
+          "id",
+          "title",
+          "amount"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -522,7 +554,10 @@
       },
       "BillingMember": {
         "type": "object",
-        "required": ["id", "amount"],
+        "required": [
+          "id",
+          "amount"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -536,7 +571,11 @@
       },
       "GetMemberListResponse": {
         "type": "object",
-        "required": ["data", "status", "message"],
+        "required": [
+          "data",
+          "status",
+          "message"
+        ],
         "properties": {
           "data": {
             "type": "array",
@@ -557,7 +596,11 @@
       },
       "GetMemberDetailResponse": {
         "type": "object",
-        "required": ["data", "status", "message"],
+        "required": [
+          "data",
+          "status",
+          "message"
+        ],
         "properties": {
           "data": {
             "$ref": "#/components/Member"
@@ -575,7 +618,10 @@
       "Member": {
         "type": "object",
         "x-go-custom-tag": "bson:\"member\"",
-        "required": ["id", "name"],
+        "required": [
+          "id",
+          "name"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -589,7 +635,11 @@
       },
       "Payment": {
         "type": "object",
-        "required": ["memberId", "name", "amount"],
+        "required": [
+          "memberId",
+          "name",
+          "amount"
+        ],
         "properties": {
           "memberId": {
             "type": "string",
@@ -607,7 +657,10 @@
       },
       "PaymentRequest": {
         "type": "object",
-        "required": ["targetMemberId", "chargedMemberId"],
+        "required": [
+          "targetMemberId",
+          "chargedMemberId"
+        ],
         "properties": {
           "targetMemberId": {
             "type": "string",
@@ -621,7 +674,11 @@
       },
       "NoDataResponse": {
         "type": "object",
-        "required": ["data", "status", "message"],
+        "required": [
+          "data",
+          "status",
+          "message"
+        ],
         "properties": {
           "data": {
             "type": null,
@@ -639,7 +696,11 @@
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["data", "status", "message"],
+        "required": [
+          "data",
+          "status",
+          "message"
+        ],
         "properties": {
           "data": {
             "type": null,
