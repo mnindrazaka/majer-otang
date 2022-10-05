@@ -81,7 +81,7 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
                 borderRadius="16px"
                 p="6"
                 w="full"
-                backgroundColor="gray.700"
+                backgroundColor="gray.400"
               >
                 <Flex justifyContent="space-between">
                   <Box>
