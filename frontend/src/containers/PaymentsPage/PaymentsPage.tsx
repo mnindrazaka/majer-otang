@@ -22,9 +22,18 @@ const PaymentsPage = (props: PaymentsPageProps) => {
     <Layout>
       <Box width="full">
         <>
-          <Heading as="h3" textAlign="center" my="6" color="gray.700">
-            Payments
-          </Heading>
+          <Box
+            width="full"
+            bg="white"
+            h="20"
+            position="fixed"
+            left="0"
+            right="0"
+          >
+            <Heading as="h3" textAlign="center" my="6" color="gray.700">
+              Payments
+            </Heading>
+          </Box>
           {match<State.t>(state as State.t)
             .with({ value: "idle" }, () => <GeneralLoading />)
             .with({ value: "fetchingMember" }, () => <GeneralLoading />)
@@ -45,7 +54,7 @@ const PaymentsPage = (props: PaymentsPageProps) => {
                   onItemClick={(payment) =>
                     send({
                       type: "SELECT_PAYMENT_TARGET",
-                      targetMemberId: payment.memberId,
+                      targetMemberId: payment.memberId
                     })
                   }
                 />

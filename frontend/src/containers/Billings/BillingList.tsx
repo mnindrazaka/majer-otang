@@ -13,7 +13,7 @@ const BillingList = ({ billings, send }: Props) => {
     send({
       type: "ACTIVATE_BILLING_FORM",
       formMode: FormMode.Create,
-      billingId: null,
+      billingId: null
     });
   };
 
@@ -21,16 +21,18 @@ const BillingList = ({ billings, send }: Props) => {
     send({
       type: "ACTIVATE_BILLING_FORM",
       formMode: FormMode.Edit,
-      billingId,
+      billingId
     });
   };
 
   return (
-    <Box m="4" color="gray.200" mb="36">
-      <Heading as="h3" textAlign="center" my="6" color="gray.700">
-        Billings
-      </Heading>
-      <VStack spacing="4">
+    <Box color="gray.200" mb="36">
+      <Box width="full" bg="white" h="20" position="fixed" left="0" right="0">
+        <Heading as="h3" textAlign="center" my="6" color="gray.700">
+          Billings
+        </Heading>
+      </Box>
+      <VStack spacing="4" pt="24">
         {billings.map((billing) => (
           <Box
             key={billing.id}

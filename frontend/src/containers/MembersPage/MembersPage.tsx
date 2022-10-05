@@ -6,10 +6,12 @@ import Layout from "../../components/Layout";
 const MembersPage = () => {
   return (
     <Layout>
-      <Box width={"full"}>
-        <Heading color="gray.700" as={"h3"} textAlign={"center"} my={"6"}>
-          Members
-        </Heading>
+      <Box width="full">
+        <Box width="full" bg="white" h="20" position="fixed" left="0" right="0">
+          <Heading color="gray.700" as="h3" my="6" textAlign="center">
+            Members
+          </Heading>
+        </Box>
         <MemberList />
         <BottomMenu activeMenu="members" />
       </Box>

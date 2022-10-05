@@ -8,23 +8,23 @@ const MemberList = () => {
   const query = useQuery("Members", () => membersApi.getMemberList());
 
   return (
-    <Box m={"4"} color={"gray.200"} mb={"36"}>
-      <VStack spacing={"4"}>
+    <Box mt="24" color="gray.200" mb="36">
+      <VStack spacing="4">
         {match(query)
           .with({ status: "success" }, (query) =>
             query.data.data.map((member) => {
               return (
                 <Box
                   key={member.id}
-                  border={"1px"}
-                  borderRadius={"16px"}
-                  p={"6"}
-                  w={"full"}
-                  backgroundColor={"gray.700"}
-                  cursor={"pointer"}
+                  border="1px"
+                  borderRadius="16px"
+                  p="6"
+                  w="full"
+                  backgroundColor="gray.700"
+                  cursor="pointer"
                 >
                   <Link href={`/payments/${member.id}`}>
-                    <Text fontSize={"2xl"} fontWeight={"semibold"}>
+                    <Text fontSize="2xl" fontWeight="semibold">
                       {member.name}
                     </Text>
                   </Link>
