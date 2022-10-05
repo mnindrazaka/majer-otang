@@ -99,8 +99,8 @@ func (bm *billingMemberRepository) GetBillingMemberByChargedMemberID(ctx context
 	var elements bson.M
 	if excludeMemberID {
 		elements = bson.M{
-			"charged_member_id": bson.M{"$ne": memberObjectID},
-			"status":            "unpaid",
+			"member_id": memberObjectID,
+			"status":    "unpaid",
 		}
 	} else {
 		elements = bson.M{
