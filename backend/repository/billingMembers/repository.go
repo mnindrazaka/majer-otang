@@ -78,10 +78,11 @@ func (bm *billingMemberRepository) DeleteBillingMember(ctx context.Context, bill
 	}
 	return err
 }
-func (bm *billingMemberRepository) UpdateBillingMemberByBillingID(ctx context.Context, memberID string) error {
-	MemberObjectID, _ := primitive.ObjectIDFromHex(memberID)
+func (bm *billingMemberRepository) UpdateBillingMemberByBillingID(ctx context.Context, chargedMemberID, targetMemberID string) error {
+	chargedMemberIDObjectID, _ := primitive.ObjectIDFromHex(chargedMemberID)
+	targetMemberIDObjectID, _ := primitive.ObjectIDFromHex(targetMemberID)
 
-	filter := bson.D{{"billing_id", MemberObjectID}, {"charged_member_id", MemberObjectID}}
+	filter := bson.D{{"member_id", targetMemberIDObjectID}, {"charged_member_id", chargedMemberIDObjectID}}
 
 	update := bson.D{{"$set", bson.D{{"status", "paid"}}}}
 
