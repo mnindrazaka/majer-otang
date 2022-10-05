@@ -10,6 +10,7 @@ import {
   Button,
   FormControl,
   FormLabel,
+  FormErrorMessage,
   Input,
   Select,
 } from "@chakra-ui/react";
@@ -27,6 +28,14 @@ const BillingFormFirstStep = ({ members, send, billingForm }: Props) => {
     send({ type: "CANCEL_FILL_FORM" });
   };
 
+  const { title, billAmount, chargedMemberId } = billingForm;
+
+  const [isTitleError, isBillAmountError, isChargedMemberIdError] = [
+    title === "",
+    billAmount === 0,
+    chargedMemberId === "",
+  ];
+
   return (
     <Modal isOpen={true} onClose={handleCloseForm} isCentered>
       <ModalOverlay
@@ -37,11 +46,11 @@ const BillingFormFirstStep = ({ members, send, billingForm }: Props) => {
         <ModalHeader textAlign="center">Billing Form</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
-          <FormControl>
+          <FormControl isRequired isInvalid={isTitleError}>
             <FormLabel>Title</FormLabel>
             <Input
               placeholder="Please kindly fill the billing title"
-              value={billingForm.title}
+              value={title}
               onChange={(event) =>
                 send({
                   type: "UPDATE_FORM",
@@ -52,14 +61,17 @@ const BillingFormFirstStep = ({ members, send, billingForm }: Props) => {
                 })
               }
             />
+            {isTitleError && (
+              <FormErrorMessage>Title Required</FormErrorMessage>
+            )}
           </FormControl>
 
-          <FormControl mt={4}>
+          <FormControl mt={4} isRequired isInvalid={isBillAmountError}>
             <FormLabel>Total</FormLabel>
             <Input
               type="number"
               placeholder="Please kindly fill the billing total"
-              value={billingForm.billAmount}
+              value={billAmount}
               onChange={(event) =>
                 send({
                   type: "UPDATE_FORM",
@@ -70,12 +82,15 @@ const BillingFormFirstStep = ({ members, send, billingForm }: Props) => {
                 })
               }
             />
+            {isBillAmountError && (
+              <FormErrorMessage>Total not allowed 0</FormErrorMessage>
+            )}
           </FormControl>
 
-          <FormControl mt={4}>
+          <FormControl mt={4} isRequired isInvalid={isChargedMemberIdError}>
             <FormLabel>Charged Member</FormLabel>
             <Select
-              value={billingForm.chargedMemberId}
+              value={chargedMemberId}
               placeholder="Select Member"
               onChange={(event) =>
                 send({
@@ -93,6 +108,9 @@ const BillingFormFirstStep = ({ members, send, billingForm }: Props) => {
                 </option>
               ))}
             </Select>
+            {isChargedMemberIdError && (
+              <FormErrorMessage>Charged Member Required</FormErrorMessage>
+            )}
           </FormControl>
         </ModalBody>
 
@@ -103,7 +121,9 @@ const BillingFormFirstStep = ({ members, send, billingForm }: Props) => {
           <Button
             colorScheme="blue"
             mr={3}
-            // Todo => Handle Disabled Next Button
+            disabled={
+              isTitleError || isBillAmountError || isChargedMemberIdError
+            }
             onClick={() => send({ type: "NEXT_STEP" })}
           >
             Next
