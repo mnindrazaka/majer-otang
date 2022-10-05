@@ -43,7 +43,14 @@ const BillingList = ({ billings, send }: Props) => {
             justifyContent="space-between"
           >
             <Box>
-              <Text fontSize="2xl" fontWeight="semibold">
+              <Text
+                fontSize="lg"
+                textOverflow="ellipsis"
+                whiteSpace="nowrap"
+                overflowX="hidden"
+                maxW={[220, 300]}
+                fontWeight="semibold"
+              >
                 {billing.title}
               </Text>
               <Text>{`Rp ${billing.amount}`}</Text>
