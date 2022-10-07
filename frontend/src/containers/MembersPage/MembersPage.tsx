@@ -7,7 +7,15 @@ const MembersPage = () => {
   return (
     <Layout>
       <Box width="full">
-        <Box width="full" bg="white" h="20" position="fixed" left="0" right="0">
+        <Box
+          width="full"
+          bg="white"
+          h="20"
+          position="fixed"
+          zIndex="10"
+          left="0"
+          right="0"
+        >
           <Heading color="gray.700" as="h3" my="6" textAlign="center">
             Members
           </Heading>

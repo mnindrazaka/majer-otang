@@ -823,6 +823,7 @@ export const billingMachine = createMachine<Context, Event, State.t>({
             )
         : billingsApi
             .updateBilling({
+              billingId: ctx.selectedBillingId ?? "",
               billingRequest: {
                 title,
                 billAmount,

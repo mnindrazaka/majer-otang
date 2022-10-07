@@ -4,12 +4,12 @@ import Link from "next/link";
 const menus = {
   members: {
     title: "Members",
-    path: "/"
+    path: "/",
   },
   billings: {
     title: "Billings",
-    path: "/billings"
-  }
+    path: "/billings",
+  },
 };
 
 interface MenuItemProps {
@@ -45,6 +45,7 @@ const BottomMenu = (props: BottomMenuProps) => {
   return (
     <Box
       position={"fixed"}
+      zIndex="10"
       right={"0"}
       left={"0"}
       bottom={"0"}
