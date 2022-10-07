@@ -27,6 +27,7 @@ const PaymentsPage = (props: PaymentsPageProps) => {
             bg="white"
             h="20"
             position="fixed"
+            zIndex="10"
             left="0"
             right="0"
           >
@@ -54,7 +55,7 @@ const PaymentsPage = (props: PaymentsPageProps) => {
                   onItemClick={(payment) =>
                     send({
                       type: "SELECT_PAYMENT_TARGET",
-                      targetMemberId: payment.memberId
+                      targetMemberId: payment.memberId,
                     })
                   }
                 />
