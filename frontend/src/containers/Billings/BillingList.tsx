@@ -13,7 +13,7 @@ const BillingList = ({ billings, send }: Props) => {
     send({
       type: "ACTIVATE_BILLING_FORM",
       formMode: FormMode.Create,
-      billingId: null,
+      billingId: null
     });
   };
 
@@ -21,7 +21,7 @@ const BillingList = ({ billings, send }: Props) => {
     send({
       type: "ACTIVATE_BILLING_FORM",
       formMode: FormMode.Edit,
-      billingId,
+      billingId
     });
   };
 
@@ -63,7 +63,7 @@ const BillingList = ({ billings, send }: Props) => {
               >
                 {billing.title}
               </Text>
-              <Text>{`Rp ${billing.amount}`}</Text>
+              <Text>{`Rp ${billing.amount.toLocaleString()}`}</Text>
             </Box>
             <Button
               colorScheme="telegram"
