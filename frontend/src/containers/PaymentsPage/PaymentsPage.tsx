@@ -1,13 +1,14 @@
-import React from "react";
 import { Box, Heading } from "@chakra-ui/react";
+import { useMachine } from "@xstate/react";
+import React from "react";
+import { match } from "ts-pattern";
+
 import ButtomMenu from "../../components/BottomMenu";
 import Layout from "../../components/Layout";
-import { useMachine } from "@xstate/react";
 import { createPaymentMachine, State } from "../../machines/paymentMachine";
 import { GeneralLoading } from "../Billings/GeneralLoading";
-import { match } from "ts-pattern";
-import PaymentList from "./PaymentList";
 import ConfirmationModal from "./ConfirmationModal";
+import PaymentList from "./PaymentList";
 
 export interface PaymentsPageProps {
   memberId: string;
@@ -55,7 +56,7 @@ const PaymentsPage = (props: PaymentsPageProps) => {
                   onItemClick={(payment) =>
                     send({
                       type: "SELECT_PAYMENT_TARGET",
-                      targetMemberId: payment.memberId,
+                      targetMemberId: payment.memberId
                     })
                   }
                 />

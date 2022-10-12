@@ -1,3 +1,11 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "plugins": ["simple-import-sort"],
+  "rules": {
+    "semi": ["error", "always"],
+    "quotes": ["error", "double"],
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "comma-dangle": ["error", "never"]
+  }
 }

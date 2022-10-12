@@ -1,8 +1,9 @@
 import { Box, Heading, Spinner, Text, VStack } from "@chakra-ui/react";
 import Link from "next/link";
 import { useQuery } from "react-query";
-import { membersApi } from "../../utils/fetcher";
 import { match } from "ts-pattern";
+
+import { membersApi } from "../../utils/fetcher";
 
 const MemberList = () => {
   const query = useQuery("Members", () => membersApi.getMemberList());

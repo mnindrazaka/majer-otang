@@ -1,14 +1,14 @@
-import React from "react";
 import {
   AlertDialog,
   AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogContent,
   AlertDialogOverlay,
-  AlertDialogCloseButton,
-  Button,
+  Button
 } from "@chakra-ui/react";
+import React from "react";
 
 type Props = {
   errorMessage: string;

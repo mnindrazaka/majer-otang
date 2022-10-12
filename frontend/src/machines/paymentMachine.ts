@@ -1,5 +1,6 @@
 import { assign, createMachine } from "xstate";
-import { Member, Payment, PaymentsApi } from "../__generated__/api";
+
+import { Member, Payment } from "../__generated__/api";
 import { queryClient } from "../pages/_app";
 import { membersApi, paymentsApi } from "../utils/fetcher";
 
@@ -33,8 +34,8 @@ export namespace State {
         paymentsError: null,
         memberError: null,
         targetMemberId: null,
-        submitPaymetError: null,
-      },
+        submitPaymetError: null
+      }
     });
   }
 
@@ -58,8 +59,8 @@ export namespace State {
         paymentsError: null,
         memberError: null,
         targetMemberId: null,
-        submitPaymetError: null,
-      },
+        submitPaymetError: null
+      }
     });
   }
 
@@ -83,8 +84,8 @@ export namespace State {
         memberError: null,
         paymentsError: null,
         targetMemberId: null,
-        submitPaymetError: null,
-      },
+        submitPaymetError: null
+      }
     });
   }
 
@@ -108,8 +109,8 @@ export namespace State {
         memberError,
         paymentsError: null,
         targetMemberId: null,
-        submitPaymetError: null,
-      },
+        submitPaymetError: null
+      }
     });
   }
 
@@ -133,8 +134,8 @@ export namespace State {
         paymentsError: null,
         memberError: null,
         targetMemberId: null,
-        submitPaymetError: null,
-      },
+        submitPaymetError: null
+      }
     });
   }
 
@@ -163,8 +164,8 @@ export namespace State {
         memberError: null,
         paymentsError: null,
         targetMemberId: null,
-        submitPaymetError: null,
-      },
+        submitPaymetError: null
+      }
     });
   }
   export namespace FetchingPaymentError {
@@ -191,8 +192,8 @@ export namespace State {
         member,
         memberError: null,
         targetMemberId: null,
-        submitPaymetError: null,
-      },
+        submitPaymetError: null
+      }
     });
   }
 
@@ -220,8 +221,8 @@ export namespace State {
         paymentsError: null,
         memberError: null,
         targetMemberId,
-        submitPaymetError: null,
-      },
+        submitPaymetError: null
+      }
     });
   }
 
@@ -249,8 +250,8 @@ export namespace State {
         paymentsError: null,
         memberError: null,
         targetMemberId,
-        submitPaymetError: null,
-      },
+        submitPaymetError: null
+      }
     });
   }
 
@@ -279,8 +280,8 @@ export namespace State {
         paymentsError: null,
         memberError: null,
         targetMemberId,
-        submitPaymetError,
-      },
+        submitPaymetError
+      }
     });
   }
 
@@ -330,7 +331,7 @@ export const createPaymentMachine = (params: Params) =>
       memberError: null,
       payments: [],
       paymentsError: null,
-      submitPaymetError: null,
+      submitPaymetError: null
     },
     states: {
       idle: {
@@ -338,12 +339,12 @@ export const createPaymentMachine = (params: Params) =>
           target: "fetchingMember",
           actions: assign(
             (context) => State.FetchingMember.make(context).context
-          ),
-        },
+          )
+        }
       },
       fetchingMember: {
         invoke: {
-          src: "getMemberData",
+          src: "getMemberData"
         },
         on: {
           FETCH_MEMBER_SUCCESS: {
@@ -352,7 +353,7 @@ export const createPaymentMachine = (params: Params) =>
               (context, event) =>
                 State.FetchingMemberSuccess.make(context, event.memberData)
                   .context
-            ),
+            )
           },
           FETCH_MEMBER_ERROR: {
             target: "fetchingMemberError",
@@ -362,9 +363,9 @@ export const createPaymentMachine = (params: Params) =>
                   context,
                   event.memberErrorMessage
                 ).context
-            ),
-          },
-        },
+            )
+          }
+        }
       },
       fetchingMemberSuccess: {
         always: {
@@ -373,8 +374,8 @@ export const createPaymentMachine = (params: Params) =>
             context.member === null
               ? context
               : State.FetchingPayment.make(context, context.member).context
-          ),
-        },
+          )
+        }
       },
       fetchingMemberError: {
         on: {
@@ -382,13 +383,13 @@ export const createPaymentMachine = (params: Params) =>
             target: "fetchingMember",
             actions: assign(
               (context) => State.FetchingMember.make(context).context
-            ),
-          },
-        },
+            )
+          }
+        }
       },
       fetchingPayments: {
         invoke: {
-          src: "getPaymentsData",
+          src: "getPaymentsData"
         },
         on: {
           FETCH_PAYMENTS_SUCCESS: {
@@ -401,7 +402,7 @@ export const createPaymentMachine = (params: Params) =>
                     event.paymentsData,
                     context.member
                   ).context
-            ),
+            )
           },
           FETCH_PAYMENTS_ERROR: {
             target: "fetchingPaymentError",
@@ -413,9 +414,9 @@ export const createPaymentMachine = (params: Params) =>
                     event.paymentErrorMessage,
                     context.member
                   ).context
-            ),
-          },
-        },
+            )
+          }
+        }
       },
       fetchingPaymentSuccess: {
         on: {
@@ -429,9 +430,9 @@ export const createPaymentMachine = (params: Params) =>
                     context.member,
                     event.targetMemberId
                   ).context;
-            }),
-          },
-        },
+            })
+          }
+        }
       },
       fetchingPaymentError: {
         on: {
@@ -441,9 +442,9 @@ export const createPaymentMachine = (params: Params) =>
               context.member === null
                 ? context
                 : State.FetchingPayment.make(context, context.member).context
-            ),
-          },
-        },
+            )
+          }
+        }
       },
       confirmingPayment: {
         on: {
@@ -457,7 +458,7 @@ export const createPaymentMachine = (params: Params) =>
                     context.member,
                     context.targetMemberId
                   ).context;
-            }),
+            })
           },
           CANCEL_PAYMENT: {
             target: "fetchingPaymentSuccess",
@@ -469,13 +470,13 @@ export const createPaymentMachine = (params: Params) =>
                     context.payments,
                     context.member
                   ).context
-            ),
-          },
-        },
+            )
+          }
+        }
       },
       submittingPayment: {
         invoke: {
-          src: "submitPayment",
+          src: "submitPayment"
         },
         on: {
           SUBMIT_PAYMENT_ERROR: {
@@ -489,7 +490,7 @@ export const createPaymentMachine = (params: Params) =>
                     context.member,
                     context.targetMemberId
                   ).context
-            ),
+            )
           },
           SUBMIT_PAYMENT_SUCCESS: {
             target: "fetchingPayments",
@@ -497,9 +498,9 @@ export const createPaymentMachine = (params: Params) =>
               context.member === null
                 ? context
                 : State.FetchingPayment.make(context, context.member).context
-            ),
-          },
-        },
+            )
+          }
+        }
       },
       submittingPaymentError: {
         on: {
@@ -513,7 +514,7 @@ export const createPaymentMachine = (params: Params) =>
                     context.member,
                     context.targetMemberId
                   ).context;
-            }),
+            })
           },
           CANCEL_PAYMENT: {
             target: "fetchingPaymentSuccess",
@@ -525,11 +526,11 @@ export const createPaymentMachine = (params: Params) =>
                     context.payments,
                     context.member
                   ).context
-            ),
-          },
-        },
-      },
-    },
+            )
+          }
+        }
+      }
+    }
   }).withConfig({
     services: {
       getMemberData: () => (send) => {
@@ -543,7 +544,7 @@ export const createPaymentMachine = (params: Params) =>
           .catch(() =>
             send({
               type: "FETCH_MEMBER_ERROR",
-              memberErrorMessage: "Fetching Member error",
+              memberErrorMessage: "Fetching Member error"
             })
           );
       },
@@ -555,13 +556,13 @@ export const createPaymentMachine = (params: Params) =>
           .then((response) =>
             send({
               type: "FETCH_PAYMENTS_SUCCESS",
-              paymentsData: response.data,
+              paymentsData: response.data
             })
           )
           .catch(() =>
             send({
               type: "FETCH_PAYMENTS_ERROR",
-              paymentErrorMessage: "Fetching Payments error",
+              paymentErrorMessage: "Fetching Payments error"
             })
           );
       },
@@ -570,16 +571,16 @@ export const createPaymentMachine = (params: Params) =>
           .updatePayment({
             paymentRequest: {
               chargedMemberId: params.memberId,
-              targetMemberId: context.targetMemberId ?? "",
-            },
+              targetMemberId: context.targetMemberId ?? ""
+            }
           })
           .then(() => send({ type: "SUBMIT_PAYMENT_SUCCESS" }))
           .catch(() =>
             send({
               type: "SUBMIT_PAYMENT_ERROR",
-              submitPaymentErrorMessage: "Submit payment failed",
+              submitPaymentErrorMessage: "Submit payment failed"
             })
           );
-      },
-    },
+      }
+    }
   });

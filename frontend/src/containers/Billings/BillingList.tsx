@@ -1,7 +1,8 @@
+import { Box, Button, Flex, Heading, Text, VStack } from "@chakra-ui/react";
 import React from "react";
-import { Box, Flex, Heading, VStack, Text, Button } from "@chakra-ui/react";
+
+import { Event, FormMode } from "../../machines/billings/billingMachine";
 import { Billing } from "../../utils/fetcher";
-import { FormMode, Event } from "../../machines/billings/billingMachine";
 
 type Props = {
   billings: Billing[];
