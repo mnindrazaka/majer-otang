@@ -31,7 +31,7 @@ const PaymentList = (props: PaymentListProps) => {
             <Text fontSize="2xl" fontWeight="semibold">
               {payment.name}
             </Text>
-            <Text>Rp. {payment.amount}</Text>
+            <Text>Rp. {payment.amount.toLocaleString()}</Text>
           </Box>
         ))}
       </VStack>
