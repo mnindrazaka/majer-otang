@@ -74,7 +74,7 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
               Bill Equally
             </Checkbox>
           </Flex>
-          <VStack spacing="4" my="4">
+          <VStack spacing="4" my="4" h="lg" overflowY="scroll">
             {filteredMembers.map((member, index) => (
               <Box
                 key={member.id}
