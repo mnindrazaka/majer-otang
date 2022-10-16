@@ -4,12 +4,12 @@ import Link from "next/link";
 const menus = {
   members: {
     title: "Members",
-    path: "/",
+    path: "/"
   },
   billings: {
     title: "Billings",
-    path: "/billings",
-  },
+    path: "/billings"
+  }
 };
 
 interface MenuItemProps {

@@ -1,21 +1,22 @@
-import React from "react";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   Button,
   FormControl,
-  FormLabel,
   FormErrorMessage,
+  FormLabel,
   Input,
-  Select,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Select
 } from "@chakra-ui/react";
+import React from "react";
+
+import { BillingForm, Event } from "../../machines/billings/billingMachine";
 import { Member } from "../../utils/fetcher";
-import { Event, BillingForm } from "../../machines/billings/billingMachine";
 
 type Props = {
   billingForm: BillingForm;
@@ -33,7 +34,7 @@ const BillingFormFirstStep = ({ members, send, billingForm }: Props) => {
   const [isTitleError, isBillAmountError, isChargedMemberIdError] = [
     title === "",
     billAmount === 0,
-    chargedMemberId === "",
+    chargedMemberId === ""
   ];
 
   return (
@@ -56,8 +57,8 @@ const BillingFormFirstStep = ({ members, send, billingForm }: Props) => {
                   type: "UPDATE_FORM",
                   billingForm: {
                     ...billingForm,
-                    title: event.target.value,
-                  },
+                    title: event.target.value
+                  }
                 })
               }
             />
@@ -77,8 +78,8 @@ const BillingFormFirstStep = ({ members, send, billingForm }: Props) => {
                   type: "UPDATE_FORM",
                   billingForm: {
                     ...billingForm,
-                    billAmount: event.target.valueAsNumber,
-                  },
+                    billAmount: event.target.valueAsNumber
+                  }
                 })
               }
             />
@@ -97,8 +98,8 @@ const BillingFormFirstStep = ({ members, send, billingForm }: Props) => {
                   type: "UPDATE_FORM",
                   billingForm: {
                     ...billingForm,
-                    chargedMemberId: event.target.value,
-                  },
+                    chargedMemberId: event.target.value
+                  }
                 })
               }
             >

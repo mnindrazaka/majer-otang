@@ -1,7 +1,8 @@
 import { Box, Heading } from "@chakra-ui/react";
-import MemberList from "./MemberList";
+
 import BottomMenu from "../../components/BottomMenu";
 import Layout from "../../components/Layout";
+import MemberList from "./MemberList";
 
 const MembersPage = () => {
   return (

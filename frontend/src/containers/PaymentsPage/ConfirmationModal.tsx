@@ -9,6 +9,7 @@ import {
   Text
 } from "@chakra-ui/react";
 import { match } from "ts-pattern";
+
 import { MachineEvents, State } from "../../machines/paymentMachine";
 
 interface ConfirmationModalProps {

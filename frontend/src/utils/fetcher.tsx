@@ -1,14 +1,14 @@
 import {
+  BillingsApi,
   Configuration,
   MembersApi,
-  BillingsApi,
-  PaymentsApi,
+  PaymentsApi
 } from "../__generated__/api";
 
 export * from "../__generated__/api";
 
 const configuration = new Configuration({
-  basePath: process.env.NEXT_PUBLIC_API_URL,
+  basePath: process.env.NEXT_PUBLIC_API_URL
 });
 
 export const membersApi = new MembersApi(configuration);
