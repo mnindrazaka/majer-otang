@@ -45,6 +45,7 @@ const BottomMenu = (props: BottomMenuProps) => {
   return (
     <Box
       position={"fixed"}
+      zIndex="10"
       right={"0"}
       left={"0"}
       bottom={"0"}

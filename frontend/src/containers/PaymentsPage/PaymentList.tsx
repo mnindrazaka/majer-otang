@@ -1,4 +1,5 @@
 import { Box, Heading, Text, VStack } from "@chakra-ui/react";
+
 import { Member, Payment } from "../../utils/fetcher";
 
 interface PaymentListProps {
@@ -31,7 +32,7 @@ const PaymentList = (props: PaymentListProps) => {
             <Text fontSize="2xl" fontWeight="semibold">
               {payment.name}
             </Text>
-            <Text>Rp. {payment.amount}</Text>
+            <Text>Rp. {payment.amount.toLocaleString()}</Text>
           </Box>
         ))}
       </VStack>

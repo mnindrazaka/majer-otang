@@ -1,7 +1,8 @@
+import { Box, Button, Flex, Heading, Text, VStack } from "@chakra-ui/react";
 import React from "react";
-import { Box, Flex, Heading, VStack, Text, Button } from "@chakra-ui/react";
+
+import { Event, FormMode } from "../../machines/billings/billingMachine";
 import { Billing } from "../../utils/fetcher";
-import { FormMode, Event } from "../../machines/billings/billingMachine";
 
 type Props = {
   billings: Billing[];
@@ -27,7 +28,15 @@ const BillingList = ({ billings, send }: Props) => {
 
   return (
     <Box color="gray.200" mb="36">
-      <Box width="full" bg="white" h="20" position="fixed" left="0" right="0">
+      <Box
+        width="full"
+        bg="white"
+        h="20"
+        position="fixed"
+        zIndex="10"
+        left="0"
+        right="0"
+      >
         <Heading as="h3" textAlign="center" my="6" color="gray.700">
           Billings
         </Heading>
@@ -55,7 +64,7 @@ const BillingList = ({ billings, send }: Props) => {
               >
                 {billing.title}
               </Text>
-              <Text>{`Rp ${billing.amount}`}</Text>
+              <Text>{`Rp ${billing.amount.toLocaleString()}`}</Text>
             </Box>
             <Button
               colorScheme="telegram"

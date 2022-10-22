@@ -22,12 +22,12 @@ func NewPaymentUsecase(billingMemberRepo repository.BillingMemberRepository, bil
 }
 
 func (p *paymentUsecase) UpdatePayment(ctx context.Context, paymentRequest *entity.PaymentRequest) error {
-	err := p.billingMemberRepo.UpdateBillingMemberByBillingID(ctx, paymentRequest.TargetMemberId)
+	err := p.billingMemberRepo.UpdateBillingMemberByBillingID(ctx, paymentRequest.ChargedMemberId, paymentRequest.TargetMemberId)
 	if err != nil {
 		return err
 	}
 
-	err = p.billingMemberRepo.UpdateBillingMemberByBillingID(ctx, paymentRequest.ChargedMemberId)
+	err = p.billingMemberRepo.UpdateBillingMemberByBillingID(ctx, paymentRequest.TargetMemberId, paymentRequest.ChargedMemberId)
 	if err != nil {
 		return err
 	}
@@ -53,12 +53,12 @@ func (p *paymentUsecase) GetPaymentByMemberID(ctx context.Context, memberID stri
 
 	var mapBilingMemberID2 = map[string]int{}
 	for _, other := range billingsOthers {
-		mapBilingMemberID2[other.MemberId] += int(other.Amount)
+		mapBilingMemberID2[other.ChargedMemberId] += int(other.Amount)
 	}
 
 	var payments []*entity.Payment
-	for id, amount := range mapBilingMemberID {
-		val, ok := mapBilingMemberID2[id]
+	for id, amount := range mapBilingMemberID2 {
+		val, ok := mapBilingMemberID[id]
 		var result int
 		if ok {
 			result = amount - val
@@ -66,7 +66,7 @@ func (p *paymentUsecase) GetPaymentByMemberID(ctx context.Context, memberID stri
 				continue
 			}
 
-			mapBilingMemberID[id] = result
+			mapBilingMemberID2[id] = result
 		}
 
 		// TODO: it's better to use get member by ids, so we don't need to query 1 by 1
@@ -78,10 +78,10 @@ func (p *paymentUsecase) GetPaymentByMemberID(ctx context.Context, memberID stri
 		payments = append(payments, &entity.Payment{
 			Name:     member.Name,
 			MemberId: id,
-			Amount:   int32(mapBilingMemberID[id]),
+			Amount:   int32(mapBilingMemberID2[id]),
 		})
 	}
-	
+
 	if payments == nil {
 		return []*entity.Payment{}, nil
 	}

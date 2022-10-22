@@ -140,55 +140,6 @@
             }
           }
         }
-      },
-      "put": {
-        "description": "UPDATE Billing Data",
-        "tags": [
-          "Billings"
-        ],
-        "operationId": "updateBilling",
-        "summary": "UPDATE Billing Data",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BillingRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success CREATE Billing Data",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NoDataResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "ERROR CREATE Billing Data",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "ERROR CREATE Billing Data",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/billings/{billingId}": {
@@ -231,6 +182,65 @@
           },
           "500": {
             "description": "ERROR GET Billing By ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "UPDATE Billing Data",
+        "tags": [
+          "Billings"
+        ],
+        "operationId": "updateBilling",
+        "parameters": [
+          {
+            "name": "billingId",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "summary": "UPDATE Billing Data",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success CREATE Billing Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoDataResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ERROR CREATE Billing Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERROR CREATE Billing Data",
             "content": {
               "application/json": {
                 "schema": {

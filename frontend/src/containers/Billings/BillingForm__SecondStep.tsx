@@ -1,23 +1,24 @@
-import React from "react";
 import {
+  Box,
+  Button,
+  Center,
+  Checkbox,
+  Flex,
+  Input,
   Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Button,
-  VStack,
-  Box,
-  Flex,
-  Checkbox,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Text,
-  Input,
-  Center,
+  VStack
 } from "@chakra-ui/react";
+import React from "react";
+
+import { BillingForm, Event } from "../../machines/billings/billingMachine";
 import { Member } from "../../utils/fetcher";
-import { Event, BillingForm } from "../../machines/billings/billingMachine";
 
 type Props = {
   members: Member[];
@@ -58,22 +59,22 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
               onChange={(event) => {
                 const updatedMembers = billingForm.members.map(({ id }) => ({
                   id,
-                  amount: 0,
+                  amount: 0
                 }));
                 send({
                   type: "UPDATE_FORM",
                   billingForm: {
                     ...billingForm,
                     isBillEqually: event.target.checked,
-                    members: updatedMembers,
-                  },
+                    members: updatedMembers
+                  }
                 });
               }}
             >
               Bill Equally
             </Checkbox>
           </Flex>
-          <VStack spacing="4" my="4">
+          <VStack spacing="4" my="4" h="lg" overflowY="scroll">
             {filteredMembers.map((member, index) => (
               <Box
                 key={member.id}
@@ -81,7 +82,7 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
                 borderRadius="16px"
                 p="6"
                 w="full"
-                backgroundColor="gray.700"
+                backgroundColor="gray.400"
               >
                 <Flex justifyContent="space-between">
                   <Box>
@@ -105,13 +106,13 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
                                   amount:
                                     member.id === id
                                       ? event.target.valueAsNumber
-                                      : amount,
+                                      : amount
                                 })
-                              ),
+                              )
                             };
                             send({
                               type: "UPDATE_FORM",
-                              billingForm: updatedBillingForm,
+                              billingForm: updatedBillingForm
                             });
                           }}
                         />
@@ -129,7 +130,7 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
                         const updatedMembers = checked
                           ? [
                               ...billingForm.members,
-                              { id: member.id, amount: 0 },
+                              { id: member.id, amount: 0 }
                             ]
                           : billingForm.members.filter(
                               (billingMember) => billingMember.id !== member.id
@@ -137,12 +138,12 @@ const BillingFormSecondStep = ({ members, send, billingForm }: Props) => {
 
                         const updatedBillingForm = {
                           ...billingForm,
-                          members: updatedMembers,
+                          members: updatedMembers
                         };
 
                         send({
                           type: "UPDATE_FORM",
-                          billingForm: updatedBillingForm,
+                          billingForm: updatedBillingForm
                         });
                       }}
                     />

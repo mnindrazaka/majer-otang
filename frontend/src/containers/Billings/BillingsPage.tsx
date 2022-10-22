@@ -1,16 +1,17 @@
+import { Box } from "@chakra-ui/react";
+import { useMachine } from "@xstate/react";
 import React from "react";
+import { match } from "ts-pattern";
+
+import BottomMenu from "../../components/BottomMenu";
 import Layout from "../../components/Layout";
-import BillingList from "./BillingList";
+import { billingMachine, State } from "../../machines/billings/billingMachine";
 import BillingFormFirstStep from "./BillingForm__FirstStep";
 import BillingFormSecondStep from "./BillingForm__SecondStep";
-import GeneralSuccess from "./GeneralSuccess";
+import BillingList from "./BillingList";
 import GeneralError from "./GeneralError";
 import { GeneralLoading } from "./GeneralLoading";
-import { Box } from "@chakra-ui/react";
-import BottomMenu from "../../components/BottomMenu";
-import { useMachine } from "@xstate/react";
-import { billingMachine, State } from "../../machines/billings/billingMachine";
-import { match } from "ts-pattern";
+import GeneralSuccess from "./GeneralSuccess";
 
 const BillingsPage = () => {
   const [state, send, service] = useMachine(billingMachine);
