@@ -65,7 +65,7 @@ func (b *billingUsecase) CreateBilling(ctx context.Context, request entity.Billi
 
 	var amount int
 	if request.IsBillEqually {
-		amount = int(request.BillAmount)/len(request.Members) + 1
+		amount = int(request.BillAmount) / (len(request.Members) + 1)
 	}
 
 	for _, member := range request.Members {
@@ -111,7 +111,7 @@ func (b *billingUsecase) UpdateBilling(ctx context.Context, billingId string, re
 
 	var amount int
 	if request.IsBillEqually {
-		amount = int(request.BillAmount)/len(request.Members) + 1
+		amount = int(request.BillAmount) / (len(request.Members) + 1)
 	}
 
 	for _, member := range request.Members {
